@@ -1,0 +1,96 @@
+{
+  "clubName": "NIG Badminton Club / 遺伝研バドミントン部",
+  "groupEmail": "nig.badminton-club@nig.ac.jp",
+  "groupUrl": "https://groups.google.com/a/nig.ac.jp/g/nig.badminton-club",
+  "membership": {
+    "requestUrl": "join.html",
+    "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLSeHZJlvIXjN6Nf4HCmVOSw2rQVRqorB-KMO9V3Qj8Omp5Z1og/viewform"
+  },
+  "timezone": "Asia/Tokyo",
+  "calendar": {
+    "name": "NIG Badminton Club / 遺伝研バドミントン部",
+    "url": "https://calendar.google.com/calendar/r?cid=c_25ec983b06e018c051d34f331d7ce2c0b03f4d07123d4134731f71ddd4c425f4%40group.calendar.google.com",
+    "access": "Google Group members only / Google Group参加者限定: nig.badminton-club@nig.ac.jp"
+  },
+  "venue": {
+    "name": "Nishikida Elementary School Gym / 錦田小学校 体育館",
+    "mapUrl": "https://maps.app.goo.gl/hiApbBiJLXQqRgfp9",
+    "mapEmbedUrl": "https://maps.google.com/maps?q=35.113224,138.935901&t=&z=17&ie=UTF8&iwloc=&output=embed"
+  },
+  "memberStats": {
+    "status": "ok",
+    "groupEmail": "nig.badminton-club@nig.ac.jp",
+    "internalDomain": "nig.ac.jp",
+    "updatedAt": "2026-07-03T11:09:48+09:00",
+    "lastSuccessAt": "2026-07-03T11:09:48+09:00",
+    "totalCount": 38,
+    "nigCount": 33,
+    "externalCount": 5
+  },
+  "generatedAt": "2026-07-03T11:09:48+09:00",
+  "sessions": [
+    {
+      "sessionId": "2026-07-10",
+      "date": "2026-07-10",
+      "time": "19:00-21:00",
+      "location": "Nishikida Elementary School Gym / 錦田小学校 体育館",
+      "status": "scheduled",
+      "attendingCount": 0,
+      "guestCount": 0,
+      "roles": "",
+      "publicNote": "",
+      "formUrl": ""
+    },
+    {
+      "sessionId": "2026-07-17",
+      "date": "2026-07-17",
+      "time": "19:00-21:00",
+      "location": "Nishikida Elementary School Gym / 錦田小学校 体育館",
+      "status": "scheduled",
+      "attendingCount": 0,
+      "guestCount": 0,
+      "roles": "",
+      "publicNote": "",
+      "formUrl": ""
+    },
+    {
+      "sessionId": "2026-07-24",
+      "date": "2026-07-24",
+      "time": "19:00-21:00",
+      "location": "Nishikida Elementary School Gym / 錦田小学校 体育館",
+      "status": "scheduled",
+      "attendingCount": 0,
+      "guestCount": 0,
+      "roles": "",
+      "publicNote": "",
+      "formUrl": ""
+    },
+    {
+      "sessionId": "2026-07-31",
+      "date": "2026-07-31",
+      "time": "19:00-21:00",
+      "location": "Nishikida Elementary School Gym / 錦田小学校 体育館",
+      "status": "scheduled",
+      "attendingCount": 0,
+      "guestCount": 0,
+      "roles": "",
+      "publicNote": "",
+      "formUrl": ""
+    }
+  ],
+  "policy": {
+    "eligible": [
+      "NIG members / 遺伝研メンバー",
+      "SOKENDAI students / 総研大生",
+      "NIG interns / 遺伝研インターン",
+      "Family members of NIG/SOKENDAI researchers, staff, and students / 遺伝研・総研大の研究者、職員、学生の家族"
+    ],
+    "requirements": [
+      "Gym shoes are required for participation. / 体育館シューズ持参必須",
+      "Please bring drinks and a racket if you have one. / 飲み物と、持っている方はラケットを持参してください",
+      "After role assignments are finalized at Thursday 17:05, please email last-minute attendance changes to the Google Group. / 木曜17:05の担当確定後の直前の参加変更は、Google Group へメールで連絡してください"
+    ],
+    "rackets": "A few rackets may be available for new participants, with SOKENDAI students prioritized. Regular participants are encouraged to buy their own racket. / 新規参加者には総研大生を優先してラケットを貸与できる場合があります。継続参加する場合は自身のラケット購入を推奨します。",
+    "guests": "Guests may attend with a member. Guest details entered in the attendance form are kept for club management; only the guest count is shared with the club. / メンバー同伴でゲスト参加できます。出欠フォームに記入されたゲスト詳細は部の管理用に記録し、全体へはゲスト人数のみ共有します。"
+  }
+}

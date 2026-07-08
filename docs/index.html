@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NIG Badminton Club / 遺伝研バドミントン部</title>
+    <meta name="description" content="Practice schedule and attendance summary for NIG Badminton Club. / 遺伝研バドミントン部の練習予定と出欠サマリ。" />
+    <link rel="stylesheet" href="assets/styles.css?v=20260707-3" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-copy">
+        <p class="eyebrow">NIG Badminton Club / 遺伝研バドミントン部</p>
+        <h1>NIG Badminton Club / 遺伝研バドミントン部</h1>
+        <p id="generated-at" class="generated-at"></p>
+        <nav class="site-nav" aria-label="Site navigation / サイトナビゲーション">
+          <a href="index.html">Schedule / 練習予定</a>
+          <a href="workflow.html">Workflow / 運用フロー</a>
+          <a href="join.html">Join / 入会申請</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="next-session" aria-labelledby="next-session-title">
+        <div>
+          <p class="section-label">Next Practice / 次回練習</p>
+          <h2 id="next-session-title">Loading... / 読み込み中...</h2>
+          <p id="next-session-location" class="muted"></p>
+        </div>
+        <a id="next-session-form" class="primary-action" href="#" rel="noopener">Attendance Form / 出欠フォーム</a>
+      </section>
+
+      <section class="member-stats" aria-labelledby="member-stats-title">
+        <div>
+          <p class="section-label">Members / 部員</p>
+          <h2 id="member-stats-title">Member Count / 部員数</h2>
+          <p id="member-stats-detail" class="muted">Loading... / 読み込み中...</p>
+        </div>
+        <div id="member-stats-counts" class="member-counts" aria-live="polite"></div>
+      </section>
+
+      <section aria-labelledby="schedule-title" class="schedule-section">
+        <div class="section-heading">
+          <h2 id="schedule-title">Practice Schedule / 練習予定</h2>
+          <div class="heading-actions">
+            <a id="calendar-link" class="text-link" href="https://calendar.google.com/calendar/r?cid=c_25ec983b06e018c051d34f331d7ce2c0b03f4d07123d4134731f71ddd4c425f4%40group.calendar.google.com" rel="noopener">Google Calendar / Googleカレンダー</a>
+            <a id="group-link" class="text-link" href="join.html">Join / 入会申請</a>
+          </div>
+        </div>
+        <div id="session-list" class="session-list" aria-live="polite"></div>
+      </section>
+
+      <section aria-labelledby="map-title" class="map-section">
+        <div class="section-heading">
+          <div>
+            <h2 id="map-title">Practice Location / 練習場所</h2>
+            <p id="map-location-name" class="muted">Nishikida Elementary School Gym / 錦田小学校 体育館</p>
+          </div>
+          <a id="map-link" class="text-link" href="https://maps.app.goo.gl/hiApbBiJLXQqRgfp9" rel="noopener">Open in Google Maps / Googleマップで開く</a>
+        </div>
+        <div class="map-frame">
+          <iframe
+            id="map-embed"
+            title="Practice location map / 練習場所の地図"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            src="https://maps.google.com/maps?q=35.113224,138.935901&t=&z=17&ie=UTF8&iwloc=&output=embed">
+          </iframe>
+        </div>
+      </section>
+
+      <section aria-labelledby="policy-title" class="policy-section">
+        <h2 id="policy-title">Participation Policy / 参加方針</h2>
+        <div id="policy-content" class="policy-content"></div>
+      </section>
+    </main>
+
+    <footer>
+      <p>National Institute of Genetics Badminton Club / 国立遺伝学研究所バドミントン部</p>
+    </footer>
+
+    <script src="data/config.js"></script>
+    <script src="assets/app.js?v=20260707-2"></script>
+  </body>
+</html>

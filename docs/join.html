@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Join / 入会申請 | NIG Badminton Club / 遺伝研バドミントン部</title>
+    <meta name="description" content="Membership request form and Google Group joining path for NIG Badminton Club. / 遺伝研バドミントン部の入会申請フォームとGoogle Groupへの入会導線。" />
+    <link rel="stylesheet" href="assets/styles.css?v=20260707-3" />
+  </head>
+  <body>
+    <header class="site-header compact-header">
+      <div class="header-copy">
+        <p class="eyebrow">Join / 入会</p>
+        <h1>Membership Request / 入会申請</h1>
+        <p class="generated-at">Request access to the club Google Group and practice announcements / Google Groupと練習連絡へのアクセスを申請</p>
+        <nav class="site-nav" aria-label="Site navigation / サイトナビゲーション">
+          <a href="index.html">Schedule / 練習予定</a>
+          <a href="workflow.html">Workflow / 運用フロー</a>
+          <a href="join.html" aria-current="page">Join / 入会申請</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="join-request-section" aria-labelledby="join-request-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">Membership Request / 入会申請</p>
+            <h2 id="join-request-title">Google Group Access Request / Google Groupへの参加依頼</h2>
+          </div>
+        </div>
+        <div class="join-request-layout">
+          <div class="request-form">
+            <p id="membership-status" class="form-status" role="status">Loading request form... / 申請フォームを読み込んでいます...</p>
+            <a id="membership-form-link" class="primary-action" href="#" rel="noopener" aria-disabled="true">Open Request Form / 申請フォームを開く</a>
+            <div id="membership-form-wrap" class="embedded-form-wrap" hidden>
+              <iframe id="membership-form-embed" title="Membership request form / 入会申請フォーム" loading="lazy"></iframe>
+            </div>
+          </div>
+
+          <aside class="join-request-notes">
+            <h3>After submitting / 送信後</h3>
+            <p>Your request is sent to the club Google Group managers. After approval, you will receive access to the Google Group, Google Calendar, and weekly attendance form. / 申請はGoogle Groupの管理者へ届きます。承認後、Google Group、Google Calendar、毎週の出欠フォームにアクセスできるようになります。</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="workflow-section" aria-labelledby="joining-path-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">Joining / 入会</p>
+            <h2 id="joining-path-title">Google Group Joining Path / Google Groupへの入会導線</h2>
+          </div>
+        </div>
+        <div class="join-grid">
+          <article class="join-option">
+            <h3>Website request / サイト申請</h3>
+            <p>External members who cannot access the Google Group directly can contact the managers from this public membership request page. / Google Groupへ直接アクセスできない外部メンバーでも、この公開サイトの入会申請ページから管理者へ連絡できます。</p>
+          </article>
+          <article class="join-option">
+            <h3>Managers alias / 管理者宛先</h3>
+            <p>Request notifications are sent to the Google Group managers/owners alias, so code changes are not needed when managers change. / 申請通知はGoogle Groupのmanagers/owners宛てエイリアスに送ります。管理者が増減してもコード変更は不要です。</p>
+          </article>
+          <article class="join-option">
+            <h3>Automatic add / 自動追加</h3>
+            <p>Adding approved people to the Google Group is manual at first. Automatic addition can be considered after Workspace permissions and safeguards against mistaken registration are confirmed. / 承認後のGoogle Group追加は最初は手動で行います。自動追加はWorkspace権限と誤登録対策を確認してから検討します。</p>
+          </article>
+        </div>
+        <div class="note-band">
+          <strong>Recommended / 推奨:</strong>
+          Use this membership request page as the standard joining path instead of a direct Google Group link. Requests are stored in a private sheet and notifications are sent to the Google Group managers alias. / Google Groupへの直接リンクではなく、この入会申請ページを標準導線にします。申請内容は非公開シートに保存し、通知はGoogle Groupの管理者宛てエイリアスへ送ります。
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>National Institute of Genetics Badminton Club / 国立遺伝学研究所バドミントン部</p>
+    </footer>
+
+    <script src="data/config.js"></script>
+    <script src="assets/join.js"></script>
+  </body>
+</html>
