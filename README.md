@@ -1,5 +1,9 @@
 # NIG Badminton Club / 遺伝研バドミントン部
 
+[![CI](https://github.com/nig-badminton-club/nig-badminton-club.github.io/actions/workflows/ci.yml/badge.svg)](https://github.com/nig-badminton-club/nig-badminton-club.github.io/actions/workflows/ci.yml)
+[![Deploy GitHub Pages](https://github.com/nig-badminton-club/nig-badminton-club.github.io/actions/workflows/pages.yml/badge.svg)](https://github.com/nig-badminton-club/nig-badminton-club.github.io/actions/workflows/pages.yml)
+[![Website](https://img.shields.io/badge/website-live-2ea44f)](https://nig-badminton-club.github.io/)
+
 Public website for the NIG Badminton Club.
 
 This repository is intended to publish the club website with GitHub Pages. It
