@@ -40,7 +40,7 @@ https://nig-badminton-club.github.io/<repository-name>/
 - `docs/about.html`: club overview, practice photo, member count summary, and yearly officers
 - `docs/workflow.html`: weekly attendance and role-assignment workflow
 - `docs/role-assignment.html`: setup/return role assignment method
-- `docs/add-practice-dates.html`: maintainer guide for adding new practice dates
+- `docs/admin.html`: public entry point to the protected Apps Script admin console
 - `docs/join.html`: membership request page for people who cannot access the Google Group directly
 - `docs/favicon.svg`: site favicon
 - `docs/assets/`: CSS and JavaScript for the static site
@@ -67,6 +67,7 @@ The website must not publish:
 - guest names, affiliations, relationships, or contact details
 - key pickup confirmation tokens or personal confirmation links
 - private spreadsheet URLs or edit URLs
+- maintainer-only practice-date operation instructions
 - Apps Script project edit URLs, execution logs, or deployment-management notes
 - Google API tokens, GitHub tokens, OAuth refresh tokens, or local clasp files
 
@@ -121,9 +122,9 @@ https://github.com/nig-badminton-club/nig-badminton-club-ops
 ```
 
 The private repository stores the Google Apps Script automation, local clasp
-project settings, sheet/template tooling, and maintainer-only setup notes. Those
-files can contain operational resource IDs and implementation details that are
-unnecessary for the public website.
+project settings, sheet/template tooling, protected admin-console source, and
+maintainer-only setup notes. Those files can contain operational resource IDs
+and implementation details that are unnecessary for the public website.
 
 To resume development from a clean machine, maintainers should clone both
 repositories, then authenticate locally with `clasp login`. The public

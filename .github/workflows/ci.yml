@@ -37,10 +37,11 @@ jobs:
               root / "about.html",
               root / "workflow.html",
               root / "role-assignment.html",
-              root / "add-practice-dates.html",
+              root / "admin.html",
               root / "join.html",
               root / "data" / "public.json",
               root / "data" / "config.js",
+              root / "assets" / "admin.js",
               root / "assets" / "practice-scene.jpg",
           ]
           for path in required:
