@@ -39,7 +39,9 @@
       "guestCount": 0,
       "roles": "",
       "publicNote": "",
-      "formUrl": ""
+      "formUrl": "",
+      "absentCount": 0,
+      "unansweredCount": 38
     },
     {
       "sessionId": "2026-07-17",
@@ -51,7 +53,9 @@
       "guestCount": 0,
       "roles": "",
       "publicNote": "",
-      "formUrl": ""
+      "formUrl": "",
+      "absentCount": 0,
+      "unansweredCount": 38
     },
     {
       "sessionId": "2026-07-24",
@@ -63,7 +67,9 @@
       "guestCount": 0,
       "roles": "",
       "publicNote": "",
-      "formUrl": ""
+      "formUrl": "",
+      "absentCount": 0,
+      "unansweredCount": 38
     },
     {
       "sessionId": "2026-07-31",
@@ -75,7 +81,9 @@
       "guestCount": 0,
       "roles": "",
       "publicNote": "",
-      "formUrl": ""
+      "formUrl": "",
+      "absentCount": 0,
+      "unansweredCount": 38
     }
   ],
   "policy": {

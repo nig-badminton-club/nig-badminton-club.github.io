@@ -50,6 +50,10 @@ jobs:
               for key in ["clubName", "sessions", "policy", "venue"]:
                   if key not in public_data:
                       failures.append(f"docs/data/public.json is missing key: {key}")
+              for session in public_data.get("sessions", []):
+                  for key in ["attendingCount", "absentCount", "unansweredCount", "guestCount"]:
+                      if key not in session:
+                          failures.append(f"session {session.get('sessionId')} is missing key: {key}")
           except Exception as error:
               failures.append(f"docs/data/public.json is invalid: {error}")
 

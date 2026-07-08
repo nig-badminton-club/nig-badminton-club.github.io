@@ -179,6 +179,8 @@
           </div>
           <div class="counts">
             ${countBlock(session.attendingCount, "attending / 参加")}
+            ${countBlock(session.absentCount, "not attending / 不参加")}
+            ${countBlock(session.unansweredCount, "no response / 未回答")}
             ${countBlock(session.guestCount, "guests / ゲスト")}
           </div>
           <div class="roles">${escapeHtml(session.roles || "Roles pending / 担当未確定")}</div>
