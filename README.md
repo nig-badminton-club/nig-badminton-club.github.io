@@ -37,8 +37,7 @@ https://nig-badminton-club.github.io/<repository-name>/
 ## Site Contents
 
 - `docs/index.html`: schedule, next practice, map, and participation policy
-- `docs/practice.html`: practice photo page
-- `docs/about.html`: club overview, member count summary, and yearly officers
+- `docs/about.html`: club overview, practice photo, member count summary, and yearly officers
 - `docs/workflow.html`: weekly attendance and role-assignment workflow
 - `docs/role-assignment.html`: setup/return role assignment method
 - `docs/add-practice-dates.html`: maintainer guide for adding new practice dates

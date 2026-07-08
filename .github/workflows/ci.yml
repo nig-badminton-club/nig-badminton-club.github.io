@@ -34,7 +34,6 @@ jobs:
               root / ".nojekyll",
               root / "favicon.svg",
               root / "index.html",
-              root / "practice.html",
               root / "about.html",
               root / "workflow.html",
               root / "role-assignment.html",
