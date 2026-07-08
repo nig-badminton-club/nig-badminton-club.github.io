@@ -456,6 +456,41 @@ code {
   border-radius: 6px;
 }
 
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+}
+
+.officer-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+}
+
+.officer-table th,
+.officer-table td {
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.officer-table th {
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.86rem;
+}
+
+.officer-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.officer-table td {
+  color: var(--muted);
+}
+
 .join-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

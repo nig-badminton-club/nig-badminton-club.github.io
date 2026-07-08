@@ -35,6 +35,7 @@ jobs:
               root / "favicon.svg",
               root / "index.html",
               root / "practice.html",
+              root / "about.html",
               root / "workflow.html",
               root / "role-assignment.html",
               root / "add-practice-dates.html",

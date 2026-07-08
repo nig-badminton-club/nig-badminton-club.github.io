@@ -113,6 +113,7 @@
     const title = document.getElementById("next-session-title");
     const location = document.getElementById("next-session-location");
     const form = document.getElementById("next-session-form");
+    if (!title || !location || !form) return;
     if (!session) {
       title.textContent = "No scheduled practice / 練習予定はありません";
       location.textContent = "";
@@ -157,6 +158,7 @@
 
   function renderSessions(sessions, nextSession) {
     const container = document.getElementById("session-list");
+    if (!container) return;
     if (!sessions.length) {
       container.innerHTML = `<p class="muted">No upcoming practice is scheduled. / 今後の練習予定はありません。</p>`;
       return;
@@ -192,6 +194,7 @@
 
   function renderPolicy(policy) {
     const container = document.getElementById("policy-content");
+    if (!container) return;
     const eligible = (policy.eligible || []).map((item) => `<li>${escapeHtml(item)}</li>`).join("");
     const requirements = (policy.requirements || []).map((item) => `<li>${escapeHtml(item)}</li>`).join("");
     container.innerHTML = `
@@ -215,33 +218,43 @@
   }
 
   function renderMeta(data) {
-    document.getElementById("generated-at").textContent = data.generatedAt
-      ? `Updated ${data.generatedAt} ${data.timezone || ""} / 更新 ${data.generatedAt} ${data.timezone || ""}`
-      : "";
+    const generatedAt = document.getElementById("generated-at");
+    if (generatedAt) {
+      generatedAt.textContent = data.generatedAt
+        ? `Updated ${data.generatedAt} ${data.timezone || ""} / 更新 ${data.generatedAt} ${data.timezone || ""}`
+        : "";
+    }
     const groupLink = document.getElementById("group-link");
     const membership = data.membership || {};
     const membershipUrl = safeHref(membership.requestUrl || "join.html");
-    if (membershipUrl) groupLink.href = membershipUrl;
-    groupLink.textContent = "Join / 入会申請";
-    groupLink.title = "Request access to the club Google Group / Google Groupへの参加依頼";
+    if (groupLink) {
+      if (membershipUrl) groupLink.href = membershipUrl;
+      groupLink.textContent = "Join / 入会申請";
+      groupLink.title = "Request access to the club Google Group / Google Groupへの参加依頼";
+    }
 
     const calendar = data.calendar || {};
     const calendarLink = document.getElementById("calendar-link");
     const calendarUrl = safeHref(calendar.url);
-    if (calendarUrl) calendarLink.href = calendarUrl;
-    calendarLink.textContent = calendar.access
-      ? "Google Calendar (group only) / Googleカレンダー（部員限定）"
-      : "Google Calendar / Googleカレンダー";
-    if (calendar.access) calendarLink.title = calendar.access;
+    if (calendarLink) {
+      if (calendarUrl) calendarLink.href = calendarUrl;
+      calendarLink.textContent = calendar.access
+        ? "Google Calendar (group only) / Googleカレンダー（部員限定）"
+        : "Google Calendar / Googleカレンダー";
+      if (calendar.access) calendarLink.title = calendar.access;
+    }
 
     const venue = data.venue || {};
     const mapLink = document.getElementById("map-link");
     const mapEmbed = document.getElementById("map-embed");
-    document.getElementById("map-location-name").textContent = venue.name || "Mishima Municipal Nishikida Elementary School Gym / 三島市立錦田小学校 体育館";
+    const mapLocationName = document.getElementById("map-location-name");
+    if (mapLocationName) {
+      mapLocationName.textContent = venue.name || "Mishima Municipal Nishikida Elementary School Gym / 三島市立錦田小学校 体育館";
+    }
     const mapUrl = safeHref(venue.mapUrl);
     const mapEmbedUrl = safeHref(venue.mapEmbedUrl);
-    if (mapUrl) mapLink.href = mapUrl;
-    if (mapEmbedUrl) mapEmbed.src = mapEmbedUrl;
+    if (mapLink && mapUrl) mapLink.href = mapUrl;
+    if (mapEmbed && mapEmbedUrl) mapEmbed.src = mapEmbedUrl;
   }
 
   loadData()
@@ -256,6 +269,9 @@
     })
     .catch((error) => {
       console.error(error);
-      document.getElementById("next-session-title").textContent = "Schedule unavailable / 練習予定を読み込めません";
+      const title = document.getElementById("next-session-title");
+      if (title) title.textContent = "Schedule unavailable / 練習予定を読み込めません";
+      const detail = document.getElementById("member-stats-detail");
+      if (detail) detail.textContent = "Member count unavailable / 部員数を読み込めません";
     });
 })();
