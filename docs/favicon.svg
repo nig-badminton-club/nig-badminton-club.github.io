@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="NIG Badminton Club">
+  <rect width="64" height="64" rx="12" fill="#173d37"/>
+  <g transform="rotate(-24 32 32)">
+    <path d="M19 11h7l5 30h-7z" fill="#f7fbff"/>
+    <path d="M29 10h7l2 31h-8z" fill="#ffffff"/>
+    <path d="M39 12h7l-3 29h-7z" fill="#f7fbff"/>
+    <path d="M22 16h22" fill="none" stroke="#d4932f" stroke-width="2" stroke-linecap="round"/>
+    <path d="M24 25h18" fill="none" stroke="#d4932f" stroke-width="2" stroke-linecap="round"/>
+    <path d="M26 35h14" fill="none" stroke="#d4932f" stroke-width="2" stroke-linecap="round"/>
+    <path d="M24 41h17l-3 8H27z" fill="#f7fbff"/>
+    <rect x="25" y="47" width="14" height="8" rx="4" fill="#d4932f"/>
+    <path d="M27 47h10" fill="none" stroke="#fff7e9" stroke-width="1.5" stroke-linecap="round"/>
+  </g>
+</svg>

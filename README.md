@@ -41,6 +41,7 @@ https://nig-badminton-club.github.io/<repository-name>/
 - `docs/role-assignment.html`: setup/return role assignment method
 - `docs/add-practice-dates.html`: maintainer guide for adding new practice dates
 - `docs/join.html`: membership request page for people who cannot access the Google Group directly
+- `docs/favicon.svg`: site favicon
 - `docs/assets/`: CSS and JavaScript for the static site
 - `docs/data/public.json`: public fallback data for the static site
 - `docs/data/config.js`: optional live public-data endpoint configuration

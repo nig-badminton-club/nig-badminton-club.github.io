@@ -32,6 +32,7 @@ jobs:
 
           required = [
               root / ".nojekyll",
+              root / "favicon.svg",
               root / "index.html",
               root / "workflow.html",
               root / "role-assignment.html",
