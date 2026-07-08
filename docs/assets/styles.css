@@ -289,6 +289,28 @@ code {
   border: 0;
 }
 
+.practice-photo-section {
+  padding: 28px 0 8px;
+}
+
+.practice-figure {
+  margin: 0;
+}
+
+.practice-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.practice-caption {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
 .policy-section {
   margin-top: 40px;
   padding: 28px 0 0;

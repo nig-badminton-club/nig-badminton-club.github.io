@@ -34,12 +34,14 @@ jobs:
               root / ".nojekyll",
               root / "favicon.svg",
               root / "index.html",
+              root / "practice.html",
               root / "workflow.html",
               root / "role-assignment.html",
               root / "add-practice-dates.html",
               root / "join.html",
               root / "data" / "public.json",
               root / "data" / "config.js",
+              root / "assets" / "practice-scene.jpg",
           ]
           for path in required:
               if not path.exists():
