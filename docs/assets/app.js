@@ -237,7 +237,7 @@
     const venue = data.venue || {};
     const mapLink = document.getElementById("map-link");
     const mapEmbed = document.getElementById("map-embed");
-    document.getElementById("map-location-name").textContent = venue.name || "Nishikida Elementary School Gym / 錦田小学校 体育館";
+    document.getElementById("map-location-name").textContent = venue.name || "Mishima Municipal Nishikida Elementary School Gym / 三島市立錦田小学校 体育館";
     const mapUrl = safeHref(venue.mapUrl);
     const mapEmbedUrl = safeHref(venue.mapEmbedUrl);
     if (mapUrl) mapLink.href = mapUrl;
