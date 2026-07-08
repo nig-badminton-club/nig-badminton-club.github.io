@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Adding Practice Dates / 練習日の追加 | NIG Badminton Club / 遺伝研バドミントン部</title>
+    <meta name="description" content="How maintainers add new practice dates to the NIG Badminton Club schedule. / 遺伝研バドミントン部の新しい練習日の追加方法。" />
+    <link rel="stylesheet" href="assets/styles.css?v=20260707-3" />
+  </head>
+  <body>
+    <header class="site-header compact-header">
+      <div class="header-copy">
+        <p class="eyebrow">Schedule Operations / 予定管理</p>
+        <h1>Adding Practice Dates / 練習日の追加</h1>
+        <p class="generated-at">How new practices flow from the sheet to the form, calendar, and website / シートに足した練習日がフォーム・カレンダー・サイトへ反映される流れ</p>
+        <nav class="site-nav" aria-label="Site navigation / サイトナビゲーション">
+          <a href="index.html">Schedule / 練習予定</a>
+          <a href="workflow.html">Workflow / 運用フロー</a>
+          <a href="role-assignment.html">Roles / 担当選出</a>
+          <a href="add-practice-dates.html" aria-current="page">Add Dates / 練習日追加</a>
+          <a href="join.html">Join / 入会申請</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="workflow-section" aria-labelledby="sheet-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">Source of Truth / 予定の入力場所</p>
+            <h2 id="sheet-title">Practice Sessions Sheet / Practice Sessionsシート</h2>
+          </div>
+        </div>
+        <p class="muted">Maintainers add new practice dates in the private admin spreadsheet, on the Practice Sessions sheet. The public repository does not need to be edited for ordinary schedule additions. / 管理者は非公開の管理スプレッドシートのPractice Sessionsシートに新しい練習日を追加します。通常の予定追加では、公開リポジトリを編集する必要はありません。</p>
+      </section>
+
+      <section class="workflow-section" aria-labelledby="columns-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">Row Format / 行の書き方</p>
+            <h2 id="columns-title">Fields to Fill / 入力する列</h2>
+          </div>
+        </div>
+        <div class="operation-details">
+          <article class="operation-note">
+            <h3>Date / 日付</h3>
+            <p>Use <code>YYYY-MM-DD</code> for <code>session_id</code> and <code>date</code>, for example <code>2026-07-10</code>. / <code>session_id</code> と <code>date</code> は <code>2026-07-10</code> のように <code>YYYY-MM-DD</code> で入力します。</p>
+          </article>
+          <article class="operation-note">
+            <h3>Time and place / 時刻・場所</h3>
+            <p>Fill <code>start_time</code>, <code>end_time</code>, and <code>location</code> when they differ from the usual 19:00-21:00 at Nishikida Elementary School Gym. / 通常の錦田小学校体育館19:00-21:00と異なる場合は、<code>start_time</code>、<code>end_time</code>、<code>location</code> を入力します。</p>
+          </article>
+          <article class="operation-note">
+            <h3>Status / ステータス</h3>
+            <p>Use <code>scheduled</code> for confirmed practices, <code>tentative</code> for provisional dates, and <code>cancelled</code> for cancelled practices. / 確定した練習は <code>scheduled</code>、仮予定は <code>tentative</code>、中止は <code>cancelled</code> にします。</p>
+          </article>
+          <article class="operation-note">
+            <h3>Optional note / 任意メモ</h3>
+            <p>Use <code>public_note</code> for a note that may appear in the public schedule. Keep private details out of this field. / 公開してよい連絡事項は <code>public_note</code> に入れます。非公開情報は入れないでください。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="workflow-section" aria-labelledby="auto-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">Automatic Updates / 自動反映</p>
+            <h2 id="auto-title">What Updates After a Row Is Added / 行を足したあとに更新されるもの</h2>
+          </div>
+        </div>
+        <ol class="flow-diagram">
+          <li class="flow-step">
+            <span class="step-time">Daily</span>
+            <h3>Refresh / 定期更新</h3>
+            <p>The automation refreshes the form, calendar, public summary, and member count once a day. / 自動処理が1日1回、フォーム、カレンダー、公開サマリ、部員数を更新します。</p>
+          </li>
+          <li class="flow-step">
+            <span class="step-time">Calendar</span>
+            <h3>Calendar event / カレンダー予定</h3>
+            <p>Scheduled practice rows are created or updated as Google Calendar events. / <code>scheduled</code> の練習行はGoogleカレンダーの予定として作成または更新されます。</p>
+          </li>
+          <li class="flow-step">
+            <span class="step-time">Form</span>
+            <h3>Attendance form / 出欠フォーム</h3>
+            <p>The attendance form is updated to the practice in the current week. Future practices are shown on the website and calendar, but are not selectable in the form until their week. / 出欠フォームは今週の練習だけを対象に更新されます。将来の練習はウェブサイトとカレンダーには表示されますが、その週になるまでフォームの選択肢には出ません。</p>
+          </li>
+          <li class="flow-step">
+            <span class="step-time">Website</span>
+            <h3>Public schedule / 公開予定</h3>
+            <p>The website reads the public summary and displays upcoming practices only. / ウェブサイトは公開サマリを読み込み、今後の練習予定だけを表示します。</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="workflow-section" aria-labelledby="manual-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">Manual Refresh / 手動更新</p>
+            <h2 id="manual-title">When Immediate Reflection Is Needed / すぐ反映したい場合</h2>
+          </div>
+        </div>
+        <div class="policy-content">
+          <div>
+            <h3>Run refresh / 更新関数を実行</h3>
+            <p>After editing the sheet, maintainers can run <code>refreshFormCalendarAndSummary</code> from Apps Script to update the form, calendar, and public summary immediately. / シート編集後すぐに反映したい場合、管理者はApps Scriptで <code>refreshFormCalendarAndSummary</code> を実行します。</p>
+          </div>
+          <div>
+            <h3>Cancelled dates / 中止日の扱い</h3>
+            <p>If a date that already has a calendar event is later cancelled, check the Google Calendar event manually as part of the cancellation notice. / すでにカレンダー予定が作成された日を後から中止にする場合は、中止連絡の一環としてGoogleカレンダー予定も手動で確認してください。</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>National Institute of Genetics Badminton Club / 国立遺伝学研究所バドミントン部</p>
+    </footer>
+  </body>
+</html>

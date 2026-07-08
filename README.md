@@ -38,6 +38,8 @@ https://nig-badminton-club.github.io/<repository-name>/
 
 - `docs/index.html`: schedule, next practice, member count summary, map, and participation policy
 - `docs/workflow.html`: weekly attendance and role-assignment workflow
+- `docs/role-assignment.html`: setup/return role assignment method
+- `docs/add-practice-dates.html`: maintainer guide for adding new practice dates
 - `docs/join.html`: membership request page for people who cannot access the Google Group directly
 - `docs/assets/`: CSS and JavaScript for the static site
 - `docs/data/public.json`: public fallback data for the static site

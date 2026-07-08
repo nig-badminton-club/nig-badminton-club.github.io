@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Role Assignment Method / 担当自動選出方法 | NIG Badminton Club / 遺伝研バドミントン部</title>
+    <meta name="description" content="How the weekly setup role and return role are selected for NIG Badminton Club. / 遺伝研バドミントン部の準備担当と返却担当の自動選出方法。" />
+    <link rel="stylesheet" href="assets/styles.css?v=20260707-3" />
+  </head>
+  <body>
+    <header class="site-header compact-header">
+      <div class="header-copy">
+        <p class="eyebrow">Roles / 担当</p>
+        <h1>Role Assignment Method / 担当自動選出方法</h1>
+        <p class="generated-at">How setup and return roles are chosen each week / 毎週の準備担当・返却担当の決まり方</p>
+        <nav class="site-nav" aria-label="Site navigation / サイトナビゲーション">
+          <a href="index.html">Schedule / 練習予定</a>
+          <a href="workflow.html">Workflow / 運用フロー</a>
+          <a href="role-assignment.html" aria-current="page">Roles / 担当選出</a>
+          <a href="add-practice-dates.html">Add Dates / 練習日追加</a>
+          <a href="join.html">Join / 入会申請</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="workflow-section" aria-labelledby="assigned-roles-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">Assigned Roles / 自動選出する担当</p>
+            <h2 id="assigned-roles-title">Setup Role and Return Role / 準備担当・返却担当</h2>
+          </div>
+        </div>
+        <div class="policy-content">
+          <div>
+            <h3>Setup role / 準備担当</h3>
+            <p>Pickup of the school key, carrying the club racket bag and portable net, and opening the gym at 18:45 are treated as one setup role. / 学校の鍵受け取り、部のラケットバッグとポータブルネットの運搬、18:45の開錠をまとめて準備担当とします。</p>
+          </div>
+          <div>
+            <h3>Return role / 返却担当</h3>
+            <p>Locking the gym, turning SECOM on, returning the key to the drop post, and carrying the equipment back or coordinating the next handoff are treated as one return role. / 体育館の施錠、セコムON、返却ポストへの鍵返却、道具の持ち帰りまたは次回受け渡し調整をまとめて返却担当とします。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="workflow-section" aria-labelledby="candidate-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">Candidates / 候補者</p>
+            <h2 id="candidate-title">Only Current-Week Attendees Are Considered / 今週参加予定の回答だけを使います</h2>
+          </div>
+        </div>
+        <ol class="flow-diagram">
+          <li class="flow-step">
+            <span class="step-time">1</span>
+            <h3>Latest response / 最新回答</h3>
+            <p>For each email address, only the latest Google Form response for this week's practice is used. / メールアドレスごとに、今週の練習に対する最新のGoogleフォーム回答だけを使います。</p>
+          </li>
+          <li class="flow-step">
+            <span class="step-time">2</span>
+            <h3>Attendance / 参加予定</h3>
+            <p>Only people who answered that they will attend are eligible for assignment. / 「参加します」と回答した人だけが担当候補になります。</p>
+          </li>
+          <li class="flow-step">
+            <span class="step-time">3</span>
+            <h3>Role choice / 担当選択</h3>
+            <p>People who choose setup, return, or either role are candidates for the corresponding role. If Other is used to explain why a role is difficult this week, that response is not treated as a volunteer. / 準備担当、返却担当、どちらでも可を選んだ人が対応する担当の候補になります。「その他」で今週担当が難しい理由を書いた回答は、担当可能者としては扱いません。</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="workflow-section" aria-labelledby="selection-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">Selection Rules / 選出ルール</p>
+            <h2 id="selection-title">Balancing the Load / 負担が偏らないように選びます</h2>
+          </div>
+        </div>
+        <div class="operation-details">
+          <article class="operation-note">
+            <h3>Manual entries / 手動指定</h3>
+            <p>If a maintainer has already entered a setup or return name in the Practice Sessions sheet, that manual value is kept. / 管理者がPractice Sessionsシートに準備担当または返却担当を手動入力している場合、その指定を優先します。</p>
+          </article>
+          <article class="operation-note">
+            <h3>No reshuffle / 再抽選しない</h3>
+            <p>If assignments for the same practice already exist, rerunning the script keeps them unless the manual value has changed. / 同じ練習日の担当がすでに確定している場合、手動指定が変わらない限り再実行しても担当は入れ替えません。</p>
+          </article>
+          <article class="operation-note">
+            <h3>History / 履歴</h3>
+            <p>Among volunteers, people with fewer past assignments in the Role Assignments sheet are ranked earlier. / 担当可能者の中では、Role Assignmentsシート上の過去担当回数が少ない人を優先します。</p>
+          </article>
+          <article class="operation-note">
+            <h3>Same-week load / 同週の重複</h3>
+            <p>The script avoids giving both roles to the same person when another eligible volunteer is available. / 他に候補者がいる場合、同じ人に準備担当と返却担当の両方が集中しないようにします。</p>
+          </article>
+        </div>
+        <div class="note-band">
+          <strong>If no volunteer is available / 候補者がいない場合:</strong>
+          The role is left as Unassigned, and members should coordinate support through the Google Group. / その担当は未割当になり、Google Groupでサポートや交代を調整します。
+        </div>
+      </section>
+
+      <section class="workflow-section" aria-labelledby="notice-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">Notifications / 通知</p>
+            <h2 id="notice-title">What Is Sent at Thursday 17:05 / 木曜17:05に送られるもの</h2>
+          </div>
+        </div>
+        <div class="policy-content">
+          <div>
+            <h3>Google Group email / 全体メール</h3>
+            <p>The Google Group receives the confirmed setup role, return role, attendance summary, and any shared messages from the attendance form. / Google Groupには、確定した準備担当・返却担当、参加状況、出欠フォームの全体連絡欄の内容が送られます。</p>
+          </div>
+          <div>
+            <h3>Individual email / 個別メール</h3>
+            <p>Assigned members receive an individual email. The setup role assignee also receives the key pickup completion link used to record pickup by 15:30. / 担当者には個別メールが届きます。準備担当には、15:30までに鍵受け取り完了を記録するためのリンクも届きます。</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>National Institute of Genetics Badminton Club / 国立遺伝学研究所バドミントン部</p>
+    </footer>
+  </body>
+</html>
