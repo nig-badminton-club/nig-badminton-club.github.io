@@ -27,10 +27,10 @@
     "nigCount": 33,
     "externalCount": 4
   },
-  "generatedAt": "2026-07-09T15:50:00+09:00",
+  "generatedAt": "2026-07-09T15:54:09+09:00",
   "sessions": [
     {
-      "sessionId": "2026-07-10T07:00:00.000Z",
+      "sessionId": "2026-07-10",
       "date": "2026-07-10",
       "time": "19:00-21:00",
       "location": "Nishikida Elementary School Gym / ????? ???",
@@ -41,10 +41,10 @@
       "guestCount": 0,
       "roles": "",
       "publicNote": "",
-      "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLSfW8QngP0dDxyaXv2DoVtUc2-Gjfjup4Hh7wrBIF-dat-s5eA/viewform?usp=pp_url&entry.1346178432=2026-07-10+(19:00-21:00)&entry.1058919373=0"
+      "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLSfW8QngP0dDxyaXv2DoVtUc2-Gjfjup4Hh7wrBIF-dat-s5eA/viewform?usp=pp_url&entry.1532790877=2026-07-10+(19:00-21:00)&entry.593902081=0"
     },
     {
-      "sessionId": "2026-07-17T07:00:00.000Z",
+      "sessionId": "2026-07-17",
       "date": "2026-07-17",
       "time": "19:00-21:00",
       "location": "Nishikida Elementary School Gym / ????? ???",
@@ -58,7 +58,7 @@
       "formUrl": ""
     },
     {
-      "sessionId": "2026-07-24T07:00:00.000Z",
+      "sessionId": "2026-07-24",
       "date": "2026-07-24",
       "time": "19:00-21:00",
       "location": "Nishikida Elementary School Gym / ????? ???",
@@ -72,7 +72,7 @@
       "formUrl": ""
     },
     {
-      "sessionId": "2026-07-31T07:00:00.000Z",
+      "sessionId": "2026-07-31",
       "date": "2026-07-31",
       "time": "19:00-21:00",
       "location": "Nishikida Elementary School Gym / ????? ???",
