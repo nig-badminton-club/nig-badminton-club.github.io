@@ -1,5 +1,5 @@
 {
-  "clubName": "NIG Badminton Club / ??????????",
+  "clubName": "NIG Badminton Club / 遺伝研バドミントン部",
   "groupEmail": "nig.badminton-club@nig.ac.jp",
   "groupUrl": "https://groups.google.com/a/nig.ac.jp/g/nig.badminton-club",
   "membership": {
@@ -8,12 +8,12 @@
   },
   "timezone": "Asia/Tokyo",
   "calendar": {
-    "name": "NIG Badminton Club / ??????????",
+    "name": "NIG Badminton Club / 遺伝研バドミントン部",
     "url": "https://calendar.google.com/calendar/r?cid=c_25ec983b06e018c051d34f331d7ce2c0b03f4d07123d4134731f71ddd4c425f4%40group.calendar.google.com",
-    "access": "Google Group members only / Google Group?????: nig.badminton-club@nig.ac.jp"
+    "access": "Google Group members only / Google Group参加者限定: nig.badminton-club@nig.ac.jp"
   },
   "venue": {
-    "name": "Mishima Municipal Nishikida Elementary School Gym / ????????? ???",
+    "name": "Mishima Municipal Nishikida Elementary School Gym / 三島市立錦田小学校 体育館",
     "mapUrl": "https://maps.app.goo.gl/hiApbBiJLXQqRgfp9",
     "mapEmbedUrl": "https://maps.google.com/maps?q=35.113224,138.935901&t=&z=17&ie=UTF8&iwloc=&output=embed"
   },
@@ -27,13 +27,13 @@
     "nigCount": 33,
     "externalCount": 4
   },
-  "generatedAt": "2026-07-09T16:01:52+09:00",
+  "generatedAt": "2026-07-09T16:04:06+09:00",
   "sessions": [
     {
       "sessionId": "2026-07-10",
       "date": "2026-07-10",
       "time": "19:00-21:00",
-      "location": "Mishima Municipal Nishikida Elementary School Gym / ????????? ???",
+      "location": "Mishima Municipal Nishikida Elementary School Gym / 三島市立錦田小学校 体育館",
       "status": "scheduled",
       "attendingCount": 0,
       "absentCount": 0,
@@ -47,7 +47,7 @@
       "sessionId": "2026-07-17",
       "date": "2026-07-17",
       "time": "19:00-21:00",
-      "location": "Mishima Municipal Nishikida Elementary School Gym / ????????? ???",
+      "location": "Mishima Municipal Nishikida Elementary School Gym / 三島市立錦田小学校 体育館",
       "status": "scheduled",
       "attendingCount": 0,
       "absentCount": 0,
@@ -61,7 +61,7 @@
       "sessionId": "2026-07-24",
       "date": "2026-07-24",
       "time": "19:00-21:00",
-      "location": "Mishima Municipal Nishikida Elementary School Gym / ????????? ???",
+      "location": "Mishima Municipal Nishikida Elementary School Gym / 三島市立錦田小学校 体育館",
       "status": "scheduled",
       "attendingCount": 0,
       "absentCount": 0,
@@ -75,7 +75,7 @@
       "sessionId": "2026-07-31",
       "date": "2026-07-31",
       "time": "19:00-21:00",
-      "location": "Mishima Municipal Nishikida Elementary School Gym / ????????? ???",
+      "location": "Mishima Municipal Nishikida Elementary School Gym / 三島市立錦田小学校 体育館",
       "status": "scheduled",
       "attendingCount": 0,
       "absentCount": 0,
@@ -88,17 +88,17 @@
   ],
   "policy": {
     "eligible": [
-      "NIG members / ???????",
-      "SOKENDAI students / ????",
-      "NIG interns / ????????",
-      "Family members of NIG/SOKENDAI researchers, staff, and students / ????????????????????"
+      "NIG members / 遺伝研メンバー",
+      "SOKENDAI students / 総研大生",
+      "NIG interns / 遺伝研インターン",
+      "Family members of NIG/SOKENDAI researchers, staff, and students / 遺伝研・総研大の研究者、職員、学生の家族"
     ],
     "requirements": [
-      "Gym shoes are required for participation. / ???????????",
-      "Please bring drinks and a racket if you have one. / ?????????????????????????",
-      "After the Google Form deadline, please email attendance changes or messages directly to the Google Group. / Google?????????????????Google Group????????????"
+      "Gym shoes are required for participation. / 体育館シューズ持参必須",
+      "Please bring drinks and a racket if you have one. / 飲み物と、持っている方はラケットを持参してください",
+      "After the Google Form deadline, please email attendance changes or messages directly to the Google Group. / Googleフォーム締切後の参加変更や連絡は、Google Groupへ直接メールしてください"
     ],
-    "rackets": "A few rackets may be available for new participants, with SOKENDAI students prioritized. Regular participants are encouraged to buy their own racket. / ???????????????????????????????????????????????????????????",
-    "guests": "Guests may attend with a member. Guest details entered in the attendance form are kept for club management; automated club emails and calendar notes may share only the guest count by responding account. / ?????????????????????????????????????????????????????????????????????????????????????????"
+    "rackets": "A few rackets may be available for new participants, with SOKENDAI students prioritized. Regular participants are encouraged to buy their own racket. / 新規参加者には総研大生を優先してラケットを貸与できる場合があります。継続参加する場合は自身のラケット購入を推奨します。",
+    "guests": "Guests may attend with a member. Guest details entered in the attendance form are kept for club management; automated club emails and calendar notes may share only the guest count by responding account. / メンバー同伴でゲスト参加できます。出欠フォームに記入されたゲスト詳細は部の管理用に記録し、部の自動メールやカレンダーでは回答アカウントごとのゲスト人数のみ共有する場合があります。"
   }
 }
