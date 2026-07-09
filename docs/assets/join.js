@@ -62,10 +62,13 @@
       const formUrl = safeHref(data.membership && data.membership.formUrl);
       if (!formUrl) {
         status.textContent = "Request form is being prepared. / 申請フォームを準備中です。";
+        link.removeAttribute("href");
+        link.tabIndex = -1;
         return;
       }
       link.href = formUrl;
       link.removeAttribute("aria-disabled");
+      link.removeAttribute("tabindex");
       status.textContent = "Use the form below to request membership. / 下のフォームから入会申請を送ってください。";
       const embedUrl = new URL(formUrl);
       embedUrl.searchParams.set("embedded", "true");

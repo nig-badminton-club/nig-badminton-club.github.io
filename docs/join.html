@@ -6,7 +6,7 @@
     <title>Join / 入会申請 | NIG Badminton Club / 遺伝研バドミントン部</title>
     <meta name="description" content="Membership request form and Google Group joining path for NIG Badminton Club. / 遺伝研バドミントン部の入会申請フォームとGoogle Groupへの入会導線。" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="assets/styles.css?v=20260708-4" />
+    <link rel="stylesheet" href="assets/styles.css?v=20260709-1" />
   </head>
   <body>
     <header class="site-header compact-header">
@@ -19,7 +19,6 @@
           <a href="about.html">About / 部について</a>
           <a href="workflow.html">Workflow / 運用フロー</a>
           <a href="role-assignment.html">Roles / 担当選出</a>
-          <a href="admin.html">Admin / 管理</a>
           <a href="join.html" aria-current="page">Join / 入会申請</a>
         </nav>
       </div>
@@ -36,7 +35,7 @@
         <div class="join-request-layout">
           <div class="request-form">
             <p id="membership-status" class="form-status" role="status">Loading request form... / 申請フォームを読み込んでいます...</p>
-            <a id="membership-form-link" class="primary-action" href="#" rel="noopener" aria-disabled="true">Open Request Form / 申請フォームを開く</a>
+            <a id="membership-form-link" class="primary-action" rel="noopener" aria-disabled="true">Open Request Form / 申請フォームを開く</a>
             <div id="membership-form-wrap" class="embedded-form-wrap" hidden>
               <iframe id="membership-form-embed" title="Membership request form / 入会申請フォーム" loading="lazy"></iframe>
             </div>
@@ -101,9 +100,10 @@
 
     <footer>
       <p>National Institute of Genetics Badminton Club / 国立遺伝学研究所バドミントン部</p>
+      <p><a class="text-link" href="admin.html">Admin / 管理者用</a></p>
     </footer>
 
     <script src="data/config.js"></script>
-    <script src="assets/join.js"></script>
+    <script src="assets/join.js?v=20260709-1"></script>
   </body>
 </html>

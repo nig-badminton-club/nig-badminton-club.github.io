@@ -117,7 +117,9 @@
     if (!session) {
       title.textContent = "No scheduled practice / 練習予定はありません";
       location.textContent = "";
+      form.removeAttribute("href");
       form.setAttribute("aria-disabled", "true");
+      form.tabIndex = -1;
       return;
     }
     title.textContent = `${formatDate(session.date)} ${session.time}`;
@@ -126,9 +128,11 @@
     if (formUrl) {
       form.href = formUrl;
       form.removeAttribute("aria-disabled");
+      form.removeAttribute("tabindex");
     } else {
-      form.href = "#";
+      form.removeAttribute("href");
       form.setAttribute("aria-disabled", "true");
+      form.tabIndex = -1;
     }
   }
 

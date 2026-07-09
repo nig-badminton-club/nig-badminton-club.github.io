@@ -103,16 +103,19 @@ Then open:
 http://localhost:4173/
 ```
 
-## Live Data
+## Public Data Updates
 
-The site first tries to load live public JSONP data from the endpoint configured
-in `docs/data/config.js`. If that request fails, it falls back to
-`docs/data/public.json`. The JSONP URL itself is not a credential, but the
-endpoint must expose public aggregate data only.
+The static site reads aggregate public data from `docs/data/public.json`.
+The private Apps Script automation can update that file through the GitHub API
+when its script properties include a GitHub token with permission to write this
+repository.
 
-The live endpoint must return only the same safe public fields as
+`docs/data/config.js` intentionally leaves the public JSONP endpoint blank for
+anonymous visitors. The protected admin console URL remains configured there.
+
+Any automated public-data update must write only the same safe public fields as
 `docs/data/public.json`. Do not expose private Sheets tabs, form response rows,
-guest details, or key pickup tokens from a web endpoint.
+guest details, or key pickup tokens from a web endpoint or committed JSON file.
 
 ## Private Automation
 
@@ -140,7 +143,7 @@ Before production launch, maintainers should separately confirm that:
 - the attendance form collects Google account email automatically
 - the spreadsheet is private to the owner and explicitly shared administrators
 - guest details remain in private Sheets only
-- the public JSON and JSONP endpoint contain aggregate public data only
+- the public JSON file contains aggregate public data only
 
 ## License
 

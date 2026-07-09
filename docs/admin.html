@@ -6,7 +6,7 @@
     <title>Admin / 管理者用 | NIG Badminton Club / 遺伝研バドミントン部</title>
     <meta name="description" content="Protected admin entry point for NIG Badminton Club maintainers. / 遺伝研バドミントン部管理者向けの保護された入口。" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="assets/styles.css?v=20260708-5" />
+    <link rel="stylesheet" href="assets/styles.css?v=20260709-1" />
   </head>
   <body>
     <header class="site-header compact-header">
@@ -19,7 +19,6 @@
           <a href="about.html">About / 部について</a>
           <a href="workflow.html">Workflow / 運用フロー</a>
           <a href="role-assignment.html">Roles / 担当選出</a>
-          <a href="admin.html" aria-current="page">Admin / 管理</a>
           <a href="join.html">Join / 入会申請</a>
         </nav>
       </div>
@@ -35,7 +34,7 @@
         </div>
         <p class="muted">The public entry page is visible to anyone, but the Apps Script admin console itself is available only to current club Google Group managers/owners after Google login and the admin allowlist check. Practice-date instructions and the private admin spreadsheet link are shown only inside that protected console. / この公開入口ページは誰でも表示できますが、Apps Script管理画面本体は、Googleログインと管理者許可リストの確認を通過した現在の部Google Group管理者・オーナーだけがアクセスできます。練習日追加手順と非公開の管理スプレッドシートリンクは、その保護された管理画面内だけで表示されます。</p>
         <p id="admin-status" class="form-status" role="status">Loading admin link... / 管理画面リンクを読み込んでいます...</p>
-        <a id="admin-console-link" class="primary-action" href="#" rel="noopener" aria-disabled="true">Open Admin Console / 管理画面を開く</a>
+        <a id="admin-console-link" class="primary-action" rel="noopener" aria-disabled="true">Open Admin Console / 管理画面を開く</a>
       </section>
 
       <section class="workflow-section" aria-labelledby="group-owner-title">
@@ -74,9 +73,10 @@
 
     <footer>
       <p>National Institute of Genetics Badminton Club / 国立遺伝学研究所バドミントン部</p>
+      <p><a class="text-link" href="admin.html" aria-current="page">Admin / 管理者用</a></p>
     </footer>
 
     <script src="data/config.js"></script>
-    <script src="assets/admin.js"></script>
+    <script src="assets/admin.js?v=20260709-1"></script>
   </body>
 </html>
