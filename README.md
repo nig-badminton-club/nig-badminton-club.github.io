@@ -72,7 +72,9 @@ The website must not publish:
 - Google API tokens, GitHub tokens, OAuth refresh tokens, or local clasp files
 
 Guest details entered in the attendance form are for club management. The
-Thursday role-assignment email shares only the guest count with the whole club.
+Thursday role-assignment email may share the guest count by responding account
+with the whole club, but not guest names, relationships, affiliations, or contact
+details.
 
 ## GitHub Pages Deployment
 
