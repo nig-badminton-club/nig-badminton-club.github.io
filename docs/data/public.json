@@ -1,5 +1,5 @@
 {
-  "clubName": "NIG Badminton Club / 遺伝研バドミントン部",
+  "clubName": "NIG Badminton Club / ??????????",
   "groupEmail": "nig.badminton-club@nig.ac.jp",
   "groupUrl": "https://groups.google.com/a/nig.ac.jp/g/nig.badminton-club",
   "membership": {
@@ -8,12 +8,12 @@
   },
   "timezone": "Asia/Tokyo",
   "calendar": {
-    "name": "NIG Badminton Club / 遺伝研バドミントン部",
+    "name": "NIG Badminton Club / ??????????",
     "url": "https://calendar.google.com/calendar/r?cid=c_25ec983b06e018c051d34f331d7ce2c0b03f4d07123d4134731f71ddd4c425f4%40group.calendar.google.com",
-    "access": "Google Group members only / Google Group参加者限定: nig.badminton-club@nig.ac.jp"
+    "access": "Google Group members only / Google Group?????: nig.badminton-club@nig.ac.jp"
   },
   "venue": {
-    "name": "Mishima Municipal Nishikida Elementary School Gym / 三島市立錦田小学校 体育館",
+    "name": "Mishima Municipal Nishikida Elementary School Gym / ????????? ???",
     "mapUrl": "https://maps.app.goo.gl/hiApbBiJLXQqRgfp9",
     "mapEmbedUrl": "https://maps.google.com/maps?q=35.113224,138.935901&t=&z=17&ie=UTF8&iwloc=&output=embed"
   },
@@ -21,84 +21,84 @@
     "status": "ok",
     "groupEmail": "nig.badminton-club@nig.ac.jp",
     "internalDomain": "nig.ac.jp",
-    "updatedAt": "2026-07-03T11:09:48+09:00",
-    "lastSuccessAt": "2026-07-03T11:09:48+09:00",
-    "totalCount": 38,
+    "updatedAt": "2026-07-09T15:30:26+09:00",
+    "lastSuccessAt": "2026-07-09T15:30:26+09:00",
+    "totalCount": 37,
     "nigCount": 33,
-    "externalCount": 5
+    "externalCount": 4
   },
-  "generatedAt": "2026-07-03T11:09:48+09:00",
+  "generatedAt": "2026-07-09T15:50:00+09:00",
   "sessions": [
     {
-      "sessionId": "2026-07-10",
+      "sessionId": "2026-07-10T07:00:00.000Z",
       "date": "2026-07-10",
       "time": "19:00-21:00",
-      "location": "Mishima Municipal Nishikida Elementary School Gym / 三島市立錦田小学校 体育館",
+      "location": "Nishikida Elementary School Gym / ????? ???",
       "status": "scheduled",
       "attendingCount": 0,
+      "absentCount": 0,
+      "unansweredCount": 37,
       "guestCount": 0,
       "roles": "",
       "publicNote": "",
-      "formUrl": "",
-      "absentCount": 0,
-      "unansweredCount": 38
+      "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLSfW8QngP0dDxyaXv2DoVtUc2-Gjfjup4Hh7wrBIF-dat-s5eA/viewform?usp=pp_url&entry.1346178432=2026-07-10+(19:00-21:00)&entry.1058919373=0"
     },
     {
-      "sessionId": "2026-07-17",
+      "sessionId": "2026-07-17T07:00:00.000Z",
       "date": "2026-07-17",
       "time": "19:00-21:00",
-      "location": "Mishima Municipal Nishikida Elementary School Gym / 三島市立錦田小学校 体育館",
+      "location": "Nishikida Elementary School Gym / ????? ???",
       "status": "scheduled",
       "attendingCount": 0,
+      "absentCount": 0,
+      "unansweredCount": 37,
       "guestCount": 0,
       "roles": "",
       "publicNote": "",
-      "formUrl": "",
-      "absentCount": 0,
-      "unansweredCount": 38
+      "formUrl": ""
     },
     {
-      "sessionId": "2026-07-24",
+      "sessionId": "2026-07-24T07:00:00.000Z",
       "date": "2026-07-24",
       "time": "19:00-21:00",
-      "location": "Mishima Municipal Nishikida Elementary School Gym / 三島市立錦田小学校 体育館",
+      "location": "Nishikida Elementary School Gym / ????? ???",
       "status": "scheduled",
       "attendingCount": 0,
+      "absentCount": 0,
+      "unansweredCount": 37,
       "guestCount": 0,
       "roles": "",
       "publicNote": "",
-      "formUrl": "",
-      "absentCount": 0,
-      "unansweredCount": 38
+      "formUrl": ""
     },
     {
-      "sessionId": "2026-07-31",
+      "sessionId": "2026-07-31T07:00:00.000Z",
       "date": "2026-07-31",
       "time": "19:00-21:00",
-      "location": "Mishima Municipal Nishikida Elementary School Gym / 三島市立錦田小学校 体育館",
+      "location": "Nishikida Elementary School Gym / ????? ???",
       "status": "scheduled",
       "attendingCount": 0,
+      "absentCount": 0,
+      "unansweredCount": 37,
       "guestCount": 0,
       "roles": "",
       "publicNote": "",
-      "formUrl": "",
-      "absentCount": 0,
-      "unansweredCount": 38
+      "formUrl": ""
     }
   ],
   "policy": {
     "eligible": [
-      "NIG members / 遺伝研メンバー",
-      "SOKENDAI students / 総研大生",
-      "NIG interns / 遺伝研インターン",
-      "Family members of NIG/SOKENDAI researchers, staff, and students / 遺伝研・総研大の研究者、職員、学生の家族"
+      "NIG members / ???????",
+      "SOKENDAI students / ????",
+      "NIG interns / ????????",
+      "Family members of NIG/SOKENDAI researchers, staff, and students / ????????????????????"
     ],
     "requirements": [
-      "Gym shoes are required for participation. / 体育館シューズ持参必須",
-      "Please bring drinks and a racket if you have one. / 飲み物と、持っている方はラケットを持参してください",
-      "After the Google Form deadline, please email attendance changes or messages directly to the Google Group. / Googleフォーム締切後の参加変更や連絡は、Google Groupへ直接メールしてください"
+      "Gym shoes are required for participation. / ???????????",
+      "Please bring drinks and a racket if you have one. / ?????????????????????????",
+      "After the Google Form deadline, please email attendance changes or messages directly to the Google Group. / Google?????????????????Google Group????????????"
     ],
-    "rackets": "A few rackets may be available for new participants, with SOKENDAI students prioritized. Regular participants are encouraged to buy their own racket. / 新規参加者には総研大生を優先してラケットを貸与できる場合があります。継続参加する場合は自身のラケット購入を推奨します。",
-    "guests": "Guests may attend with a member. Guest details entered in the attendance form are kept for club management; automated club emails and calendar notes may share only the guest count by responding account. / メンバー同伴でゲスト参加できます。出欠フォームに記入されたゲスト詳細は部の管理用に記録し、部の自動メールやカレンダーでは回答アカウントごとのゲスト人数のみ共有する場合があります。"
+    "rackets": "A few rackets may be available for new participants, with SOKENDAI students prioritized. Regular participants are encouraged to buy their own racket. / ???????????????????????????????????????????????????????????",
+    "guests": "Guests may attend with a member. Guest details entered in the attendance form are kept for club management; automated club emails and calendar notes may share only the guest count by responding account. / ?????????????????????????????????????????????????????????????????????????????????????????"
   }
 }
