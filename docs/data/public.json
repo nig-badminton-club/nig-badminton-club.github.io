@@ -21,13 +21,13 @@
     "status": "ok",
     "groupEmail": "nig.badminton-club@nig.ac.jp",
     "internalDomain": "nig.ac.jp",
-    "updatedAt": "2026-07-10T11:29:35+09:00",
-    "lastSuccessAt": "2026-07-10T11:29:35+09:00",
-    "totalCount": 37,
-    "nigCount": 33,
+    "updatedAt": "2026-07-10T16:12:39+09:00",
+    "lastSuccessAt": "2026-07-10T16:12:39+09:00",
+    "totalCount": 38,
+    "nigCount": 34,
     "externalCount": 4
   },
-  "generatedAt": "2026-07-10T12:35:53+09:00",
+  "generatedAt": "2026-07-10T16:12:48+09:00",
   "sessions": [
     {
       "sessionId": "2026-07-10",
@@ -38,7 +38,7 @@
       "responseStatus": "closed",
       "attendingCount": 0,
       "absentCount": 0,
-      "unansweredCount": 37,
+      "unansweredCount": 38,
       "guestCount": 0,
       "roleStatus": "unassigned",
       "publicNote": "",
