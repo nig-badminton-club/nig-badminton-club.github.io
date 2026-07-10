@@ -85,6 +85,16 @@ test("stale public data produces a visible warning", async () => {
   assert.match(banner.textContent, /may not have the latest data/);
 });
 
+test("participation information explains the current and possible future fee", async () => {
+  const data = structuredClone(baseData);
+  data.generatedAt = new Date().toISOString();
+  data.policy.fees = "There is currently no participation fee. A fee of a few hundred yen per practice may be introduced in the future. / 現在、参加費は徴収していません。将来は練習1回につき数百円程度の参加費をお願いする可能性があります。";
+  const dom = await renderPage("index.html", "assets/app.js", data);
+  const policy = dom.window.document.getElementById("policy-content");
+  assert.match(policy.textContent, /currently no participation fee/);
+  assert.match(policy.textContent, /現在、参加費は徴収していません/);
+});
+
 test("membership form opens as a separate signed-in Google flow", async () => {
   const data = structuredClone(baseData);
   const dom = await renderPage("join.html", "assets/join.js", data);

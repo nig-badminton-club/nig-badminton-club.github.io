@@ -269,6 +269,10 @@
         <ul>${requirements}</ul>
       </div>
       <div>
+        <h3>Participation fees / 参加費</h3>
+        <p>${escapeHtml(policy.fees || "")}</p>
+      </div>
+      <div>
         <h3>Rackets / ラケット</h3>
         <p>${escapeHtml(policy.rackets || "")}</p>
       </div>
