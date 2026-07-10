@@ -324,7 +324,9 @@
     if (!banner) return;
     const generatedAt = new Date(data.generatedAt || "");
     const ageHours = (Date.now() - generatedAt.getTime()) / (60 * 60 * 1000);
-    if (Number.isFinite(ageHours) && ageHours >= 0 && ageHours <= 8) {
+    // The backend refreshes unchanged public data every eight hours. Allow one
+    // trigger interval plus deployment propagation before warning visitors.
+    if (Number.isFinite(ageHours) && ageHours >= 0 && ageHours <= 8.25) {
       banner.hidden = true;
       banner.textContent = "";
       return;
