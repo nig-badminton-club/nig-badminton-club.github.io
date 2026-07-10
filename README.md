@@ -116,8 +116,8 @@ repository.
 
 `docs/data/config.js` intentionally leaves the public JSONP endpoint blank for
 anonymous visitors. The protected admin-console URL remains configured there.
-The site warns visitors when committed aggregate data is more than eight hours
-old.
+The site warns visitors when committed aggregate data is more than about eight
+hours old.
 
 Any automated public-data update must write only the same safe public fields as
 `docs/data/public.json`. Do not expose private Sheets tabs, form response rows,
