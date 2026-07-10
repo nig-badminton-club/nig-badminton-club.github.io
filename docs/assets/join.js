@@ -3,8 +3,6 @@
   const jsonpUrl = window.NIG_BADMINTON_PUBLIC_JSONP_URL || "";
   const status = document.getElementById("membership-status");
   const link = document.getElementById("membership-form-link");
-  const wrap = document.getElementById("membership-form-wrap");
-  const iframe = document.getElementById("membership-form-embed");
 
   function loadJsonp(url) {
     return new Promise((resolve, reject) => {
@@ -67,13 +65,11 @@
         return;
       }
       link.href = formUrl;
+      link.target = "_blank";
+      link.rel = "noopener";
       link.removeAttribute("aria-disabled");
       link.removeAttribute("tabindex");
-      status.textContent = "Use the form below to request membership. / 下のフォームから入会申請を送ってください。";
-      const embedUrl = new URL(formUrl);
-      embedUrl.searchParams.set("embedded", "true");
-      iframe.src = embedUrl.href;
-      wrap.hidden = false;
+      status.textContent = "Open the Google Form to join, leave, change your registered address, or contact the managers. A Google sign-in is required to verify the request. / Googleフォームから入会、退会、登録アドレス変更、または管理者への連絡を送ってください。申請確認のためGoogleログインが必要です。";
     })
     .catch((error) => {
       console.error(error);

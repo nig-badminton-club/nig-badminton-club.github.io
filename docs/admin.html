@@ -1,25 +1,26 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Admin / 管理者用 | NIG Badminton Club / 遺伝研バドミントン部</title>
-    <meta name="description" content="Protected admin entry point for NIG Badminton Club maintainers. / 遺伝研バドミントン部管理者向けの保護された入口。" />
-    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="assets/styles.css?v=20260709-1" />
+    <meta name="description" content="Protected admin entry point for NIG Badminton Club maintainers. / 遺伝研バドミントン部管理者向けの保護された入口。">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="assets/styles.css?v=20260710-1">
   </head>
   <body>
     <header class="site-header compact-header">
       <div class="header-copy">
         <p class="eyebrow">Admin / 管理者用</p>
         <h1>Admin Console / 管理画面</h1>
-        <p class="generated-at">Protected tools for club Google Group owners / Google Groupオーナー向けの保護された運用ツール</p>
+        <p class="generated-at">Protected tools for allowlisted club administrators / 許可リスト登録済みの部管理者向け運用ツール</p>
         <nav class="site-nav" aria-label="Site navigation / サイトナビゲーション">
           <a href="index.html">Schedule / 練習予定</a>
           <a href="about.html">About / 部について</a>
           <a href="workflow.html">Workflow / 運用フロー</a>
           <a href="role-assignment.html">Roles / 担当選出</a>
-          <a href="join.html">Join / 入会申請</a>
+          <a href="join.html">Join or Leave / 入退会</a>
         </nav>
       </div>
     </header>
@@ -32,23 +33,9 @@
             <h2 id="admin-title">Open the Apps Script Admin Console / Apps Script管理画面を開く</h2>
           </div>
         </div>
-        <p class="muted">The public entry page is visible to anyone, but the Apps Script admin console itself is available only to current club Google Group managers/owners after Google login and the admin allowlist check. Practice-date instructions and the private admin spreadsheet link are shown only inside that protected console. / この公開入口ページは誰でも表示できますが、Apps Script管理画面本体は、Googleログインと管理者許可リストの確認を通過した現在の部Google Group管理者・オーナーだけがアクセスできます。練習日追加手順と非公開の管理スプレッドシートリンクは、その保護された管理画面内だけで表示されます。</p>
+        <p class="muted">This public entry page is visible to anyone. The Apps Script admin console opens only after Google login and an application allowlist check. The private spreadsheet link, schedule instructions, system status, and allowed administrator IDs are shown only inside that protected console. / この公開入口ページは誰でも表示できます。Apps Script管理画面本体は、Googleログインとアプリの管理者許可リスト確認を通過した場合だけ開きます。非公開スプレッドシート、予定追加手順、システム状態、許可済み管理者IDは保護された管理画面内だけに表示します。</p>
         <p id="admin-status" class="form-status" role="status">Loading admin link... / 管理画面リンクを読み込んでいます...</p>
-        <a id="admin-console-link" class="primary-action" rel="noopener" aria-disabled="true">Open Admin Console / 管理画面を開く</a>
-      </section>
-
-      <section class="workflow-section" aria-labelledby="group-owner-title">
-        <div class="section-heading">
-          <div>
-            <p class="section-label">Google Group Admins / Google Group管理者</p>
-            <h2 id="group-owner-title">Current Google Group Managers / 現在のGoogle Group管理者</h2>
-          </div>
-        </div>
-        <div class="owner-list" aria-label="Google Group manager account IDs / Google Group管理者のアカウントID">
-          <span class="owner-id">kenji.fukushima</span>
-          <span class="owner-id">nyamatan</span>
-        </div>
-        <p class="muted">Only the part before <code>@</code> in each registered address is shown. These accounts are allowed to open the protected Apps Script admin console. / 登録アドレスの <code>@</code> より前だけを表示しています。これらのアカウントは、保護されたApps Script管理画面を開くことができます。</p>
+        <a id="admin-console-link" class="primary-action" aria-disabled="true">Open Admin Console / 管理画面を開く</a>
       </section>
 
       <section class="workflow-section" aria-labelledby="scope-title">
@@ -73,10 +60,10 @@
 
     <footer>
       <p>National Institute of Genetics Badminton Club / 国立遺伝学研究所バドミントン部</p>
-      <p><a class="text-link" href="admin.html" aria-current="page">Admin / 管理者用</a></p>
+      <p><a class="text-link" href="privacy.html">Privacy / 個人情報の取扱い</a> · <a class="text-link" href="admin.html" aria-current="page">Admin / 管理者用</a></p>
     </footer>
 
     <script src="data/config.js"></script>
-    <script src="assets/admin.js?v=20260709-1"></script>
+    <script src="assets/admin.js?v=20260710-1"></script>
   </body>
 </html>

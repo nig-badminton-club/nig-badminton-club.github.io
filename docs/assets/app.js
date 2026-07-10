@@ -44,12 +44,46 @@
 
   function formatDate(dateString) {
     const date = new Date(`${dateString}T00:00:00+09:00`);
-    return new Intl.DateTimeFormat("en-US", {
+    if (Number.isNaN(date.getTime())) return String(dateString || "");
+    const english = new Intl.DateTimeFormat("en-US", {
       timeZone: "Asia/Tokyo",
+      year: "numeric",
       weekday: "short",
       month: "short",
       day: "numeric",
     }).format(date);
+    const japanese = new Intl.DateTimeFormat("ja-JP", {
+      timeZone: "Asia/Tokyo",
+      year: "numeric",
+      weekday: "short",
+      month: "numeric",
+      day: "numeric",
+    }).format(date);
+    return `${english} / ${japanese}`;
+  }
+
+  function formatDateTimeParts(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      const fallback = String(value || "");
+      return { en: fallback, ja: fallback };
+    }
+    const options = {
+      timeZone: "Asia/Tokyo",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+    const english = new Intl.DateTimeFormat("en-US", options).format(date);
+    const japanese = new Intl.DateTimeFormat("ja-JP", options).format(date);
+    return { en: `${english} JST`, ja: japanese };
+  }
+
+  function formatDateTime(value) {
+    const parts = formatDateTimeParts(value);
+    return `${parts.en} / ${parts.ja}`;
   }
 
   function findNextSession(sessions) {
@@ -120,6 +154,7 @@
       form.removeAttribute("href");
       form.setAttribute("aria-disabled", "true");
       form.tabIndex = -1;
+      form.textContent = "Attendance Form / 出欠フォーム";
       return;
     }
     title.textContent = `${formatDate(session.date)} ${session.time}`;
@@ -129,10 +164,14 @@
       form.href = formUrl;
       form.removeAttribute("aria-disabled");
       form.removeAttribute("tabindex");
+      form.textContent = "Attendance Form / 出欠フォーム";
     } else {
       form.removeAttribute("href");
       form.setAttribute("aria-disabled", "true");
       form.tabIndex = -1;
+      form.textContent = session.responseStatus === "upcoming"
+        ? "Opens during practice week / 練習週に受付開始"
+        : "Responses closed / 回答締切済み";
     }
   }
 
@@ -156,8 +195,19 @@
       return;
     }
     detail.textContent = stats.status === "ok"
-      ? `Updated ${stats.lastSuccessAt} / 更新 ${stats.lastSuccessAt}`
-      : `Last successful update ${stats.lastSuccessAt} / 最終成功更新 ${stats.lastSuccessAt}`;
+      ? `Updated / 更新: ${formatDateTime(stats.lastSuccessAt)}`
+      : `Last successful update / 最終成功更新: ${formatDateTime(stats.lastSuccessAt)}`;
+  }
+
+  function responseStateText(session) {
+    if (session.responseStatus === "upcoming") {
+      return "Attendance opens during the practice week. / 出欠回答は練習週に開始します。";
+    }
+    if (session.responseStatus === "closed") {
+      return "Responses are closed. Please email later changes to the Google Group. / 回答は締め切りました。以降の変更はGoogle Groupへメールしてください。";
+    }
+    if (session.responseStatus === "cancelled") return "Practice cancelled / 練習中止";
+    return "Attendance response is open. / 出欠回答を受付中です。";
   }
 
   function renderSessions(sessions, nextSession) {
@@ -173,7 +223,20 @@
       const formUrl = safeHref(session.formUrl);
       const formLink = formUrl
         ? `<a class="session-form-link" href="${escapeHtml(formUrl)}" rel="noopener">Attendance form / 出欠フォーム</a>`
-        : `<span class="muted">Form link pending / フォームリンク準備中</span>`;
+        : session.responseStatus === "closed"
+          ? `<span class="muted">${escapeHtml(responseStateText(session))}</span>`
+          : "";
+      const countMarkup = session.responseStatus === "upcoming" || session.responseStatus === "cancelled"
+        ? `<p class="response-state">${escapeHtml(responseStateText(session))}</p>`
+        : `<div class="counts">
+            ${countBlock(session.attendingCount, "attending / 参加")}
+            ${countBlock(session.absentCount, "not attending / 不参加")}
+            ${countBlock(session.unansweredCount, "no response / 未回答")}
+            ${countBlock(session.guestCount, "guests / ゲスト")}
+          </div>`;
+      const publicNote = session.publicNote
+        ? `<p class="session-note"><strong>Note / 連絡事項:</strong> ${escapeHtml(session.publicNote)}</p>`
+        : "";
       return `
         <article class="session-card ${isNext ? "is-next" : ""}">
           <div class="session-topline">
@@ -183,20 +246,15 @@
             </div>
             <span class="${statusClass}">${escapeHtml(formatStatus(session.status))}</span>
           </div>
-          <div class="counts">
-            ${countBlock(session.attendingCount, "attending / 参加")}
-            ${countBlock(session.absentCount, "not attending / 不参加")}
-            ${countBlock(session.unansweredCount, "no response / 未回答")}
-            ${countBlock(session.guestCount, "guests / ゲスト")}
-          </div>
-          <div class="roles">${escapeHtml(session.roles || "Roles pending / 担当未確定")}</div>
-          <div>${formLink}</div>
+          ${countMarkup}
+          ${publicNote}
+          ${formLink ? `<div>${formLink}</div>` : ""}
         </article>
       `;
     }).join("");
   }
 
-  function renderPolicy(policy) {
+  function renderPolicy(policy = {}) {
     const container = document.getElementById("policy-content");
     if (!container) return;
     const eligible = (policy.eligible || []).map((item) => `<li>${escapeHtml(item)}</li>`).join("");
@@ -225,7 +283,7 @@
     const generatedAt = document.getElementById("generated-at");
     if (generatedAt) {
       generatedAt.textContent = data.generatedAt
-        ? `Updated ${data.generatedAt} ${data.timezone || ""} / 更新 ${data.generatedAt} ${data.timezone || ""}`
+        ? `Data updated / データ更新: ${formatDateTime(data.generatedAt)}`
         : "";
     }
     const groupLink = document.getElementById("group-link");
@@ -233,8 +291,8 @@
     const membershipUrl = safeHref(membership.requestUrl || "join.html");
     if (groupLink) {
       if (membershipUrl) groupLink.href = membershipUrl;
-      groupLink.textContent = "Join / 入会申請";
-      groupLink.title = "Request access to the club Google Group / Google Groupへの参加依頼";
+      groupLink.textContent = "Join or Leave / 入退会";
+      groupLink.title = "Join, leave, or change your registered address / 入会、退会、登録アドレス変更";
     }
 
     const calendar = data.calendar || {};
@@ -261,11 +319,38 @@
     if (mapEmbed && mapEmbedUrl) mapEmbed.src = mapEmbedUrl;
   }
 
+  function renderDataHealth(data) {
+    const banner = document.getElementById("data-health");
+    if (!banner) return;
+    const generatedAt = new Date(data.generatedAt || "");
+    const ageHours = (Date.now() - generatedAt.getTime()) / (60 * 60 * 1000);
+    if (Number.isFinite(ageHours) && ageHours >= 0 && ageHours <= 8) {
+      banner.hidden = true;
+      banner.textContent = "";
+      return;
+    }
+    banner.hidden = false;
+    const english = document.createElement("span");
+    const japanese = document.createElement("span");
+    english.lang = "en";
+    japanese.lang = "ja";
+    if (data.generatedAt) {
+      const updated = formatDateTimeParts(data.generatedAt);
+      english.textContent = `Website data may be out of date (last update: ${updated.en}). For the latest schedule, please check the member Google Calendar.`;
+      japanese.textContent = `サイトのデータが古い可能性があります（最終更新: ${updated.ja}）。最新の予定は部員用Googleカレンダーでも確認してください。`;
+    } else {
+      english.textContent = "The website data update time is unavailable.";
+      japanese.textContent = "サイトデータの更新時刻を確認できません。";
+    }
+    banner.replaceChildren(english, japanese);
+  }
+
   loadData()
     .then((data) => {
       const sessions = upcomingSessions(data.sessions || []);
       const nextSession = findNextSession(sessions);
       renderMeta(data);
+      renderDataHealth(data);
       renderNextSession(nextSession);
       renderMemberStats(data.memberStats || {});
       renderSessions(sessions, nextSession);
@@ -277,5 +362,10 @@
       if (title) title.textContent = "Schedule unavailable / 練習予定を読み込めません";
       const detail = document.getElementById("member-stats-detail");
       if (detail) detail.textContent = "Member count unavailable / 部員数を読み込めません";
+      const banner = document.getElementById("data-health");
+      if (banner) {
+        banner.hidden = false;
+        banner.textContent = "Schedule data could not be loaded. / 予定データを読み込めませんでした。";
+      }
     });
 })();

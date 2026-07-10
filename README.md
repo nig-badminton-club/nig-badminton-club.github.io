@@ -41,7 +41,8 @@ https://nig-badminton-club.github.io/<repository-name>/
 - `docs/workflow.html`: weekly attendance and role-assignment workflow
 - `docs/role-assignment.html`: setup/return role assignment method
 - `docs/admin.html`: public entry point to the protected Apps Script admin console
-- `docs/join.html`: membership request page for people who cannot access the Google Group directly
+- `docs/join.html`: joining, leaving, address-change, and manager-contact page
+- `docs/privacy.html`: public data, Form data, access, and correction/deletion policy
 - `docs/favicon.svg`: site favicon
 - `docs/assets/`: CSS and JavaScript for the static site
 - `docs/data/public.json`: public fallback data for the static site
@@ -56,7 +57,7 @@ The website may publish:
 - upcoming practice dates, times, locations, and status
 - aggregate attendance counts
 - aggregate guest counts
-- assigned role display names after assignments are finalized
+- response and role status without member identities
 - aggregate Google Group member counts split into NIG and external members
 - public participation policy and joining instructions
 
@@ -64,6 +65,7 @@ The website must not publish:
 
 - raw attendance response rows
 - participant email addresses
+- participant account IDs and assigned member names
 - guest names, affiliations, relationships, or contact details
 - key pickup confirmation tokens or personal confirmation links
 - private spreadsheet URLs or edit URLs
@@ -94,7 +96,9 @@ The expected setup is:
 From the repository root:
 
 ```sh
-python3 -m http.server 4173 --directory docs
+npm ci
+npm run check
+npm run serve
 ```
 
 Then open:
@@ -111,7 +115,9 @@ when its script properties include a GitHub token with permission to write this
 repository.
 
 `docs/data/config.js` intentionally leaves the public JSONP endpoint blank for
-anonymous visitors. The protected admin console URL remains configured there.
+anonymous visitors. The protected admin-console URL remains configured there.
+The site warns visitors when committed aggregate data is more than eight hours
+old.
 
 Any automated public-data update must write only the same safe public fields as
 `docs/data/public.json`. Do not expose private Sheets tabs, form response rows,
@@ -144,6 +150,7 @@ Before production launch, maintainers should separately confirm that:
 - the spreadsheet is private to the owner and explicitly shared administrators
 - guest details remain in private Sheets only
 - the public JSON file contains aggregate public data only
+- the practice photo remains appropriate for public display
 
 ## License
 

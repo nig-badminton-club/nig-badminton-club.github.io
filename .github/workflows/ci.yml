@@ -15,7 +15,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run HTML, JavaScript, and rendering tests
+        run: npm run check
 
       - name: Validate static site files
         run: |
@@ -39,6 +51,7 @@ jobs:
               root / "role-assignment.html",
               root / "admin.html",
               root / "join.html",
+              root / "privacy.html",
               root / "data" / "public.json",
               root / "data" / "config.js",
               root / "assets" / "admin.js",
@@ -54,9 +67,15 @@ jobs:
                   if key not in public_data:
                       failures.append(f"docs/data/public.json is missing key: {key}")
               for session in public_data.get("sessions", []):
+                  if session.get("responseStatus") not in {"open", "closed", "upcoming", "cancelled", "unavailable"}:
+                      failures.append(f"session {session.get('sessionId')} has invalid responseStatus")
                   for key in ["attendingCount", "absentCount", "unansweredCount", "guestCount"]:
                       if key not in session:
                           failures.append(f"session {session.get('sessionId')} is missing key: {key}")
+                  if session.get("responseStatus") == "upcoming":
+                      for key in ["attendingCount", "absentCount", "unansweredCount", "guestCount"]:
+                          if session.get(key) is not None:
+                              failures.append(f"upcoming session {session.get('sessionId')} must use null for {key}")
           except Exception as error:
               failures.append(f"docs/data/public.json is invalid: {error}")
 
@@ -78,6 +97,7 @@ jobs:
               for p in Path(".").rglob("*")
               if p.is_file()
               and ".git" not in p.parts
+              and "node_modules" not in p.parts
               and not (".github" in p.parts and "workflows" in p.parts)
           ]:
               text = path.read_text(errors="ignore")
