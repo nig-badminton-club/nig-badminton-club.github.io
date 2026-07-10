@@ -69,6 +69,8 @@ jobs:
               for session in public_data.get("sessions", []):
                   if session.get("responseStatus") not in {"open", "closed", "upcoming", "cancelled", "unavailable"}:
                       failures.append(f"session {session.get('sessionId')} has invalid responseStatus")
+                  if session.get("roleStatus") not in {"pending", "assigned", "unassigned"}:
+                      failures.append(f"session {session.get('sessionId')} has invalid roleStatus")
                   for key in ["attendingCount", "absentCount", "unansweredCount", "guestCount"]:
                       if key not in session:
                           failures.append(f"session {session.get('sessionId')} is missing key: {key}")
