@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Admin / 管理者用 | NIG Badminton Club / 遺伝研バドミントン部</title>
-    <meta name="description" content="Protected admin entry point for NIG Badminton Club maintainers. / 遺伝研バドミントン部管理者向けの保護された入口。">
+    <meta name="description" content="Secure access to administrative tools for NIG Badminton Club. / 遺伝研バドミントン部の管理ツールへ安全にアクセスするためのページ。">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="assets/styles.css?v=20260710-1">
   </head>
@@ -14,7 +14,7 @@
       <div class="header-copy">
         <p class="eyebrow">Admin / 管理者用</p>
         <h1>Admin Console / 管理画面</h1>
-        <p class="generated-at">Protected tools for allowlisted club administrators / 許可リスト登録済みの部管理者向け運用ツール</p>
+        <p class="generated-at">Secure tools for authorized club administrators / 許可された部管理者向けの運用ツール</p>
         <nav class="site-nav" aria-label="Site navigation / サイトナビゲーション">
           <a href="index.html">Schedule / 練習予定</a>
           <a href="about.html">About / 部について</a>
@@ -30,11 +30,11 @@
         <div class="section-heading">
           <div>
             <p class="section-label">Protected Access / 保護されたアクセス</p>
-            <h2 id="admin-title">Open the Apps Script Admin Console / Apps Script管理画面を開く</h2>
+            <h2 id="admin-title">Open the Secure Admin Console / 保護された管理画面を開く</h2>
           </div>
         </div>
-        <p class="muted">This public entry page is visible to anyone. The Apps Script admin console opens only after Google login and an application allowlist check. The private spreadsheet link, schedule instructions, system status, and allowed administrator IDs are shown only inside that protected console. / この公開入口ページは誰でも表示できます。Apps Script管理画面本体は、Googleログインとアプリの管理者許可リスト確認を通過した場合だけ開きます。非公開スプレッドシート、予定追加手順、システム状態、許可済み管理者IDは保護された管理画面内だけに表示します。</p>
-        <p id="admin-status" class="form-status" role="status">Loading admin link... / 管理画面リンクを読み込んでいます...</p>
+        <p class="muted">Anyone can view this entry page, but the Apps Script admin console opens only after Google sign-in and verification against the administrator allowlist. Links to the private spreadsheet, schedule-management instructions, system status, and authorized account IDs appear only inside the protected console. / この入口ページは誰でも閲覧できますが、Apps Scriptの管理画面は、Googleログイン後に管理者許可リストの確認を通過した方だけが開けます。非公開スプレッドシートへのリンク、予定管理の手順、システム状態、許可済みアカウントIDは、保護された管理画面内にのみ表示されます。</p>
+        <p id="admin-status" class="form-status" role="status">Loading the admin console link... / 管理画面へのリンクを読み込んでいます...</p>
         <a id="admin-console-link" class="primary-action" aria-disabled="true">Open Admin Console / 管理画面を開く</a>
       </section>
 
@@ -42,17 +42,17 @@
         <div class="section-heading">
           <div>
             <p class="section-label">Included Tools / 含まれる運用ツール</p>
-            <h2 id="scope-title">What Maintainers Can Do There / 管理画面でできること</h2>
+            <h2 id="scope-title">Available Admin Tools / 管理画面でできること</h2>
           </div>
         </div>
         <div class="policy-content">
           <div>
             <h3>Schedule operations / 予定管理</h3>
-            <p>Open the admin spreadsheet and review how to add or cancel practice dates. / 管理スプレッドシートを開き、練習日の追加・中止方法を確認できます。</p>
+            <p>Open the private spreadsheet and follow the instructions for adding, changing, or cancelling practice dates. / 非公開スプレッドシートを開き、練習日の追加・変更・中止手順を確認できます。</p>
           </div>
           <div>
             <h3>Manual refresh / 手動更新</h3>
-            <p>Run the refresh that updates the attendance form, calendar, public summary, and member count. / 出欠フォーム、カレンダー、公開サマリ、部員数を更新する手動更新を実行できます。</p>
+            <p>Run an immediate refresh of the attendance form, calendar, public website data, and member counts. / 出欠フォーム、カレンダー、公開サイトのデータ、部員数をすぐに更新できます。</p>
           </div>
         </div>
       </section>
@@ -64,6 +64,6 @@
     </footer>
 
     <script src="data/config.js"></script>
-    <script src="assets/admin.js?v=20260710-1"></script>
+    <script src="assets/admin.js?v=20260710-2"></script>
   </body>
 </html>

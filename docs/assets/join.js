@@ -59,7 +59,7 @@
     .then((data) => {
       const formUrl = safeHref(data.membership && data.membership.formUrl);
       if (!formUrl) {
-        status.textContent = "Request form is being prepared. / 申請フォームを準備中です。";
+        status.textContent = "The membership form is being prepared. Please check back soon. / メンバー手続きフォームを準備中です。しばらくしてから再度ご確認ください。";
         link.removeAttribute("href");
         link.tabIndex = -1;
         return;
@@ -69,10 +69,10 @@
       link.rel = "noopener";
       link.removeAttribute("aria-disabled");
       link.removeAttribute("tabindex");
-      status.textContent = "Open the Google Form to join, leave, change your registered address, or contact the managers. A Google sign-in is required to verify the request. / Googleフォームから入会、退会、登録アドレス変更、または管理者への連絡を送ってください。申請確認のためGoogleログインが必要です。";
+      status.textContent = "Use the Google Form to join or leave the club, update your registered address, or contact the managers. Google sign-in is required so the request can be verified. / Googleフォームから、入会・退会・登録アドレス変更・管理者への連絡を行えます。申請内容の確認のため、Googleへのログインが必要です。";
     })
     .catch((error) => {
       console.error(error);
-      status.textContent = "Request form is unavailable. / 申請フォームを読み込めません。";
+      status.textContent = "The membership form is currently unavailable. Please try again later. / 現在、メンバー手続きフォームを利用できません。時間をおいて再度お試しください。";
     });
 })();

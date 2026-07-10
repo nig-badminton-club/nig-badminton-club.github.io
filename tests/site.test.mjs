@@ -43,7 +43,7 @@ test("future practices show an opening state instead of unanswered member counts
   }];
   const dom = await renderPage("index.html", "assets/app.js", data);
   const card = dom.window.document.querySelector(".session-card");
-  assert.match(card.textContent, /Attendance opens during the practice week/);
+  assert.match(card.textContent, /attendance form opens during the week of the practice/i);
   assert.doesNotMatch(card.textContent, /no response \/ 未回答/);
   assert.equal(card.querySelector(".counts"), null);
 });
@@ -70,7 +70,7 @@ test("closed practices show counts without an attendance form link or role ident
   const dom = await renderPage("index.html", "assets/app.js", data);
   const card = dom.window.document.querySelector(".session-card");
   assert.match(card.textContent, /12/);
-  assert.match(card.textContent, /Responses are closed/);
+  assert.match(card.textContent, /attendance form is closed/i);
   assert.doesNotMatch(card.textContent, /private\.person/);
   assert.equal(card.querySelector("a.session-form-link"), null);
 });
@@ -82,7 +82,7 @@ test("stale public data produces a visible warning", async () => {
   const dom = await renderPage("index.html", "assets/app.js", data);
   const banner = dom.window.document.getElementById("data-health");
   assert.equal(banner.hidden, false);
-  assert.match(banner.textContent, /may be out of date/);
+  assert.match(banner.textContent, /may not have the latest data/);
 });
 
 test("membership form opens as a separate signed-in Google flow", async () => {

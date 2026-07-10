@@ -19,7 +19,7 @@
 
   const adminUrl = withAdminPage(configuredUrl || publicJsonpUrl);
   if (!adminUrl) {
-    status.textContent = "Admin console link is not configured. / 管理画面リンクが未設定です。";
+    status.textContent = "The admin console link has not been configured. / 管理画面へのリンクが設定されていません。";
     link.removeAttribute("href");
     link.tabIndex = -1;
     return;
@@ -28,5 +28,5 @@
   link.href = adminUrl;
   link.removeAttribute("aria-disabled");
   link.removeAttribute("tabindex");
-  status.textContent = "Sign in with an allowed Google account when prompted. / 求められたら許可済みGoogleアカウントでログインしてください。";
+  status.textContent = "When prompted, sign in with an authorized Google account. / 画面の案内に従い、許可されたGoogleアカウントでログインしてください。";
 })();
