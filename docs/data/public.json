@@ -27,7 +27,7 @@
     "nigCount": 33,
     "externalCount": 4
   },
-  "generatedAt": "2026-07-09T16:04:06+09:00",
+  "generatedAt": "2026-07-10T11:11:02+09:00",
   "sessions": [
     {
       "sessionId": "2026-07-10",
@@ -40,7 +40,7 @@
       "absentCount": 0,
       "unansweredCount": 37,
       "guestCount": 0,
-      "roleStatus": "pending",
+      "roleStatus": "assigned",
       "publicNote": "",
       "formUrl": ""
     },
@@ -100,6 +100,7 @@
     "requirements": [
       "Gym shoes are required for participation. / 体育館シューズ持参必須",
       "Please bring drinks and a racket if you have one. / 飲み物と、持っている方はラケットを持参してください",
+      "The setup role requires an NIG account because the key pickup confirmation page is NIG-restricted. / 鍵受け取り確認ページが遺伝研限定のため、準備担当には遺伝研アカウントが必要です",
       "After the Google Form deadline, please email attendance changes or messages directly to the Google Group. / Googleフォーム締切後の参加変更や連絡は、Google Groupへ直接メールしてください"
     ],
     "rackets": "A few rackets may be available for new participants, with SOKENDAI students prioritized. Regular participants are encouraged to buy their own racket. / 新規参加者には総研大生を優先してラケットを貸与できる場合があります。継続参加する場合は自身のラケット購入を推奨します。",
