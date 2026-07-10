@@ -27,7 +27,7 @@
     "nigCount": 33,
     "externalCount": 4
   },
-  "generatedAt": "2026-07-10T12:28:57+09:00",
+  "generatedAt": "2026-07-10T12:35:53+09:00",
   "sessions": [
     {
       "sessionId": "2026-07-10",
@@ -103,6 +103,7 @@
       "The setup role requires an NIG account because the key pickup confirmation page is restricted to NIG users. / 鍵受け取り確認ページは遺伝研アカウント限定のため、準備担当には遺伝研アカウントが必要です。",
       "After the Google Form closes, please email attendance changes or other messages directly to the Google Group. / Googleフォームの締切後は、参加変更やその他の連絡をGoogle Groupへ直接メールしてください。"
     ],
+    "fees": "There is currently no participation fee. Shuttlecocks and other consumable supplies are paid for from the budget of the SOKENDAI Genetics Course Badminton Club. As attendance grows, the club may introduce a participation fee of a few hundred yen per practice in the future. / 現在、参加費は徴収していません。シャトルなどの消耗品は、総合研究大学院大学の課外活動団体「遺伝学専攻バドミントン部」の予算で購入しています。参加者の増加に伴い、将来は練習1回につき数百円程度の参加費をお願いする可能性があります。",
     "rackets": "A few rackets may be available for new participants. Those who attend regularly are encouraged to purchase their own. / 新規参加者にはラケットを貸与できる場合があります。継続して参加する方には、ご自身のラケットの購入をおすすめします。",
     "guests": "Members may bring guests. Guest details entered in the attendance form are kept for club administration. Automated group emails and calendar descriptions may show only the number of guests by responding account. / メンバーはゲストを同伴できます。出欠フォームに入力されたゲスト情報は部の管理用に保存します。自動送信メールやカレンダーの説明には、回答アカウント別のゲスト人数のみ掲載する場合があります。"
   }
