@@ -2,6 +2,9 @@
   "name": "nig-badminton-club",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "serve": "python3 -m http.server 4173 --directory docs",
     "lint": "node --check docs/assets/app.js && node --check docs/assets/admin.js && node --check docs/assets/join.js",
