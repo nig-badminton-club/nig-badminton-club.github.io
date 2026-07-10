@@ -4,7 +4,7 @@
   "groupUrl": "https://groups.google.com/a/nig.ac.jp/g/nig.badminton-club",
   "membership": {
     "requestUrl": "join.html",
-    "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLSfLyu-j9JfHHpbhyS7XK8_05_0e-MO6lIoE4utTTkjYQcBBIw/viewform"
+    "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLSerGuXfPu4dLvgTu3o4lSAj0_o0984sZ-A5KjXyPSHfsWI96w/viewform"
   },
   "timezone": "Asia/Tokyo",
   "calendar": {
@@ -27,7 +27,7 @@
     "nigCount": 33,
     "externalCount": 4
   },
-  "generatedAt": "2026-07-10T12:06:51+09:00",
+  "generatedAt": "2026-07-10T12:28:57+09:00",
   "sessions": [
     {
       "sessionId": "2026-07-10",
@@ -92,18 +92,18 @@
   ],
   "policy": {
     "eligible": [
-      "NIG members / 遺伝研メンバー",
+      "NIG members / 遺伝研のメンバー",
       "SOKENDAI students / 総研大生",
       "NIG interns / 遺伝研インターン",
-      "Family members of NIG/SOKENDAI researchers, staff, and students / 遺伝研・総研大の研究者、職員、学生の家族"
+      "Family members of NIG or SOKENDAI researchers, staff, and students / 遺伝研・総研大の研究者、職員、学生のご家族"
     ],
     "requirements": [
-      "Gym shoes are required for participation. / 体育館シューズ持参必須",
-      "Please bring drinks and a racket if you have one. / 飲み物と、持っている方はラケットを持参してください",
-      "The setup role requires an NIG account because the key pickup confirmation page is NIG-restricted. / 鍵受け取り確認ページが遺伝研限定のため、準備担当には遺伝研アカウントが必要です",
-      "After the Google Form deadline, please email attendance changes or messages directly to the Google Group. / Googleフォーム締切後の参加変更や連絡は、Google Groupへ直接メールしてください"
+      "Indoor gym shoes are required. / 体育館シューズは必ずご持参ください。",
+      "Please bring a drink and, if you have one, a racket. / 飲み物と、お持ちの方はラケットをご持参ください。",
+      "The setup role requires an NIG account because the key pickup confirmation page is restricted to NIG users. / 鍵受け取り確認ページは遺伝研アカウント限定のため、準備担当には遺伝研アカウントが必要です。",
+      "After the Google Form closes, please email attendance changes or other messages directly to the Google Group. / Googleフォームの締切後は、参加変更やその他の連絡をGoogle Groupへ直接メールしてください。"
     ],
-    "rackets": "A few rackets may be available for new participants. Regular participants are encouraged to buy their own racket. / 新規参加者にはラケットを貸与できる場合があります。継続参加する場合は自身のラケット購入を推奨します。",
-    "guests": "Guests may attend with a member. Guest details entered in the attendance form are kept for club management; automated club emails and calendar notes may share only the guest count by responding account. / メンバー同伴でゲスト参加できます。出欠フォームに記入されたゲスト詳細は部の管理用に記録し、部の自動メールやカレンダーでは回答アカウントごとのゲスト人数のみ共有する場合があります。"
+    "rackets": "A few rackets may be available for new participants. Those who attend regularly are encouraged to purchase their own. / 新規参加者にはラケットを貸与できる場合があります。継続して参加する方には、ご自身のラケットの購入をおすすめします。",
+    "guests": "Members may bring guests. Guest details entered in the attendance form are kept for club administration. Automated group emails and calendar descriptions may show only the number of guests by responding account. / メンバーはゲストを同伴できます。出欠フォームに入力されたゲスト情報は部の管理用に保存します。自動送信メールやカレンダーの説明には、回答アカウント別のゲスト人数のみ掲載する場合があります。"
   }
 }
