@@ -75,6 +75,29 @@ test("closed practices show counts without an attendance form link or role ident
   assert.equal(card.querySelector("a.session-form-link"), null);
 });
 
+test("invalid date text from public data is rendered as text, not markup", async () => {
+  const data = structuredClone(baseData);
+  data.generatedAt = new Date().toISOString();
+  data.sessions = [{
+    sessionId: "invalid-date",
+    date: "zz<img src=x onerror=alert(1)>",
+    time: "19:00-21:00",
+    location: "Gym / 体育館",
+    status: "scheduled",
+    responseStatus: "open",
+    attendingCount: 0,
+    absentCount: 0,
+    unansweredCount: 0,
+    guestCount: 0,
+    publicNote: "",
+    formUrl: "",
+  }];
+  const dom = await renderPage("index.html", "assets/app.js", data);
+  const date = dom.window.document.querySelector(".session-date");
+  assert.equal(date.querySelector("img"), null);
+  assert.match(date.textContent, /<img src=x onerror=alert\(1\)>/);
+});
+
 test("stale public data produces a visible warning", async () => {
   const data = structuredClone(baseData);
   data.generatedAt = "2020-01-01T00:00:00+09:00";

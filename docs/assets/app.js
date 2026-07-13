@@ -241,7 +241,7 @@
         <article class="session-card ${isNext ? "is-next" : ""}">
           <div class="session-topline">
             <div>
-              <div class="session-date">${formatDate(session.date)}</div>
+              <div class="session-date">${escapeHtml(formatDate(session.date))}</div>
               <div class="muted">${escapeHtml(session.time)}</div>
             </div>
             <span class="${statusClass}">${escapeHtml(formatStatus(session.status))}</span>
