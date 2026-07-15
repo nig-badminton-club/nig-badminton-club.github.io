@@ -113,6 +113,18 @@ test("workflow and role pages explain the Thursday role-candidate snapshot", () 
   assert.doesNotMatch(workflow, /引き受けられるかどうかもご検討/);
 });
 
+test("workflow has a dedicated attendance-change procedure", () => {
+  const dom = new JSDOM(read("workflow.html"));
+  const section = dom.window.document.querySelector('[aria-labelledby="attendance-change-title"]');
+  assert.ok(section);
+  assert.match(section.querySelector("h2").textContent, /出欠を後から変更する方法/);
+  assert.match(section.textContent, /前回の回答と同じGoogleアカウント/);
+  assert.match(section.textContent, /変更後の予定を入力し、フォームをもう一度送信/);
+  assert.match(section.textContent, /練習開始30分前/);
+  assert.match(section.textContent, /Google Groupへ直接メール/);
+  assert.match(section.textContent, /代役を募集し、引き継ぎを確定/);
+});
+
 test("invalid date text from public data is rendered as text, not markup", async () => {
   const data = structuredClone(baseData);
   data.generatedAt = new Date().toISOString();
