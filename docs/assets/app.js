@@ -164,7 +164,9 @@
       form.href = formUrl;
       form.removeAttribute("aria-disabled");
       form.removeAttribute("tabindex");
-      form.textContent = "Attendance Form / 出欠フォーム";
+      form.textContent = session.responseStatus === "changes-open"
+        ? "Update Attendance / 出欠を変更"
+        : "Attendance Form / 出欠フォーム";
     } else {
       form.removeAttribute("href");
       form.setAttribute("aria-disabled", "true");
@@ -204,7 +206,10 @@
       return "The attendance form opens during the week of the practice. / 出欠フォームは練習のある週に受付を開始します。";
     }
     if (session.responseStatus === "closed") {
-      return "The attendance form is closed. Please email any later changes to the Google Group. / 出欠フォームは締め切りました。以降の変更はGoogle Groupへメールしてください。";
+      return "Self-service attendance changes are closed. Please email any later changes to the Google Group. / 出欠の自己変更受付は終了しました。以降の変更はGoogle Groupへメールしてください。";
+    }
+    if (session.responseStatus === "changes-open") {
+      return "Roles have been assigned, but you can still update your attendance through the same form until 30 minutes before practice. The latest response is used. / 担当確定後も、練習開始30分前までは同じフォームから出欠を変更できます。最新の回答が反映されます。";
     }
     if (session.responseStatus === "cancelled") return "This practice has been cancelled. / この練習は中止になりました。";
     return "The attendance form is open. / 出欠回答を受け付けています。";
@@ -222,7 +227,7 @@
       const statusClass = session.status === "cancelled" ? "status cancelled" : "status";
       const formUrl = safeHref(session.formUrl);
       const formLink = formUrl
-        ? `<a class="session-form-link" href="${escapeHtml(formUrl)}" rel="noopener">Attendance form / 出欠フォーム</a>`
+        ? `<a class="session-form-link" href="${escapeHtml(formUrl)}" rel="noopener">${session.responseStatus === "changes-open" ? "Update attendance / 出欠を変更" : "Attendance form / 出欠フォーム"}</a>`
         : session.responseStatus === "closed"
           ? `<span class="muted">${escapeHtml(responseStateText(session))}</span>`
           : "";
@@ -234,6 +239,9 @@
             ${countBlock(session.unansweredCount, "No response / 未回答")}
             ${countBlock(session.guestCount, "Guests / ゲスト")}
           </div>`;
+      const changeWindowMarkup = session.responseStatus === "changes-open"
+        ? `<p class="response-state">${escapeHtml(responseStateText(session))}</p>`
+        : "";
       const publicNote = session.publicNote
         ? `<p class="session-note"><strong>Note / 連絡事項:</strong> ${escapeHtml(session.publicNote)}</p>`
         : "";
@@ -247,6 +255,7 @@
             <span class="${statusClass}">${escapeHtml(formatStatus(session.status))}</span>
           </div>
           ${countMarkup}
+          ${changeWindowMarkup}
           ${publicNote}
           ${formLink ? `<div>${formLink}</div>` : ""}
         </article>

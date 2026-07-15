@@ -70,9 +70,35 @@ test("closed practices show counts without an attendance form link or role ident
   const dom = await renderPage("index.html", "assets/app.js", data);
   const card = dom.window.document.querySelector(".session-card");
   assert.match(card.textContent, /12/);
-  assert.match(card.textContent, /attendance form is closed/i);
+  assert.match(card.textContent, /self-service attendance changes are closed/i);
   assert.doesNotMatch(card.textContent, /private\.person/);
   assert.equal(card.querySelector("a.session-form-link"), null);
+});
+
+test("post-assignment change window keeps the update form visible", async () => {
+  const data = structuredClone(baseData);
+  data.generatedAt = new Date().toISOString();
+  data.sessions = [{
+    sessionId: "2099-07-10",
+    date: "2099-07-10",
+    time: "19:00-21:00",
+    location: "Gym / 体育館",
+    status: "scheduled",
+    responseStatus: "changes-open",
+    attendingCount: 12,
+    absentCount: 3,
+    unansweredCount: 2,
+    guestCount: 1,
+    roleStatus: "assigned",
+    publicNote: "",
+    formUrl: "https://docs.google.com/forms/d/e/example/viewform",
+  }];
+  const dom = await renderPage("index.html", "assets/app.js", data);
+  const card = dom.window.document.querySelector(".session-card");
+  const link = card.querySelector("a.session-form-link");
+  assert.match(card.textContent, /update attendance/i);
+  assert.match(card.textContent, /30 minutes before practice/i);
+  assert.equal(link.href, "https://docs.google.com/forms/d/e/example/viewform");
 });
 
 test("invalid date text from public data is rendered as text, not markup", async () => {
