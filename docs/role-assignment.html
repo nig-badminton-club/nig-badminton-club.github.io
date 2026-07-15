@@ -62,13 +62,13 @@
         <ol class="flow-diagram">
           <li class="flow-step">
             <span class="step-time">1</span>
-            <h3>Latest response / 最新回答</h3>
-            <p>For each email address, the system uses only the most recent Google Form response for that week's practice. / メールアドレスごとに、その週の練習に対する最新のGoogleフォーム回答だけを使用します。</p>
+            <h3>Deadline snapshot / 締切時点の回答</h3>
+            <p>For each email address, the role-candidate pool is fixed from the latest Google Form response received before Thursday 17:00. A new Attend response after the deadline is accepted for attendance but does not add the member to automatic role selection. A member who changes to Not attending after the deadline is removed from the candidate pool. / メールアドレスごとに、木曜17:00より前に届いた最新のGoogleフォーム回答をもとに担当候補を確定します。締切後の新しい参加登録も出欠には反映しますが、自動担当選出の候補には追加しません。締切後に不参加へ変更した方は担当候補から外します。</p>
           </li>
           <li class="flow-step">
             <span class="step-time">2</span>
             <h3>Attendance / 参加予定</h3>
-            <p>Only members who selected "Yes, I will attend" are considered for a role. / 「参加します」と回答した部員だけが担当候補になります。</p>
+            <p>Only members who selected "Yes, I will attend" before the deadline and have not subsequently changed to Not attending are considered for a role. / 締切前に「参加します」と回答し、その後「不参加」へ変更していない部員だけが担当候補になります。</p>
           </li>
           <li class="flow-step">
             <span class="step-time">3</span>
@@ -88,7 +88,7 @@
         <div class="operation-details">
           <article class="operation-note">
             <h3>Manual entries / 手動指定</h3>
-            <p>If an administrator names a setup or return assignee in the <code>Practice Sessions</code> sheet, that assignment takes priority only if the person is still eligible based on the latest response. A manually assigned setup person must use an NIG account. / 管理者が<code>Practice Sessions</code>シートで担当者を指定した場合は、その方が最新回答でも候補条件を満たしているときに限り、手動指定を優先します。準備担当の手動指定には遺伝研アカウントが必要です。</p>
+            <p>If an administrator names a setup or return assignee in the <code>Practice Sessions</code> sheet, that assignment takes priority only if the person is eligible based on the deadline snapshot and has not subsequently changed to Not attending. A manually assigned setup person must use an NIG account. / 管理者が<code>Practice Sessions</code>シートで担当者を指定した場合は、その方が締切時点の回答で候補条件を満たし、その後「不参加」へ変更していないときに限り、手動指定を優先します。準備担当の手動指定には遺伝研アカウントが必要です。</p>
           </article>
           <article class="operation-note">
             <h3>No reshuffle / 再抽選しない</h3>

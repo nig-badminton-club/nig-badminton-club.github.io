@@ -209,7 +209,7 @@
       return "Self-service attendance changes are closed. Please email any later changes to the Google Group. / 出欠の自己変更受付は終了しました。以降の変更はGoogle Groupへメールしてください。";
     }
     if (session.responseStatus === "changes-open") {
-      return "Roles have been assigned, but you can still update your attendance through the same form until 30 minutes before practice. The latest response is used. / 担当確定後も、練習開始30分前までは同じフォームから出欠を変更できます。最新の回答が反映されます。";
+      return "You can still update your attendance through the same form until 30 minutes before practice. A new Attend response after Thursday 17:00 is accepted for attendance but is not included in automatic role selection, and a reminder email is sent to the respondent. / 練習開始30分前までは同じフォームから出欠を変更できます。木曜17:00以降の新しい参加登録も出欠には反映しますが、自動担当選出の対象には含めず、本人へ注意メールを送ります。";
     }
     if (session.responseStatus === "cancelled") return "This practice has been cancelled. / この練習は中止になりました。";
     return "The attendance form is open. / 出欠回答を受け付けています。";
