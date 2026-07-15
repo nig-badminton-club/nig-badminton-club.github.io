@@ -98,7 +98,19 @@ test("post-assignment change window keeps the update form visible", async () => 
   const link = card.querySelector("a.session-form-link");
   assert.match(card.textContent, /update attendance/i);
   assert.match(card.textContent, /30 minutes before practice/i);
+  assert.match(card.textContent, /not included in automatic role selection/i);
+  assert.match(card.textContent, /本人へ注意メールを送ります/);
   assert.equal(link.href, "https://docs.google.com/forms/d/e/example/viewform");
+});
+
+test("workflow and role pages explain the Thursday role-candidate snapshot", () => {
+  const workflow = read("workflow.html");
+  const roles = read("role-assignment.html");
+  assert.match(workflow, /latest response received before 17:00 fixes the role-candidate pool/i);
+  assert.match(workflow, /自動担当選出の対象には含めず/);
+  assert.match(roles, /Deadline snapshot/);
+  assert.match(roles, /締切後の新しい参加登録も出欠には反映/);
+  assert.doesNotMatch(workflow, /引き受けられるかどうかもご検討/);
 });
 
 test("invalid date text from public data is rendered as text, not markup", async () => {
