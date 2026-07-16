@@ -67,7 +67,7 @@ jobs:
                   if key not in public_data:
                       failures.append(f"docs/data/public.json is missing key: {key}")
               for session in public_data.get("sessions", []):
-                  if session.get("responseStatus") not in {"open", "closed", "upcoming", "cancelled", "unavailable"}:
+                  if session.get("responseStatus") not in {"open", "changes-open", "closed", "upcoming", "cancelled", "unavailable"}:
                       failures.append(f"session {session.get('sessionId')} has invalid responseStatus")
                   if session.get("roleStatus") not in {"pending", "assigned", "unassigned"}:
                       failures.append(f"session {session.get('sessionId')} has invalid roleStatus")
