@@ -27,7 +27,7 @@
     "nigCount": 34,
     "externalCount": 4
   },
-  "generatedAt": "2026-07-16T13:11:48+09:00",
+  "generatedAt": "2026-07-16T17:02:19+09:00",
   "sessions": [
     {
       "sessionId": "2026-07-17",
@@ -35,7 +35,7 @@
       "time": "19:00-21:00",
       "location": "Mishima Municipal Nishikida Elementary School Gym / 三島市立錦田小学校 体育館",
       "status": "scheduled",
-      "responseStatus": "open",
+      "responseStatus": "changes-open",
       "attendingCount": 10,
       "absentCount": 6,
       "unansweredCount": 22,
