@@ -181,6 +181,25 @@
     return `<div class="count"><strong>${escapeHtml(formatCount(number))}</strong><span>${escapeHtml(label)}</span></div>`;
   }
 
+  function keyPickupStatusBlock(session) {
+    const requestedStatus = String(session.keyPickupStatus || "");
+    const fallbackStatus = session.responseStatus === "upcoming" ? "awaiting-assignment" : "pending";
+    const status = ["confirmed", "pending", "awaiting-assignment", "unassigned", "not-required"].includes(requestedStatus)
+      ? requestedStatus
+      : fallbackStatus;
+    const labels = {
+      confirmed: "Confirmed / 受け取り済み",
+      pending: "Not yet confirmed / 未確認",
+      "awaiting-assignment": "Awaiting setup assignment / 準備担当の確定前",
+      unassigned: "Setup unassigned / 準備担当未割当",
+      "not-required": "Not required / 不要",
+    };
+    return `<div class="key-pickup-status key-pickup-${status}">
+      <span>Key pickup / 鍵受け取り</span>
+      <strong>${escapeHtml(labels[status])}</strong>
+    </div>`;
+  }
+
   function renderMemberStats(stats) {
     const counts = document.getElementById("member-stats-counts");
     const detail = document.getElementById("member-stats-detail");
@@ -255,6 +274,7 @@
             <span class="${statusClass}">${escapeHtml(formatStatus(session.status))}</span>
           </div>
           ${countMarkup}
+          ${keyPickupStatusBlock(session)}
           ${changeWindowMarkup}
           ${publicNote}
           ${formLink ? `<div>${formLink}</div>` : ""}

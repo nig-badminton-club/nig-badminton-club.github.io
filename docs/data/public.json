@@ -41,6 +41,7 @@
       "unansweredCount": 22,
       "guestCount": 3,
       "roleStatus": "assigned",
+      "keyPickupStatus": "pending",
       "publicNote": "",
       "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLScp52QlAixMvY1WMHyMkMQDbuTLzgio6cyhlU6D7sxMO1hOvA/viewform?usp=pp_url&entry.1028596434=2026-07-17+(19:00-21:00)&entry.965977503=0"
     },
@@ -56,6 +57,7 @@
       "unansweredCount": null,
       "guestCount": null,
       "roleStatus": "pending",
+      "keyPickupStatus": "awaiting-assignment",
       "publicNote": "",
       "formUrl": ""
     },
@@ -71,6 +73,7 @@
       "unansweredCount": null,
       "guestCount": null,
       "roleStatus": "pending",
+      "keyPickupStatus": "awaiting-assignment",
       "publicNote": "",
       "formUrl": ""
     }

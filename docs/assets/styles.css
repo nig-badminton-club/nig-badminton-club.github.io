@@ -220,6 +220,7 @@ code {
   background: white;
   padding: 16px;
   display: grid;
+  align-content: start;
   gap: 12px;
 }
 
@@ -279,6 +280,46 @@ code {
 .count span {
   color: var(--muted);
   font-size: 0.78rem;
+}
+
+.key-pickup-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-left: 4px solid #8792a1;
+  border-radius: 6px;
+  background: var(--surface);
+  font-size: 0.86rem;
+}
+
+.key-pickup-status span {
+  color: var(--muted);
+}
+
+.key-pickup-status strong {
+  text-align: right;
+}
+
+.key-pickup-confirmed {
+  border-left-color: var(--green);
+  background: #e7f4ef;
+  color: var(--green);
+}
+
+.key-pickup-pending {
+  border-left-color: var(--gold);
+  background: #fff7e9;
+  color: #6f4513;
+}
+
+.key-pickup-unassigned {
+  border-left-color: var(--red);
+  background: #fdecea;
+  color: var(--red);
 }
 
 .response-state,

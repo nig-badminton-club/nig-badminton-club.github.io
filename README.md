@@ -57,6 +57,7 @@ The website may publish:
 - upcoming practice dates, times, locations, and status
 - aggregate attendance counts
 - aggregate guest counts
+- aggregate key-pickup status without assignee identity, confirmation tokens, or timestamps
 - response and role status without member identities
 - aggregate Google Group member counts split into NIG and external members
 - public participation policy and joining instructions

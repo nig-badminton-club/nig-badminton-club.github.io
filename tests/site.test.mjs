@@ -38,6 +38,7 @@ test("future practices show an opening state instead of unanswered member counts
     absentCount: null,
     unansweredCount: null,
     guestCount: null,
+    keyPickupStatus: "awaiting-assignment",
     publicNote: "",
     formUrl: "",
   }];
@@ -46,6 +47,7 @@ test("future practices show an opening state instead of unanswered member counts
   assert.match(card.textContent, /attendance form opens during the week of the practice/i);
   assert.doesNotMatch(card.textContent, /no response \/ 未回答/);
   assert.equal(card.querySelector(".counts"), null);
+  assert.match(card.querySelector(".key-pickup-status").textContent, /準備担当の確定前/);
 });
 
 test("closed practices show counts without an attendance form link or role identity", async () => {
@@ -63,6 +65,7 @@ test("closed practices show counts without an attendance form link or role ident
     unansweredCount: 2,
     guestCount: 1,
     roleStatus: "assigned",
+    keyPickupStatus: "confirmed",
     roles: "Setup: private.person",
     publicNote: "Bring water / 飲み物持参",
     formUrl: "",
@@ -72,7 +75,40 @@ test("closed practices show counts without an attendance form link or role ident
   assert.match(card.textContent, /12/);
   assert.match(card.textContent, /self-service attendance changes are closed/i);
   assert.doesNotMatch(card.textContent, /private\.person/);
+  assert.match(card.querySelector(".key-pickup-confirmed").textContent, /受け取り済み/);
   assert.equal(card.querySelector("a.session-form-link"), null);
+});
+
+test("key pickup state changes from pending to confirmed without exposing identities", async () => {
+  const data = structuredClone(baseData);
+  data.generatedAt = new Date().toISOString();
+  data.sessions = [{
+    sessionId: "2099-07-17",
+    date: "2099-07-17",
+    time: "19:00-21:00",
+    location: "Gym / 体育館",
+    status: "scheduled",
+    responseStatus: "changes-open",
+    attendingCount: 12,
+    absentCount: 3,
+    unansweredCount: 2,
+    guestCount: 1,
+    roleStatus: "assigned",
+    keyPickupStatus: "pending",
+    publicNote: "",
+    formUrl: "",
+  }];
+  const pendingDom = await renderPage("index.html", "assets/app.js", data);
+  const pending = pendingDom.window.document.querySelector(".key-pickup-status");
+  assert.match(pending.textContent, /Not yet confirmed/);
+  assert.match(pending.textContent, /未確認/);
+
+  data.sessions[0].keyPickupStatus = "confirmed";
+  const confirmedDom = await renderPage("index.html", "assets/app.js", data);
+  const confirmed = confirmedDom.window.document.querySelector(".key-pickup-status");
+  assert.match(confirmed.textContent, /Confirmed/);
+  assert.match(confirmed.textContent, /受け取り済み/);
+  assert.doesNotMatch(confirmed.textContent, /@|token|assignee/i);
 });
 
 test("post-assignment change window keeps the update form visible", async () => {
