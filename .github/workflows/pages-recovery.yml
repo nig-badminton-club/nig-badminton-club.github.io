@@ -1,0 +1,94 @@
+name: Recover GitHub Pages deployment
+
+on:
+  schedule:
+    # Avoid the start of the hour, when scheduled workflows are most likely to be delayed.
+    - cron: "17,47 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: pages-recovery
+  cancel-in-progress: true
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      DEPLOY_WORKFLOW: pages.yml
+      DEFAULT_BRANCH: main
+      MAX_RECOVERY_RUNS: "3"
+    steps:
+      - name: Recover a failed Pages deployment
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          gh_api_with_retry() {
+            local attempt
+            local output
+
+            for attempt in 1 2 3; do
+              if output="$(gh api "$@")"; then
+                printf '%s' "${output}"
+                return 0
+              fi
+
+              if (( attempt < 3 )); then
+                sleep "$((attempt * 15))"
+              fi
+            done
+
+            return 1
+          }
+
+          head_sha="$(
+            gh_api_with_retry "repos/${GH_REPO}/git/ref/heads/${DEFAULT_BRANCH}" \
+              --jq '.object.sha'
+          )"
+          runs="$(
+            gh_api_with_retry \
+              "repos/${GH_REPO}/actions/workflows/${DEPLOY_WORKFLOW}/runs?branch=${DEFAULT_BRANCH}&per_page=100"
+          )"
+
+          successful_runs="$(
+            jq --arg head_sha "${head_sha}" \
+              '[.workflow_runs[] | select(
+                .head_sha == $head_sha and .conclusion == "success"
+              )] | length' <<<"${runs}"
+          )"
+          active_runs="$(
+            jq --arg head_sha "${head_sha}" \
+              '[.workflow_runs[] | select(
+                .head_sha == $head_sha and .status != "completed"
+              )] | length' <<<"${runs}"
+          )"
+          recovery_runs="$(
+            jq --arg head_sha "${head_sha}" \
+              '[.workflow_runs[] | select(
+                .head_sha == $head_sha and .event == "workflow_dispatch"
+              )] | length' <<<"${runs}"
+          )"
+
+          if (( successful_runs > 0 )); then
+            echo "Pages is already deployed for ${head_sha}."
+            exit 0
+          fi
+
+          if (( active_runs > 0 )); then
+            echo "A Pages deployment is already active for ${head_sha}."
+            exit 0
+          fi
+
+          if (( recovery_runs >= MAX_RECOVERY_RUNS )); then
+            echo "::warning::Pages recovery limit reached for ${head_sha}; manual investigation is required."
+            exit 0
+          fi
+
+          echo "Dispatching Pages recovery $((recovery_runs + 1))/${MAX_RECOVERY_RUNS} for ${head_sha}."
+          gh workflow run "${DEPLOY_WORKFLOW}" --ref "${DEFAULT_BRANCH}"
