@@ -4,7 +4,7 @@
   "groupUrl": "https://groups.google.com/a/nig.ac.jp/g/nig.badminton-club",
   "membership": {
     "requestUrl": "join.html",
-    "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLSerGuXfPu4dLvgTu3o4lSAj0_o0984sZ-A5KjXyPSHfsWI96w/viewform"
+    "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLSeuIk4AOSf-VIWB_CaGp_JPbZ9KV9TXoyrqjXuVzrKVF8xx5A/viewform"
   },
   "timezone": "Asia/Tokyo",
   "calendar": {
@@ -27,7 +27,7 @@
     "nigCount": 34,
     "externalCount": 4
   },
-  "generatedAt": "2026-07-21T10:39:34+09:00",
+  "generatedAt": "2026-07-21T14:21:35+09:00",
   "sessions": [
     {
       "sessionId": "2026-07-17",
@@ -59,7 +59,7 @@
       "roleStatus": "pending",
       "keyPickupStatus": "awaiting-assignment",
       "publicNote": "",
-      "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLScp52QlAixMvY1WMHyMkMQDbuTLzgio6cyhlU6D7sxMO1hOvA/viewform?usp=pp_url&entry.1028596434=2026-07-24+(19:00-21:00)&entry.965977503=0"
+      "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLScusc-XsXmjgMgaNj5VyXUkMODbGOz9RiCzMlmYe93-WLSIew/viewform?usp=pp_url&entry.1817922641=2026-07-24+(19:00-21:00)&entry.1229196151=0"
     },
     {
       "sessionId": "2026-07-31",
