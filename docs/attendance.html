@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>Attendance Trends / 参加者数の推移 | NIG Badminton Club</title>
+    <meta name="description" content="Year-over-year attendance trends for NIG Badminton Club. / 遺伝研バドミントン部の参加者数を年ごとに比較するページ。">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="assets/styles.css?v=20260721-4">
+  </head>
+  <body>
+    <header class="site-header compact-header">
+      <div class="header-copy">
+        <p class="eyebrow">Attendance Trends / 参加者数の推移</p>
+        <h1>Attendance Trends / 参加者数の推移</h1>
+        <p id="generated-at" class="generated-at"></p>
+        <nav class="site-nav" aria-label="Site navigation / サイトナビゲーション">
+          <a href="index.html">Schedule / 練習予定</a>
+          <a href="attendance.html" aria-current="page">Attendance / 参加者推移</a>
+          <a href="about.html">About / 部について</a>
+          <a href="workflow.html">Workflow / 運用フロー</a>
+          <a href="role-assignment.html">Roles / 担当選出</a>
+          <a href="join.html">Join or Leave / 入退会</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <p id="data-health" class="data-health" role="status" hidden></p>
+
+      <section class="trend-intro" aria-labelledby="trend-title">
+        <div>
+          <p class="section-label">Seasonal comparison / 季節ごとの比較</p>
+          <h2 id="trend-title">Compare the same time of year / 同じ季節を年ごとに比較</h2>
+          <p class="muted">Each line represents one calendar year. Older years appear lighter and newer years darker. / 各系列は1暦年を表し、古い年ほど淡く、新しい年ほど濃く表示します。</p>
+        </div>
+        <dl class="trend-summary">
+          <div>
+            <dt>Recorded practices / 集計済み練習</dt>
+            <dd id="recorded-session-count">—</dd>
+          </div>
+          <div>
+            <dt>Years covered / 対象年</dt>
+            <dd id="recorded-year-range">—</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="trend-panel" aria-labelledby="chart-title">
+        <div class="trend-panel-heading">
+          <div>
+            <h2 id="chart-title">Participants by practice date / 練習日ごとの参加者数</h2>
+            <p class="muted">Total participants = attending members + guests / 参加者合計 = 参加回答者 + ゲスト</p>
+          </div>
+          <ul id="attendance-legend" class="attendance-legend" aria-label="Year legend / 年ごとの凡例"></ul>
+        </div>
+
+        <p id="attendance-empty" class="attendance-empty" hidden>No completed attendance totals are available yet. / 参加者数の集計データはまだありません。</p>
+        <figure id="attendance-figure" class="attendance-figure">
+          <div class="attendance-chart-wrap">
+            <canvas id="attendance-chart" role="img" aria-label="Line chart comparing total participants from January to December for each year / 年ごとの参加者合計を1月から12月で比較する折れ線グラフ"></canvas>
+            <div id="attendance-tooltip" class="attendance-tooltip" hidden></div>
+          </div>
+          <figcaption>Dots show practice dates with a completed total. / 点は集計済みの練習日です。</figcaption>
+        </figure>
+      </section>
+
+      <section class="attendance-records" aria-labelledby="records-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="records-title">Recorded practices / 集計済み練習</h2>
+            <p class="muted">The latest 20 practices are shown here. The TSV download includes all historical records. / サイト上では最新20件を表示し、TSVでは過去の全件をダウンロードできます。</p>
+          </div>
+          <a id="attendance-download" class="primary-action download-action" aria-disabled="true">Download TSV / TSVダウンロード</a>
+        </div>
+        <div class="table-wrap">
+          <table class="attendance-table">
+            <thead>
+              <tr>
+                <th scope="col">Date / 練習日</th>
+                <th scope="col">Attending / 参加回答者</th>
+                <th scope="col">Guests / ゲスト</th>
+                <th scope="col">Total / 合計</th>
+              </tr>
+            </thead>
+            <tbody id="attendance-records-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>National Institute of Genetics Badminton Club / 国立遺伝学研究所バドミントン部</p>
+      <p><a class="text-link" href="privacy.html">Privacy / 個人情報の取扱い</a> · <a class="text-link" href="admin.html">Admin / 管理者用</a></p>
+    </footer>
+
+    <script src="data/config.js"></script>
+    <script src="assets/attendance.js?v=20260721-5"></script>
+  </body>
+</html>

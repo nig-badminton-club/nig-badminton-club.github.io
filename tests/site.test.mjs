@@ -204,6 +204,94 @@ test("participation information explains the current and possible future fee", a
   assert.match(policy.textContent, /現在、参加費は徴収していません/);
 });
 
+test("attendance trends combine attending members and guests across yearly series", async () => {
+  const data = structuredClone(baseData);
+  data.generatedAt = new Date().toISOString();
+  data.sessions = [
+    {
+      sessionId: "2025-07-11",
+      date: "2025-07-11",
+      status: "scheduled",
+      attendingCount: 8,
+      guestCount: 1,
+    },
+    {
+      sessionId: "2026-07-17",
+      date: "2026-07-17",
+      status: "scheduled",
+      attendingCount: 10,
+      guestCount: 3,
+    },
+    {
+      sessionId: "2026-07-24",
+      date: "2026-07-24",
+      status: "scheduled",
+      attendingCount: null,
+      guestCount: null,
+    },
+  ];
+  const dom = await renderPage("attendance.html", "assets/attendance.js", data);
+  const document = dom.window.document;
+  assert.equal(document.getElementById("recorded-session-count").textContent, "2");
+  assert.equal(document.getElementById("recorded-year-range").textContent, "2025–2026");
+  assert.equal(document.getElementById("latest-attendance-total"), null);
+  assert.match(document.getElementById("attendance-legend").textContent, /2025/);
+  assert.match(document.getElementById("attendance-legend").textContent, /2026/);
+  const rows = Array.from(document.querySelectorAll("#attendance-records-body tr"));
+  assert.equal(rows.length, 2);
+  assert.match(rows[0].textContent, /13/);
+  assert.match(rows[0].textContent, /2026\/7\/17/);
+  assert.doesNotMatch(rows[0].textContent, /Jul 17, 2026/);
+  assert.match(rows[1].textContent, /9/);
+  const download = document.getElementById("attendance-download");
+  assert.equal(download.getAttribute("download"), "nig-badminton-attendance.tsv");
+  const tsv = decodeURIComponent(download.href.split(",")[1]);
+  assert.match(tsv, /date\tattending_count\tguest_count\ttotal_participants/);
+  assert.match(tsv, /2025-07-11\t8\t1\t9/);
+  assert.match(tsv, /2026-07-17\t10\t3\t13/);
+});
+
+test("attendance table shows only the latest 20 practices while TSV keeps all records", async () => {
+  const data = structuredClone(baseData);
+  data.generatedAt = new Date().toISOString();
+  data.sessions = Array.from({ length: 21 }, (_, index) => ({
+    sessionId: `2026-01-${String(index + 1).padStart(2, "0")}`,
+    date: `2026-01-${String(index + 1).padStart(2, "0")}`,
+    status: "scheduled",
+    attendingCount: index + 1,
+    guestCount: 0,
+  }));
+  const dom = await renderPage("attendance.html", "assets/attendance.js", data);
+  const document = dom.window.document;
+  const visibleRows = Array.from(document.querySelectorAll("#attendance-records-body tr"));
+  assert.equal(visibleRows.length, 20);
+  assert.match(visibleRows[0].textContent, /2026\/1\/21/);
+  assert.match(visibleRows[19].textContent, /2026\/1\/2/);
+  const download = document.getElementById("attendance-download");
+  const tsv = decodeURIComponent(download.href.split(",")[1]);
+  assert.match(tsv, /2026-01-01\t1\t0\t1/);
+  assert.match(tsv, /2026-01-21\t21\t0\t21/);
+  assert.equal(tsv.split("\r\n").filter(Boolean).length, 22);
+});
+
+test("attendance chart uses English month labels without point value text", () => {
+  const script = read("assets/attendance.js");
+  assert.match(script, /const monthLabels = \["Jan", "Feb", "Mar"/);
+  assert.doesNotMatch(script, /fillText\(`\$\{point\.total\}人`/);
+});
+
+test("public data freshness warning follows the weekly heartbeat", async () => {
+  const freshData = structuredClone(baseData);
+  freshData.generatedAt = new Date(Date.now() - (7 * 24 * 60 - 1) * 60 * 1000).toISOString();
+  const freshDom = await renderPage("attendance.html", "assets/attendance.js", freshData);
+  assert.equal(freshDom.window.document.getElementById("data-health").hidden, true);
+
+  const staleData = structuredClone(baseData);
+  staleData.generatedAt = new Date(Date.now() - (7 * 24 * 60 + 20) * 60 * 1000).toISOString();
+  const staleDom = await renderPage("attendance.html", "assets/attendance.js", staleData);
+  assert.equal(staleDom.window.document.getElementById("data-health").hidden, false);
+});
+
 test("membership form opens as a separate signed-in Google flow", async () => {
   const data = structuredClone(baseData);
   const dom = await renderPage("join.html", "assets/join.js", data);
@@ -228,6 +316,7 @@ test("rendered public pages have no detectable structural accessibility violatio
   data.generatedAt = new Date().toISOString();
   const pages = [
     ["index.html", "assets/app.js"],
+    ["attendance.html", "assets/attendance.js"],
     ["about.html", "assets/app.js"],
     ["join.html", "assets/join.js"],
   ];

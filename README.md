@@ -37,6 +37,7 @@ https://nig-badminton-club.github.io/<repository-name>/
 ## Site Contents
 
 - `docs/index.html`: schedule, next practice, map, and participation policy
+- `docs/attendance.html`: year-over-year seasonal attendance chart and exact totals
 - `docs/about.html`: club overview, practice photo, member count summary, and yearly officers
 - `docs/workflow.html`: weekly attendance and role-assignment workflow
 - `docs/role-assignment.html`: setup/return role assignment method
@@ -117,8 +118,8 @@ repository.
 
 `docs/data/config.js` intentionally leaves the public JSONP endpoint blank for
 anonymous visitors. The protected admin-console URL remains configured there.
-The site warns visitors when committed aggregate data is more than about eight
-hours old.
+The site warns visitors when committed aggregate data is more than about one
+week old.
 
 Any automated public-data update must write only the same safe public fields as
 `docs/data/public.json`. Do not expose private Sheets tabs, form response rows,

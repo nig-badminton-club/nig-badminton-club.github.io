@@ -1,6 +1,7 @@
 (function () {
   const fallbackUrl = "data/public.json";
   const jsonpUrl = window.NIG_BADMINTON_PUBLIC_JSONP_URL || "";
+  const publicDataFreshHours = 7 * 24;
 
   function loadJsonp(url) {
     return new Promise((resolve, reject) => {
@@ -357,9 +358,9 @@
     if (!banner) return;
     const generatedAt = new Date(data.generatedAt || "");
     const ageHours = (Date.now() - generatedAt.getTime()) / (60 * 60 * 1000);
-    // The backend refreshes unchanged public data every eight hours. Allow one
+    // The backend refreshes unchanged public data every week. Allow one
     // trigger interval plus deployment propagation before warning visitors.
-    if (Number.isFinite(ageHours) && ageHours >= 0 && ageHours <= 8.25) {
+    if (Number.isFinite(ageHours) && ageHours >= 0 && ageHours <= publicDataFreshHours + 0.25) {
       banner.hidden = true;
       banner.textContent = "";
       return;
