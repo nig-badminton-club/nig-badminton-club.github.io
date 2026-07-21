@@ -223,11 +223,11 @@ test("attendance trends combine attending members and guests across yearly serie
       guestCount: 3,
     },
     {
-      sessionId: "2026-07-24",
-      date: "2026-07-24",
+      sessionId: "2099-07-24",
+      date: "2099-07-24",
       status: "scheduled",
-      attendingCount: null,
-      guestCount: null,
+      attendingCount: 4,
+      guestCount: 1,
     },
   ];
   const dom = await renderPage("attendance.html", "assets/attendance.js", data);

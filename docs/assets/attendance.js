@@ -109,8 +109,9 @@
   }
 
   function collectSeries(sessions) {
+    const todayKey = getTodayKey();
     const points = sessions
-      .filter((session) => String(session.status || "") !== "cancelled")
+      .filter((session) => String(session.status || "") !== "cancelled" && String(session.date || "") < todayKey)
       .map(sessionPoint)
       .filter(Boolean)
       .sort((a, b) => a.date.localeCompare(b.date));
@@ -129,6 +130,17 @@
         lineWidth: index === years.length - 1 ? 3 : 2,
       })),
     };
+  }
+
+  function getTodayKey() {
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: "Asia/Tokyo",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).formatToParts(new Date());
+    const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+    return `${values.year}-${values.month}-${values.day}`;
   }
 
   function colorForYear(index, count) {
