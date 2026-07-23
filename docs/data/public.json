@@ -27,7 +27,7 @@
     "nigCount": 34,
     "externalCount": 4
   },
-  "generatedAt": "2026-07-23T06:56:48+09:00",
+  "generatedAt": "2026-07-23T09:02:44+09:00",
   "sessions": [
     {
       "sessionId": "2026-07-17",
@@ -37,7 +37,7 @@
       "status": "scheduled",
       "responseStatus": "closed",
       "attendingCount": 10,
-      "absentCount": 6,
+      "absentCount": 5,
       "unansweredCount": 22,
       "guestCount": 3,
       "roleStatus": "assigned",
@@ -53,7 +53,7 @@
       "status": "scheduled",
       "responseStatus": "open",
       "attendingCount": 3,
-      "absentCount": 3,
+      "absentCount": 2,
       "unansweredCount": 32,
       "guestCount": 4,
       "roleStatus": "pending",
