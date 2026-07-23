@@ -233,18 +233,17 @@ test("workflow and role pages explain the Thursday role-candidate snapshot", () 
   assert.doesNotMatch(workflow, /引き受けられるかどうかもご検討/);
 });
 
-test("schedule and workflow explain manual booking and automatic website publication", () => {
+test("workflow explains manual booking and automatic website publication without duplicating it on the schedule", () => {
   const index = new JSDOM(read("index.html")).window.document;
   const workflow = new JSDOM(read("workflow.html")).window.document;
-  const scheduleNote = index.querySelector(".schedule-sync-note");
   const reservationSection = workflow.querySelector('[aria-labelledby="facility-reservation-title"]');
 
-  assert.ok(scheduleNote);
-  assert.match(scheduleNote.textContent, /reservations are made manually by a club administrator/i);
-  assert.match(scheduleNote.textContent, /1日1回自動で行われます/);
+  assert.equal(index.querySelector(".schedule-sync-note"), null);
+  assert.doesNotMatch(index.body.textContent, /Gym reservations are made manually by a club administrator/);
   assert.ok(reservationSection);
   assert.match(reservationSection.textContent, /does not make, change, or cancel municipal reservations/i);
-  assert.match(reservationSection.textContent, /読み取り専用の動作/);
+  assert.match(reservationSection.textContent, /自動処理で予約情報を定期的に確認します/);
+  assert.doesNotMatch(reservationSection.textContent, /読み取り専用の動作|応答全体を検証/);
   assert.match(reservationSection.textContent, /管理スプレッドシートへ保存/);
   assert.match(reservationSection.textContent, /施設予約時間と部の練習時間は、別の情報/);
 });
@@ -259,6 +258,11 @@ test("workflow has a dedicated attendance-change procedure", () => {
   assert.match(section.textContent, /練習開始30分前/);
   assert.match(section.textContent, /Google Groupへ直接メール/);
   assert.match(section.textContent, /代役を募集し、引き継ぎを確定/);
+  const stepLabels = Array.from(section.querySelectorAll(".step-time"), (element) => element.textContent.trim());
+  assert.deepEqual(stepLabels.slice(0, 2), [
+    "Open the Form / フォームを開く",
+    "Submit Again / 再回答する",
+  ]);
 });
 
 test("invalid date text from public data is rendered as text, not markup", async () => {
