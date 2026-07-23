@@ -7,7 +7,7 @@
     <title>Weekly Workflow / 運用フロー | NIG Badminton Club / 遺伝研バドミントン部</title>
     <meta name="description" content="The weekly attendance, role assignment, key pickup, practice, and return schedule for NIG Badminton Club. / 遺伝研バドミントン部の毎週の出欠確認、担当確定、鍵受け取り、練習、返却の流れ。">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="assets/styles.css?v=20260717-1">
+    <link rel="stylesheet" href="assets/styles.css?v=20260723-3">
   </head>
   <body>
     <header class="site-header compact-header">
@@ -27,6 +27,32 @@
     </header>
 
     <main>
+      <section class="workflow-section" aria-labelledby="facility-reservation-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">Facility Reservation / 体育館予約</p>
+            <h2 id="facility-reservation-title">Manual Booking and Automatic Publication / 手動予約と自動反映</h2>
+          </div>
+        </div>
+        <ol class="flow-diagram">
+          <li class="flow-step">
+            <span class="step-time">As needed / 必要時</span>
+            <h3>Reserve the gym manually / 体育館を手動で予約する</h3>
+            <p>A club administrator must reserve the gym through the Mishima Public Facility Reservation and Information System. The club automation does not make, change, or cancel municipal reservations. / 管理者が三島市公共施設予約・案内システムで体育館を予約します。部の自動処理が、市の予約を新規作成、変更、または取り消すことはありません。</p>
+          </li>
+          <li class="flow-step">
+            <span class="step-time">Once daily / 1日1回</span>
+            <h3>Check reservations automatically / 予約情報を自動確認する</h3>
+            <p>The automation signs in with read-only behavior and checks the reservation list once per day. It imports only the club’s target gym reservations after validating the complete response. / 自動処理が読み取り専用の動作でログインし、予約一覧を1日1回確認します。応答全体を検証したうえで、部が利用する対象体育館の予約情報だけを取り込みます。</p>
+          </li>
+          <li class="flow-step">
+            <span class="step-time">After validation / 検証後</span>
+            <h3>Reflect the result on the website / ウェブサイトへ自動反映する</h3>
+            <p>Validated reservation times and provisional or confirmed status are saved to the management spreadsheet and published on the practice schedule automatically. Municipal booking time remains separate from the club’s practice time. / 検証済みの予約時間と仮予約・本予約の状態を管理スプレッドシートへ保存し、練習予定へ自動で公開します。市の施設予約時間と部の練習時間は、別の情報として管理します。</p>
+          </li>
+        </ol>
+      </section>
+
       <section class="workflow-section" aria-labelledby="weekly-flow-title">
         <div class="section-heading">
           <div>

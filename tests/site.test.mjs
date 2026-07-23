@@ -233,6 +233,22 @@ test("workflow and role pages explain the Thursday role-candidate snapshot", () 
   assert.doesNotMatch(workflow, /引き受けられるかどうかもご検討/);
 });
 
+test("schedule and workflow explain manual booking and automatic website publication", () => {
+  const index = new JSDOM(read("index.html")).window.document;
+  const workflow = new JSDOM(read("workflow.html")).window.document;
+  const scheduleNote = index.querySelector(".schedule-sync-note");
+  const reservationSection = workflow.querySelector('[aria-labelledby="facility-reservation-title"]');
+
+  assert.ok(scheduleNote);
+  assert.match(scheduleNote.textContent, /reservations are made manually by a club administrator/i);
+  assert.match(scheduleNote.textContent, /1日1回自動で行われます/);
+  assert.ok(reservationSection);
+  assert.match(reservationSection.textContent, /does not make, change, or cancel municipal reservations/i);
+  assert.match(reservationSection.textContent, /読み取り専用の動作/);
+  assert.match(reservationSection.textContent, /管理スプレッドシートへ保存/);
+  assert.match(reservationSection.textContent, /施設予約時間と部の練習時間は、別の情報/);
+});
+
 test("workflow has a dedicated attendance-change procedure", () => {
   const dom = new JSDOM(read("workflow.html"));
   const section = dom.window.document.querySelector('[aria-labelledby="attendance-change-title"]');
