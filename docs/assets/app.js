@@ -46,21 +46,13 @@
   function formatDate(dateString) {
     const date = new Date(`${dateString}T00:00:00+09:00`);
     if (Number.isNaN(date.getTime())) return String(dateString || "");
-    const english = new Intl.DateTimeFormat("en-US", {
-      timeZone: "Asia/Tokyo",
-      year: "numeric",
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-    }).format(date);
-    const japanese = new Intl.DateTimeFormat("ja-JP", {
+    return new Intl.DateTimeFormat("ja-JP", {
       timeZone: "Asia/Tokyo",
       year: "numeric",
       weekday: "short",
       month: "numeric",
       day: "numeric",
     }).format(date);
-    return `${english} / ${japanese}`;
   }
 
   function formatDateTimeParts(value) {
@@ -268,7 +260,9 @@
       container.innerHTML = `<p class="muted">There are no upcoming practices on the schedule. / 現在、今後の練習予定はありません。</p>`;
       return;
     }
-    container.innerHTML = sessions.map((session) => {
+    const detailedSessions = sessions.slice(0, 4);
+    const laterSessions = sessions.slice(4);
+    const detailedMarkup = detailedSessions.map((session) => {
       const isNext = nextSession && session.sessionId === nextSession.sessionId;
       const statusClass = session.status === "cancelled" ? "status cancelled" : "status";
       const formUrl = safeHref(session.formUrl);
@@ -313,6 +307,14 @@
         </article>
       `;
     }).join("");
+    const laterMarkup = laterSessions.length
+      ? `<div class="session-date-list" aria-label="Later practice dates / 以降の練習日">
+          ${laterSessions.map((session) => (
+            `<span class="session-date-item">${escapeHtml(formatDate(session.date))}</span>`
+          )).join("")}
+        </div>`
+      : "";
+    container.innerHTML = detailedMarkup + laterMarkup;
   }
 
   function renderPolicy(policy = {}) {

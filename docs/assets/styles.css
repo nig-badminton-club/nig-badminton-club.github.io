@@ -229,6 +229,25 @@ code {
   box-shadow: inset 4px 0 0 var(--green);
 }
 
+.session-date-list {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.session-date-item {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: white;
+  font-weight: 700;
+}
+
 .reservation-details {
   margin: 10px 0;
   color: var(--muted);

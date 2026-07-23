@@ -50,6 +50,57 @@ test("future practices show an opening state instead of unanswered member counts
   assert.match(card.querySelector(".key-pickup-status").textContent, /準備担当の確定前/);
 });
 
+test("practice dates use only the Japanese date format", async () => {
+  const data = structuredClone(baseData);
+  data.generatedAt = new Date().toISOString();
+  data.sessions = [{
+    sessionId: "2099-07-24",
+    date: "2099-07-24",
+    time: "19:00-21:00",
+    location: "Gym / 体育館",
+    status: "scheduled",
+    responseStatus: "upcoming",
+    keyPickupStatus: "awaiting-assignment",
+    publicNote: "",
+    formUrl: "",
+  }];
+  const dom = await renderPage("index.html", "assets/app.js", data);
+  const document = dom.window.document;
+
+  assert.match(document.getElementById("next-session-title").textContent, /^2099\/7\/24\(金\) 19:00-21:00$/);
+  assert.equal(document.querySelector(".session-date").textContent, "2099/7/24(金)");
+  assert.doesNotMatch(document.body.textContent, /Fri, Jul 24, 2099/);
+});
+
+test("only the nearest four practices show details and later practices show dates only", async () => {
+  const data = structuredClone(baseData);
+  data.generatedAt = new Date().toISOString();
+  data.sessions = ["07-24", "07-31", "08-07", "08-14", "08-21", "08-28"].map((monthDay) => ({
+    sessionId: `2099-${monthDay}`,
+    date: `2099-${monthDay}`,
+    time: "19:00-21:00",
+    reservationTime: "18:00-21:30",
+    reservationStatus: "provisional",
+    location: "Gym / 体育館",
+    status: "scheduled",
+    responseStatus: "upcoming",
+    keyPickupStatus: "awaiting-assignment",
+    publicNote: "",
+    formUrl: "",
+  }));
+  const dom = await renderPage("index.html", "assets/app.js", data);
+  const document = dom.window.document;
+  const detailedCards = document.querySelectorAll(".session-card");
+  const laterDates = document.querySelectorAll(".session-date-item");
+  const laterList = document.querySelector(".session-date-list");
+
+  assert.equal(detailedCards.length, 4);
+  assert.equal(laterDates.length, 2);
+  assert.equal(laterDates[0].textContent, "2099/8/21(金)");
+  assert.equal(laterDates[1].textContent, "2099/8/28(金)");
+  assert.doesNotMatch(laterList.textContent, /19:00|18:00|仮予約|体育館/);
+});
+
 test("practice time and municipal gym reservation time are shown separately without private references", async () => {
   const data = structuredClone(baseData);
   data.generatedAt = new Date().toISOString();
