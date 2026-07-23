@@ -144,14 +144,36 @@
     return status;
   }
 
+  function formatReservationStatus(value) {
+    const status = String(value || "");
+    if (status === "confirmed") return "Confirmed / 本予約";
+    if (status === "provisional") return "Provisional / 仮予約";
+    return status;
+  }
+
+  function reservationDetailsText(session) {
+    const parts = [];
+    if (session && session.reservationTime) {
+      parts.push(`Gym reserved / 体育館予約: ${session.reservationTime}`);
+    }
+    const status = formatReservationStatus(session && session.reservationStatus);
+    if (status) parts.push(`Reservation status / 予約状況: ${status}`);
+    return parts.join(" · ");
+  }
+
   function renderNextSession(session) {
     const title = document.getElementById("next-session-title");
     const location = document.getElementById("next-session-location");
+    const reservation = document.getElementById("next-session-reservation");
     const form = document.getElementById("next-session-form");
     if (!title || !location || !form) return;
     if (!session) {
       title.textContent = "No upcoming practice scheduled / 今後の練習予定はありません";
       location.textContent = "";
+      if (reservation) {
+        reservation.textContent = "";
+        reservation.hidden = true;
+      }
       form.removeAttribute("href");
       form.setAttribute("aria-disabled", "true");
       form.tabIndex = -1;
@@ -160,6 +182,10 @@
     }
     title.textContent = `${formatDate(session.date)} ${session.time}`;
     location.textContent = session.location;
+    if (reservation) {
+      reservation.textContent = reservationDetailsText(session);
+      reservation.hidden = !reservation.textContent;
+    }
     const formUrl = safeHref(session.formUrl);
     if (formUrl) {
       form.href = formUrl;
@@ -265,15 +291,20 @@
       const publicNote = session.publicNote
         ? `<p class="session-note"><strong>Note / 連絡事項:</strong> ${escapeHtml(session.publicNote)}</p>`
         : "";
+      const reservationDetails = reservationDetailsText(session);
+      const reservationMarkup = reservationDetails
+        ? `<div class="reservation-details">${escapeHtml(reservationDetails)}</div>`
+        : "";
       return `
         <article class="session-card ${isNext ? "is-next" : ""}">
           <div class="session-topline">
             <div>
               <div class="session-date">${escapeHtml(formatDate(session.date))}</div>
-              <div class="muted">${escapeHtml(session.time)}</div>
+              <div class="muted">Practice / 練習: ${escapeHtml(session.time)}</div>
             </div>
             <span class="${statusClass}">${escapeHtml(formatStatus(session.status))}</span>
           </div>
+          ${reservationMarkup}
           ${countMarkup}
           ${keyPickupStatusBlock(session)}
           ${changeWindowMarkup}

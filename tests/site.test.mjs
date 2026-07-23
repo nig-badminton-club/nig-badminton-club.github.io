@@ -50,6 +50,39 @@ test("future practices show an opening state instead of unanswered member counts
   assert.match(card.querySelector(".key-pickup-status").textContent, /準備担当の確定前/);
 });
 
+test("practice time and municipal gym reservation time are shown separately without private references", async () => {
+  const data = structuredClone(baseData);
+  data.generatedAt = new Date().toISOString();
+  data.sessions = [{
+    sessionId: "2099-07-17",
+    date: "2099-07-17",
+    time: "19:00-21:00",
+    reservationTime: "18:00-21:30",
+    reservationStatus: "provisional",
+    reservationReference: "PRIVATE-TEST-REFERENCE",
+    location: "Gym / 体育館",
+    status: "scheduled",
+    responseStatus: "upcoming",
+    attendingCount: null,
+    absentCount: null,
+    unansweredCount: null,
+    guestCount: null,
+    keyPickupStatus: "awaiting-assignment",
+    publicNote: "",
+    formUrl: "",
+  }];
+  const dom = await renderPage("index.html", "assets/app.js", data);
+  const card = dom.window.document.querySelector(".session-card");
+  const nextReservation = dom.window.document.getElementById("next-session-reservation");
+
+  assert.match(card.textContent, /Practice \/ 練習: 19:00-21:00/);
+  assert.match(card.textContent, /Gym reserved \/ 体育館予約: 18:00-21:30/);
+  assert.match(card.textContent, /Provisional \/ 仮予約/);
+  assert.match(nextReservation.textContent, /18:00-21:30/);
+  assert.equal(nextReservation.hidden, false);
+  assert.doesNotMatch(dom.window.document.body.textContent, /PRIVATE-TEST-REFERENCE/);
+});
+
 test("closed practices show counts without an attendance form link or role identity", async () => {
   const data = structuredClone(baseData);
   data.generatedAt = new Date().toISOString();

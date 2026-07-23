@@ -229,6 +229,13 @@ code {
   box-shadow: inset 4px 0 0 var(--green);
 }
 
+.reservation-details {
+  margin: 10px 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+  font-weight: 600;
+}
+
 .session-topline {
   display: flex;
   justify-content: space-between;
