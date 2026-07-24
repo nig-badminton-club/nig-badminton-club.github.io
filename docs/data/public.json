@@ -4,7 +4,7 @@
   "groupUrl": "https://groups.google.com/a/nig.ac.jp/g/nig.badminton-club",
   "membership": {
     "requestUrl": "join.html",
-    "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLSeuIk4AOSf-VIWB_CaGp_JPbZ9KV9TXoyrqjXuVzrKVF8xx5A/viewform"
+    "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLSfgDez40mkzh1vHe04l-5fUoB7fLdT6VEOihVXLb6Avqq6_hg/viewform"
   },
   "timezone": "Asia/Tokyo",
   "calendar": {
@@ -27,7 +27,7 @@
     "nigCount": 35,
     "externalCount": 3
   },
-  "generatedAt": "2026-07-24T18:32:37+09:00",
+  "generatedAt": "2026-07-25T05:09:37+09:00",
   "sessions": [
     {
       "sessionId": "2026-07-17",
