@@ -219,7 +219,8 @@ test("post-assignment change window keeps the update form visible", async () => 
   assert.match(card.textContent, /update attendance/i);
   assert.match(card.textContent, /30 minutes before practice/i);
   assert.match(card.textContent, /not included in automatic role selection/i);
-  assert.match(card.textContent, /本人へ注意メールを送ります/);
+  assert.match(card.textContent, /できるだけ締切前にご回答いただけるよう、ご本人へご案内メールをお送りします/);
+  assert.doesNotMatch(card.textContent, /注意メール/);
   assert.equal(link.href, "https://docs.google.com/forms/d/e/example/viewform");
 });
 
@@ -227,7 +228,9 @@ test("workflow and role pages explain the Thursday role-candidate snapshot", () 
   const workflow = read("workflow.html");
   const roles = read("role-assignment.html");
   assert.match(workflow, /latest response received before 17:00 fixes the role-candidate pool/i);
-  assert.match(workflow, /自動担当選出の対象には含めず/);
+  assert.match(workflow, /自動担当選出の対象には含めません/);
+  assert.match(workflow, /ご本人へご案内メールをお送りします/);
+  assert.doesNotMatch(workflow, /注意メール/);
   assert.match(roles, /Deadline snapshot/);
   assert.match(roles, /締切後の新しい参加登録も出欠には反映/);
   assert.doesNotMatch(workflow, /引き受けられるかどうかもご検討/);
