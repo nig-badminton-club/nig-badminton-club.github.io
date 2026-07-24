@@ -127,7 +127,7 @@ test("practice time and municipal gym reservation time are shown separately with
   const nextReservation = dom.window.document.getElementById("next-session-reservation");
 
   assert.match(card.textContent, /Practice \/ 練習: 19:00-21:00/);
-  assert.match(card.textContent, /Gym reserved \/ 体育館予約: 18:00-21:30/);
+  assert.match(card.textContent, /Reserved time \/ 施設予約時間: 18:00-21:30/);
   assert.match(card.textContent, /Provisional \/ 仮予約/);
   assert.match(nextReservation.textContent, /18:00-21:30/);
   assert.equal(nextReservation.hidden, false);
@@ -157,7 +157,7 @@ test("closed practices show counts without an attendance form link or role ident
   const dom = await renderPage("index.html", "assets/app.js", data);
   const card = dom.window.document.querySelector(".session-card");
   assert.match(card.textContent, /12/);
-  assert.match(card.textContent, /self-service attendance changes are closed/i);
+  assert.match(card.textContent, /attendance change window in the form has closed/i);
   assert.doesNotMatch(card.textContent, /private\.person/);
   assert.match(card.querySelector(".key-pickup-confirmed").textContent, /受け取り済み/);
   assert.equal(card.querySelector("a.session-form-link"), null);
@@ -219,7 +219,7 @@ test("post-assignment change window keeps the update form visible", async () => 
   assert.match(card.textContent, /update attendance/i);
   assert.match(card.textContent, /30 minutes before practice/i);
   assert.match(card.textContent, /not included in automatic role selection/i);
-  assert.match(card.textContent, /できるだけ締切前にご回答いただけるよう、ご本人へご案内メールをお送りします/);
+  assert.match(card.textContent, /回答者本人へ、次回以降はできるだけ締切前に回答していただくよう、ご案内メールを送ります/);
   assert.doesNotMatch(card.textContent, /注意メール/);
   assert.equal(link.href, "https://docs.google.com/forms/d/e/example/viewform");
 });
@@ -229,7 +229,7 @@ test("workflow and role pages explain the Thursday role-candidate snapshot", () 
   const roles = read("role-assignment.html");
   assert.match(workflow, /latest response received before 17:00 fixes the role-candidate pool/i);
   assert.match(workflow, /自動担当選出の対象には含めません/);
-  assert.match(workflow, /ご本人へご案内メールをお送りします/);
+  assert.match(workflow, /回答者本人へ、次回以降はできるだけ締切前に回答していただくよう、ご案内メールを送ります/);
   assert.doesNotMatch(workflow, /注意メール/);
   assert.match(roles, /Deadline snapshot/);
   assert.match(roles, /締切後の新しい参加登録も出欠には反映/);
@@ -245,7 +245,7 @@ test("workflow explains manual booking and automatic website publication without
   assert.doesNotMatch(index.body.textContent, /Gym reservations are made manually by a club administrator/);
   assert.ok(reservationSection);
   assert.match(reservationSection.textContent, /does not make, change, or cancel municipal reservations/i);
-  assert.match(reservationSection.textContent, /自動処理で予約情報を定期的に確認します/);
+  assert.match(reservationSection.textContent, /自動処理で予約情報を1日1回確認します/);
   assert.doesNotMatch(reservationSection.textContent, /読み取り専用の動作|応答全体を検証/);
   assert.match(reservationSection.textContent, /管理スプレッドシートへ保存/);
   assert.match(reservationSection.textContent, /施設予約時間と部の練習時間は、別の情報/);
@@ -263,7 +263,7 @@ test("workflow has a dedicated attendance-change procedure", () => {
   assert.match(section.textContent, /代役を募集し、引き継ぎを確定/);
   const stepLabels = Array.from(section.querySelectorAll(".step-time"), (element) => element.textContent.trim());
   assert.deepEqual(stepLabels.slice(0, 2), [
-    "Open the Form / フォームを開く",
+    "Open the form / フォームを開く",
     "Submit Again / 再回答する",
   ]);
 });

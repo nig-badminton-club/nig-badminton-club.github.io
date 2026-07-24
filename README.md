@@ -42,7 +42,7 @@ https://nig-badminton-club.github.io/<repository-name>/
 - `docs/workflow.html`: weekly attendance and role-assignment workflow
 - `docs/role-assignment.html`: setup/return role assignment method
 - `docs/admin.html`: public entry point to the protected Apps Script admin console
-- `docs/join.html`: joining, leaving, address-change, and manager-contact page
+- `docs/join.html`: joining, leaving, email-address changes, and manager contact
 - `docs/privacy.html`: public data, Form data, access, and correction/deletion policy
 - `docs/favicon.svg`: site favicon
 - `docs/assets/`: CSS and JavaScript for the static site
@@ -76,7 +76,7 @@ The website must not publish:
 - Google API tokens, GitHub tokens, OAuth refresh tokens, or local clasp files
 
 Guest details entered in the attendance form are for club management. The
-Thursday role-assignment email may share the guest count by responding account
+Thursday role-assignment email may share the guest count by respondent account
 with the whole club, but not guest names, relationships, affiliations, or contact
 details.
 
@@ -149,7 +149,7 @@ Before production launch, maintainers should separately confirm that:
 - automated email delivery is intentionally enabled only when ready
 - Google Group and Calendar sharing settings are intentional
 - the attendance form collects Google account email automatically
-- the spreadsheet is private to the owner and explicitly shared administrators
+- the spreadsheet is private to the owner and shared only with explicitly authorized administrators
 - guest details remain in private Sheets only
 - the public JSON file contains aggregate public data only
 - the practice photo remains appropriate for public display

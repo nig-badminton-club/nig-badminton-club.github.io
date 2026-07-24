@@ -69,7 +69,7 @@
       link.rel = "noopener";
       link.removeAttribute("aria-disabled");
       link.removeAttribute("tabindex");
-      status.textContent = "Use the Google Form to join or leave the club, update your registered address, or contact the managers. Google sign-in is required so the request can be verified. / Googleフォームから、入会・退会・登録アドレス変更・管理者への連絡を行えます。申請内容の確認のため、Googleへのログインが必要です。";
+      status.textContent = "Use the Google Form to join or leave the club, update your registered email address, or contact the managers. Google sign-in is required so the request can be verified. / Googleフォームから、入会・退会・登録メールアドレス変更・管理者への連絡を行えます。申請内容の確認のため、Googleへのログインが必要です。";
     })
     .catch((error) => {
       console.error(error);

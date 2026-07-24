@@ -130,9 +130,9 @@
 
   function formatStatus(value) {
     const status = String(value || "");
-    if (status === "scheduled") return "scheduled / 予定";
-    if (status === "cancelled") return "cancelled / 中止";
-    if (status === "tentative") return "tentative / 仮予定";
+    if (status === "scheduled") return "Scheduled / 予定";
+    if (status === "cancelled") return "Cancelled / 中止";
+    if (status === "tentative") return "Tentative / 仮予定";
     return status;
   }
 
@@ -146,7 +146,7 @@
   function reservationDetailsText(session) {
     const parts = [];
     if (session && session.reservationTime) {
-      parts.push(`Gym reserved / 体育館予約: ${session.reservationTime}`);
+      parts.push(`Reserved time / 施設予約時間: ${session.reservationTime}`);
     }
     const status = formatReservationStatus(session && session.reservationStatus);
     if (status) parts.push(`Reservation status / 予約状況: ${status}`);
@@ -160,7 +160,7 @@
     const form = document.getElementById("next-session-form");
     if (!title || !location || !form) return;
     if (!session) {
-      title.textContent = "No upcoming practice scheduled / 今後の練習予定はありません";
+      title.textContent = "No upcoming practices scheduled / 今後の練習予定はありません";
       location.textContent = "";
       if (reservation) {
         reservation.textContent = "";
@@ -192,7 +192,7 @@
       form.tabIndex = -1;
       form.textContent = session.responseStatus === "upcoming"
         ? "Opens during the practice week / 練習週に受付開始"
-        : "Attendance form closed / 出欠回答締切済み";
+        : "Attendance form closed / 出欠フォーム受付終了";
     }
   }
 
@@ -226,8 +226,8 @@
 
     counts.innerHTML = [
       countBlock(stats && stats.totalCount, "Total / 合計"),
-      countBlock(stats && stats.nigCount, "NIG members / 遺伝研内"),
-      countBlock(stats && stats.externalCount, "External members / 遺伝研外"),
+      countBlock(stats && stats.nigCount, "NIG members / 遺伝研内メンバー"),
+      countBlock(stats && stats.externalCount, "External members / 遺伝研外メンバー"),
     ].join("");
 
     if (!stats || !stats.lastSuccessAt) {
@@ -244,10 +244,10 @@
       return "The attendance form opens during the week of the practice. / 出欠フォームは練習のある週に受付を開始します。";
     }
     if (session.responseStatus === "closed") {
-      return "Self-service attendance changes are closed. Please email any later changes to the Google Group. / 出欠の自己変更受付は終了しました。以降の変更はGoogle Groupへメールしてください。";
+      return "The attendance change window in the form has closed. Please email any later changes to the Google Group. / フォームでの出欠変更受付は終了しました。以降の変更はGoogle Groupへメールしてください。";
     }
     if (session.responseStatus === "changes-open") {
-      return "You can still update your attendance through the same form until 30 minutes before practice. A new Attend response after Thursday 17:00 is accepted for attendance but is not included in automatic role selection, and a reminder email is sent to the respondent. / 練習開始30分前までは同じフォームから出欠を変更できます。木曜17:00以降の新しい参加登録も出欠には反映しますが、自動担当選出の対象には含めません。できるだけ締切前にご回答いただけるよう、ご本人へご案内メールをお送りします。";
+      return "You can still update your attendance through the same form until 30 minutes before practice. A response indicating attendance that is submitted after Thursday 17:00 is added to the attendance list but is not included in automatic role selection. The respondent receives a reminder to reply before the deadline whenever possible. / 練習開始30分前までは同じフォームから出欠を変更できます。木曜17:00以降の新しい参加登録も出欠には反映しますが、自動担当選出の対象には含めません。回答者本人へ、次回以降はできるだけ締切前に回答していただくよう、ご案内メールを送ります。";
     }
     if (session.responseStatus === "cancelled") return "This practice has been cancelled. / この練習は中止になりました。";
     return "The attendance form is open. / 出欠回答を受け付けています。";
@@ -359,7 +359,7 @@
     if (groupLink) {
       if (membershipUrl) groupLink.href = membershipUrl;
       groupLink.textContent = "Join or Leave / 入退会";
-      groupLink.title = "Join or leave the club, or update your registered address / 入会・退会・登録アドレス変更";
+      groupLink.title = "Join or leave the club, or update your registered email address / 入会・退会・登録メールアドレス変更";
     }
 
     const calendar = data.calendar || {};

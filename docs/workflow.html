@@ -17,7 +17,7 @@
         <p class="generated-at">From the attendance request to the end of practice / 出欠確認から練習終了後までの流れ</p>
         <nav class="site-nav" aria-label="Site navigation / サイトナビゲーション">
           <a href="index.html">Schedule / 練習予定</a>
-          <a href="attendance.html">Attendance / 参加者推移</a>
+          <a href="attendance.html">Attendance / 参加者数の推移</a>
           <a href="about.html">About / 部について</a>
           <a href="workflow.html" aria-current="page">Workflow / 運用フロー</a>
           <a href="role-assignment.html">Roles / 担当選出</a>
@@ -43,11 +43,11 @@
           <li class="flow-step">
             <span class="step-time">Once daily / 1日1回</span>
             <h3>Check reservations automatically / 予約情報を自動確認する</h3>
-            <p>The automation checks reservation information periodically. / 自動処理で予約情報を定期的に確認します。</p>
+            <p>The automation checks the reservation information once a day. / 自動処理で予約情報を1日1回確認します。</p>
           </li>
           <li class="flow-step">
             <span class="step-time">After validation / 検証後</span>
-            <h3>Reflect the result on the website / ウェブサイトへ自動反映する</h3>
+            <h3>Publish the results on the website / 結果をウェブサイトへ反映する</h3>
             <p>Validated reservation times and provisional or confirmed status are saved to the management spreadsheet and published on the practice schedule automatically. Municipal booking time remains separate from the club’s practice time. / 検証済みの予約時間と仮予約・本予約の状態を管理スプレッドシートへ保存し、練習予定へ自動で公開します。市の施設予約時間と部の練習時間は、別の情報として管理します。</p>
           </li>
         </ol>
@@ -72,49 +72,49 @@
             <p>A reminder is emailed to the Google Group before the initial response deadline. / 初回回答締切前に、Google Groupへリマインドメールを送ります。</p>
           </li>
           <li class="flow-step">
-            <span class="step-time">Thu 17:00</span>
+            <span class="step-time">Thu 17:00 / 木曜17:00</span>
             <h3>Initial attendance deadline / 初回出欠締切</h3>
-            <p>The latest response received before 17:00 fixes the role-candidate pool. The Form remains open for attendance changes until 30 minutes before practice. A new Attend response after 17:00 is added to the attendance list but is not included in automatic role selection, and the respondent receives a reminder to answer before the deadline whenever possible. A member who changes to Not attending after 17:00 is removed from the candidate pool. / 17:00より前に届いた最新回答をもとに担当候補を確定します。出欠フォームは練習開始30分前まで引き続き利用できます。17:00以降の新しい参加登録も参加者一覧には反映しますが、自動担当選出の対象には含めません。できるだけ締切前にご回答いただけるよう、ご本人へご案内メールをお送りします。17:00以降に不参加へ変更した方は担当候補から外します。</p>
+            <p>The latest response received before 17:00 fixes the role-candidate pool. The form remains open for attendance changes until 30 minutes before practice. A response indicating attendance submitted after 17:00 is added to the attendance list but is not considered for automatic role selection. The respondent receives a reminder to reply before the deadline whenever possible. A member who changes their response to “Not attending” after 17:00 is removed from the candidate pool. / 17:00より前に届いた最新回答をもとに担当候補を確定します。出欠フォームは練習開始30分前まで引き続き利用できます。17:00以降の新しい参加登録も参加者一覧には反映しますが、自動担当選出の対象には含めません。回答者本人へ、次回以降はできるだけ締切前に回答していただくよう、ご案内メールを送ります。17:00以降に不参加へ変更した方は担当候補から外します。</p>
           </li>
           <li class="flow-step">
             <span class="step-time">Thu from 17:05 / 木曜17:05以降</span>
             <h3>Role assignment / 担当確定</h3>
-            <p>The system selects the setup and return assignees and emails the results to the Google Group, together with any messages submitted for the whole club. At around 17:05, each assignee also receives an individual email. The setup email includes a link to the key pickup confirmation page. If an assignee later changes to Not attending, the Group is notified; that assignee must reply to the Group, find a replacement, and confirm the handoff. The system does not assign a replacement automatically. See <a class="text-link" href="role-assignment.html">How Roles Are Assigned</a> for details. / システムが準備担当と返却担当を選び、全体への連絡事項とともにGoogle Groupへメールで知らせます。17:05ごろには各担当者へ個別メールも届き、準備担当のメールには鍵受け取り確認ページへのリンクが含まれます。担当者が後から不参加へ変更した場合はGoogle Groupへ通知され、その担当者本人がグループへ返信して代役を募集し、引き継ぎを確定します。システムによる代役の自動割当は行いません。詳しくは<a class="text-link" href="role-assignment.html">担当者の決まり方</a>をご覧ください。</p>
+            <p>The system selects the setup and return assignees and emails the results to the Google Group, together with any messages submitted for the whole club. At around 17:05, each assignee also receives an individual email. The setup email includes a link to the key pickup confirmation page. If an assignee later changes their response to “Not attending,” the Google Group is notified. That assignee must reply to the group, find a replacement, and confirm the handoff. The system does not assign a replacement automatically. See <a class="text-link" href="role-assignment.html">How Roles Are Assigned</a> for details. / システムが準備担当と返却担当を選び、全体への連絡事項とともにGoogle Groupへメールで知らせます。17:05ごろには各担当者へ個別メールも届き、準備担当のメールには鍵受け取り確認ページへのリンクが含まれます。担当者が後から不参加へ変更した場合はGoogle Groupへ通知され、その担当者本人がグループへ返信して代役を募集し、引き継ぎを確定します。システムによる代役の自動割当は行いません。詳しくは<a class="text-link" href="role-assignment.html">担当者の決まり方</a>をご覧ください。</p>
           </li>
           <li class="flow-step">
-            <span class="step-time">Fri 13:00-15:30</span>
+            <span class="step-time">Fri 13:00-15:30 / 金曜13:00-15:30</span>
             <h3>Key pickup / 鍵受け取り</h3>
-            <p>The setup assignee collects the school key and records the pickup by 15:30 using the confirmation page linked in the individual email. The practice card on this website then changes from Not yet confirmed to Confirmed; no assignee identity or confirmation link is published. See <a class="text-link" href="role-assignment.html">How Roles Are Assigned</a> for full instructions. / 準備担当は学校の鍵を受け取り、個別メールに記載された確認ページから15:30までに受け取り完了を記録します。ボタンを押すと、このウェブサイトの練習カードが「未確認」から「受け取り済み」に変わります。担当者名や確認リンクは公開しません。詳しい手順は<a class="text-link" href="role-assignment.html">担当者の決まり方</a>をご覧ください。</p>
+            <p>The setup assignee collects the school key and records the pickup by 15:30 using the confirmation page linked in the individual email. The practice card on this website then changes from “Not yet confirmed” to “Confirmed”; no assignee identity or confirmation link is published. See <a class="text-link" href="role-assignment.html">How Roles Are Assigned</a> for full instructions. / 準備担当は学校の鍵を受け取り、個別メールに記載された確認ページから15:30までに受け取り完了を記録します。ボタンを押すと、このウェブサイトの練習カードが「未確認」から「受け取り済み」に変わります。担当者名や確認リンクは公開しません。詳しい手順は<a class="text-link" href="role-assignment.html">担当者の決まり方</a>をご覧ください。</p>
           </li>
           <li class="flow-step">
             <span class="step-time">Fri from 15:30 / 金曜15:30以降</span>
-            <h3>Safety alert / 未確認アラート</h3>
+            <h3>Unconfirmed pickup alert / 未確認アラート</h3>
             <p>If pickup has not been confirmed by 15:30, an alert is emailed to the Google Group. Anyone who can collect the key instead should first notify the group and then complete pickup by 16:30. / 15:30までに鍵受け取りの完了記録がない場合は、Google Groupへアラートメールを送ります。代わりに受け取りに行ける方は、まずグループへ周知し、16:30までに受け取りを完了してください。</p>
           </li>
           <li class="flow-step">
             <span class="step-time">Fri 18:30 / 金曜18:30</span>
-            <h3>Self-service change cutoff / 自己変更締切</h3>
-            <p>The attendance Form closes 30 minutes before practice. After this point, email any attendance change directly to the Google Group. / 練習開始30分前に出欠フォームを閉じます。これ以降の変更はGoogle Groupへ直接メールしてください。</p>
+            <h3>Attendance change cutoff / フォームでの出欠変更締切</h3>
+            <p>The attendance form closes 30 minutes before practice. After this point, email any attendance change directly to the Google Group. / 練習開始30分前に出欠フォームを閉じます。これ以降の変更はGoogle Groupへ直接メールしてください。</p>
           </li>
           <li class="flow-step">
-            <span class="step-time">Fri by 18:45</span>
+            <span class="step-time">Fri by 18:45 / 金曜18:45まで</span>
             <h3>Equipment / 道具</h3>
             <p>The setup assignee brings the club racket bag and portable net to the gym before it opens. See <a class="text-link" href="role-assignment.html">How Roles Are Assigned</a> for details. / 準備担当は、開錠前に部のラケットバッグとポータブルネットを体育館へ運びます。詳しくは<a class="text-link" href="role-assignment.html">担当者の決まり方</a>をご覧ください。</p>
           </li>
           <li class="flow-step">
-            <span class="step-time">Fri 18:45</span>
+            <span class="step-time">Fri 18:45 / 金曜18:45</span>
             <h3>Opening / 開錠</h3>
             <p>The setup assignee opens the gym at 18:45. Everyone else is also encouraged to help set up the courts from 18:45 as they arrive. See <a class="text-link" href="role-assignment.html">How Roles Are Assigned</a> for details. / 準備担当が18:45に体育館を開けます。準備担当以外の参加者も、到着したらコート準備にご協力ください。詳しくは<a class="text-link" href="role-assignment.html">担当者の決まり方</a>をご覧ください。</p>
           </li>
           <li class="flow-step">
-            <span class="step-time">Fri 19:00-21:00</span>
+            <span class="step-time">Fri 19:00-21:00 / 金曜19:00-21:00</span>
             <h3>Practice / 練習</h3>
-            <p>Indoor gym shoes are required. During practice, everyone helps with the courts, equipment, and cleanup. / 体育館シューズは必須です。コートや道具の準備、練習後の片付けは、参加者全員で協力して行います。</p>
+            <p>Indoor gym shoes are required. Everyone helps set up the courts and equipment and clean up afterward. / 体育館シューズは必須です。コートや道具の準備、練習後の片付けは、参加者全員で協力して行います。</p>
           </li>
           <li class="flow-step">
-            <span class="step-time">Fri after 21:00</span>
+            <span class="step-time">Fri after 21:00 / 金曜21:00以降</span>
             <h3>Locking and key return / 施錠・鍵返却</h3>
-            <p>After practice, the return assignee locks the gym, returns the key, and takes the equipment or arranges its next handoff. See <a class="text-link" href="role-assignment.html">How Roles Are Assigned</a> for details. / 練習後は、返却担当が体育館を施錠し、鍵を返却して、道具の持ち帰りまたは次回の受け渡しを行います。詳しくは<a class="text-link" href="role-assignment.html">担当者の決まり方</a>をご覧ください。</p>
+            <p>After practice, the return assignee locks the gym, returns the key, and takes the equipment back or arranges its next handoff. See <a class="text-link" href="role-assignment.html">How Roles Are Assigned</a> for details. / 練習後は、返却担当が体育館を施錠し、鍵を返却して、道具の持ち帰りまたは次回の受け渡しを行います。詳しくは<a class="text-link" href="role-assignment.html">担当者の決まり方</a>をご覧ください。</p>
           </li>
         </ol>
       </section>
@@ -128,24 +128,24 @@
         </div>
         <ol class="flow-diagram">
           <li class="flow-step">
-            <span class="step-time">Open the Form / フォームを開く</span>
-            <h3>Open the same Form / 同じフォームを開く</h3>
-            <p>Open the attendance Form from the practice schedule on this website or from the attendance request email. Sign in with the same Google account you used for your previous response. / このウェブサイトの練習予定、または出欠依頼メールから出欠フォームを開き、前回の回答と同じGoogleアカウントでログインしてください。</p>
+            <span class="step-time">Open the form / フォームを開く</span>
+            <h3>Open the same form / 同じフォームを開く</h3>
+            <p>Open the attendance form from the practice schedule on this website or from the attendance request email. Sign in with the same Google account you used for your previous response. / このウェブサイトの練習予定、または出欠依頼メールから出欠フォームを開き、前回の回答と同じGoogleアカウントでログインしてください。</p>
           </li>
           <li class="flow-step">
             <span class="step-time">Submit Again / 再回答する</span>
             <h3>Submit a new response / 変更後の内容で再回答する</h3>
-            <p>Enter your updated plans and submit the Form again. The latest response from your signed-in account is used for attendance until 30 minutes before practice. Responses submitted after Thursday 17:00 still update attendance, but a new Attend response is not included in automatic role selection. / 変更後の予定を入力し、フォームをもう一度送信してください。練習開始30分前までは、ログイン中のアカウントによる最新の回答が出欠に反映されます。木曜17:00以降の回答も出欠には反映されますが、新たに参加へ変更した場合は自動担当選出の対象にはなりません。</p>
+            <p>Enter your updated plans and submit the form again. The latest response from your signed-in account is used for attendance until 30 minutes before practice. Responses submitted after Thursday 17:00 still update attendance, but a new response indicating attendance is not considered for automatic role selection. / 変更後の予定を入力し、フォームをもう一度送信してください。練習開始30分前までは、ログイン中のアカウントによる最新の回答が出欠に反映されます。木曜17:00以降の回答も出欠には反映されますが、新たに参加へ変更した場合は自動担当選出の対象にはなりません。</p>
           </li>
           <li class="flow-step">
             <span class="step-time">After cutoff / 締切後</span>
             <h3>Email the Google Group / Google Groupへ連絡する</h3>
-            <p>The Form closes 30 minutes before practice. After it closes, email any attendance change directly to the Google Group. / 出欠フォームは練習開始30分前に閉じます。締切後の出欠変更はGoogle Groupへ直接メールしてください。</p>
+            <p>The form closes 30 minutes before practice. After it closes, email any attendance change directly to the Google Group. / 出欠フォームは練習開始30分前に閉じます。締切後の出欠変更はGoogle Groupへ直接メールしてください。</p>
           </li>
           <li class="flow-step">
-            <span class="step-time">If assigned / 担当者</span>
+            <span class="step-time">If assigned / 担当者になった場合</span>
             <h3>Arrange a replacement / 代役を調整する</h3>
-            <p>If you change to Not attending after roles are announced, the Google Group is notified automatically, but no replacement is assigned automatically. Reply to the Group yourself, find someone who can take over, and confirm the handoff. / 担当確定後に不参加へ変更するとGoogle Groupへ自動通知されますが、代役は自動で決まりません。担当者本人がグループへ返信して代役を募集し、引き継ぎを確定してください。</p>
+            <p>If you change your response to “Not attending” after roles are announced, the Google Group is notified automatically, but no replacement is assigned automatically. Reply to the group yourself, find someone who can take over, and confirm the handoff. / 担当確定後に不参加へ変更するとGoogle Groupへ自動通知されますが、代役は自動で決まりません。担当者本人がグループへ返信して代役を募集し、引き継ぎを確定してください。</p>
           </li>
         </ol>
       </section>

@@ -17,7 +17,7 @@
         <p id="generated-at" class="generated-at"></p>
         <nav class="site-nav" aria-label="Site navigation / サイトナビゲーション">
           <a href="index.html">Schedule / 練習予定</a>
-          <a href="attendance.html" aria-current="page">Attendance / 参加者推移</a>
+          <a href="attendance.html" aria-current="page">Attendance / 参加者数の推移</a>
           <a href="about.html">About / 部について</a>
           <a href="workflow.html">Workflow / 運用フロー</a>
           <a href="role-assignment.html">Roles / 担当選出</a>
@@ -37,7 +37,7 @@
         </div>
         <dl class="trend-summary">
           <div>
-            <dt>Recorded practices / 集計済み練習</dt>
+            <dt>Recorded practices / 集計済みの練習</dt>
             <dd id="recorded-session-count">—</dd>
           </div>
           <div>
@@ -51,7 +51,7 @@
         <div class="trend-panel-heading">
           <div>
             <h2 id="chart-title">Participants by practice date / 練習日ごとの参加者数</h2>
-            <p class="muted">Total participants = attending members + guests / 参加者合計 = 参加回答者 + ゲスト</p>
+            <p class="muted">Total participants = members registered as attending + guests / 参加者合計 = 参加登録した部員 + ゲスト</p>
           </div>
           <ul id="attendance-legend" class="attendance-legend" aria-label="Year legend / 年ごとの凡例"></ul>
         </div>
@@ -62,17 +62,17 @@
             <canvas id="attendance-chart" role="img" aria-label="Line chart comparing total participants from January to December for each year / 年ごとの参加者合計を1月から12月で比較する折れ線グラフ"></canvas>
             <div id="attendance-tooltip" class="attendance-tooltip" hidden></div>
           </div>
-          <figcaption>Dots show practice dates with a completed total. / 点は集計済みの練習日です。</figcaption>
+          <figcaption>Dots mark practice dates with finalized attendance totals. / 点は参加者数の集計が完了した練習日を示します。</figcaption>
         </figure>
       </section>
 
       <section class="attendance-records" aria-labelledby="records-title">
         <div class="section-heading">
           <div>
-            <h2 id="records-title">Recorded practices / 集計済み練習</h2>
+            <h2 id="records-title">Recorded practices / 集計済みの練習</h2>
             <p class="muted">The latest 20 practices are shown here. The TSV download includes all historical records. / サイト上では最新20件を表示し、TSVでは過去の全件をダウンロードできます。</p>
           </div>
-          <a id="attendance-download" class="primary-action download-action" aria-disabled="true">Download TSV / TSVダウンロード</a>
+          <a id="attendance-download" class="primary-action download-action" aria-disabled="true">Download TSV / TSVをダウンロード</a>
         </div>
         <div class="table-wrap">
           <table class="attendance-table">

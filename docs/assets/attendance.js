@@ -63,9 +63,12 @@
     return `${Number(match[1])}/${Number(match[2])}/${Number(match[3])}`;
   }
 
-  function formatDateTime(value) {
+  function formatDateTimeParts(value) {
     const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return String(value || "");
+    if (Number.isNaN(date.getTime())) {
+      const fallback = String(value || "");
+      return { en: fallback, ja: fallback };
+    }
     const english = new Intl.DateTimeFormat("en-US", {
       timeZone: "Asia/Tokyo",
       year: "numeric",
@@ -82,7 +85,12 @@
       hour: "2-digit",
       minute: "2-digit",
     }).format(date);
-    return `${english} JST / ${japanese}`;
+    return { en: `${english} JST`, ja: japanese };
+  }
+
+  function formatDateTime(value) {
+    const parts = formatDateTimeParts(value);
+    return `${parts.en} / ${parts.ja}`;
   }
 
   function sessionPoint(session) {
@@ -369,9 +377,12 @@
       return;
     }
     banner.hidden = false;
-    banner.textContent = data.generatedAt
-      ? `The website may not have the latest data (last updated: ${formatDateTime(data.generatedAt)}). / サイトの情報が最新でない可能性があります（最終更新: ${formatDateTime(data.generatedAt)}）。`
-      : "The website's last update time is unavailable. / サイトの最終更新時刻を確認できません。";
+    if (data.generatedAt) {
+      const updated = formatDateTimeParts(data.generatedAt);
+      banner.textContent = `The website may not have the latest data (last updated: ${updated.en}). / サイトの情報が最新でない可能性があります（最終更新: ${updated.ja}）。`;
+    } else {
+      banner.textContent = "The website's last update time is unavailable. / サイトの最終更新時刻を確認できません。";
+    }
   }
 
   function render(data) {
