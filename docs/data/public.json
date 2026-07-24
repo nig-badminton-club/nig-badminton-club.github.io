@@ -10,7 +10,7 @@
   "calendar": {
     "name": "NIG Badminton Club / 遺伝研バドミントン部",
     "url": "https://calendar.google.com/calendar/r?cid=c_25ec983b06e018c051d34f331d7ce2c0b03f4d07123d4134731f71ddd4c425f4%40group.calendar.google.com",
-    "access": "Google Group members only / Google Groupメンバー限定: nig.badminton-club@nig.ac.jp"
+    "access": "Google Group members only / Google Group参加者限定: nig.badminton-club@nig.ac.jp"
   },
   "venue": {
     "name": "Mishima Municipal Nishikida Elementary School Gym / 三島市立錦田小学校 体育館",
@@ -27,7 +27,7 @@
     "nigCount": 35,
     "externalCount": 3
   },
-  "generatedAt": "2026-07-24T14:18:04+09:00",
+  "generatedAt": "2026-07-24T14:26:40+09:00",
   "sessions": [
     {
       "sessionId": "2026-07-17",
@@ -56,9 +56,9 @@
       "reservationStatus": "confirmed",
       "reservationTime": "18:00-21:30",
       "responseStatus": "changes-open",
-      "attendingCount": 10,
+      "attendingCount": 11,
       "absentCount": 5,
-      "unansweredCount": 23,
+      "unansweredCount": 22,
       "guestCount": 4,
       "roleStatus": "assigned",
       "keyPickupStatus": "confirmed",
@@ -582,10 +582,10 @@
       "Please bring a drink and, if you have one, a racket. / 飲み物と、お持ちの方はラケットをご持参ください。",
       "The setup role requires an NIG account because the key pickup confirmation page is restricted to NIG users. / 鍵受け取り確認ページは遺伝研アカウント限定のため、準備担当には遺伝研アカウントが必要です。",
       "Submit the same attendance form again when plans change; the latest response is used for attendance until 30 minutes before practice. Role candidates are fixed from responses received before Thursday 17:00. / 予定変更時は同じ出欠フォームから再回答してください。練習開始30分前まで最新の回答が出欠に反映されますが、担当候補は木曜17:00より前の回答をもとに確定します。",
-      "An assigned member who changes their response to “Not attending” must ask the Google Group for a replacement and confirm the handoff. / 担当確定後に不参加へ変更した担当者は、Google Groupで代役を募集し、引き継ぎを確定してください。"
+      "An assigned member who changes to Not attending must ask the Google Group for a replacement and confirm the handoff. / 担当確定後に不参加へ変更した担当者は、Google Groupで代役を募集し、引き継ぎを確定してください。"
     ],
-    "fees": "There is currently no participation fee. Shuttlecocks and other consumable supplies are covered by the budget of the SOKENDAI Genetics Course Badminton Club. As attendance grows, the club may introduce a participation fee of a few hundred yen per practice in the future. / 現在、参加費は徴収していません。シャトルなどの消耗品は、総合研究大学院大学の課外活動団体「遺伝学専攻バドミントン部」の予算で購入しています。参加者の増加に伴い、将来は練習1回につき数百円程度の参加費をお願いする可能性があります。",
+    "fees": "There is currently no participation fee. Shuttlecocks and other consumable supplies are paid for from the budget of the SOKENDAI Genetics Course Badminton Club. As attendance grows, the club may introduce a participation fee of a few hundred yen per practice in the future. / 現在、参加費は徴収していません。シャトルなどの消耗品は、総合研究大学院大学の課外活動団体「遺伝学専攻バドミントン部」の予算で購入しています。参加者の増加に伴い、将来は練習1回につき数百円程度の参加費をお願いする可能性があります。",
     "rackets": "A few rackets may be available for new participants. Those who attend regularly are encouraged to purchase their own. / 新規参加者にはラケットを貸与できる場合があります。継続して参加する方には、ご自身のラケットの購入をおすすめします。",
-    "guests": "Members may bring guests. Guest details entered in the attendance form are kept for club administration. Automated group emails and calendar descriptions may show only the number of guests by respondent account. / メンバーはゲストを同伴できます。出欠フォームに入力されたゲスト情報は部の管理用に保存します。自動送信メールやカレンダーの説明には、回答者アカウント別のゲスト人数のみ掲載する場合があります。"
+    "guests": "Members may bring guests. Guest details entered in the attendance form are kept for club administration. Automated group emails and calendar descriptions may show only the number of guests by responding account. / メンバーはゲストを同伴できます。出欠フォームに入力されたゲスト情報は部の管理用に保存します。自動送信メールやカレンダーの説明には、回答アカウント別のゲスト人数のみ掲載する場合があります。"
   }
 }
