@@ -418,6 +418,24 @@ test("public HTML does not expose administrator account IDs or private spreadshe
   assert.doesNotMatch(html, /spreadsheets\/d\//);
 });
 
+test("home page links to the members-only bilingual gym access guide", () => {
+  const document = new JSDOM(read("index.html")).window.document;
+  const section = document.querySelector('[aria-labelledby="member-guide-title"]');
+  const link = section && section.querySelector("a");
+
+  assert.ok(section);
+  assert.match(section.textContent, /Gym Access & Key Pickup Guide/);
+  assert.match(section.textContent, /体育館利用・鍵受取ガイド/);
+  assert.match(section.textContent, /Access is restricted to club members/);
+  assert.match(section.textContent, /部員限定資料/);
+  assert.equal(link.target, "_blank");
+  assert.equal(link.rel, "noopener");
+  assert.equal(
+    link.href,
+    "https://docs.google.com/presentation/d/14lsOR-aY0rF-HqyABneZZm7XvV2HMoYTb_Mp_8rUvos/edit",
+  );
+});
+
 test("rendered public pages have no detectable structural accessibility violations", async () => {
   const data = structuredClone(baseData);
   data.generatedAt = new Date().toISOString();

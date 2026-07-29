@@ -369,6 +369,34 @@ code {
   text-decoration: none;
 }
 
+.member-guide-section {
+  margin-top: 36px;
+}
+
+.member-guide-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: center;
+  padding: 22px;
+  border: 1px solid #b9d7ce;
+  border-left: 5px solid var(--green);
+  border-radius: 8px;
+  background: #edf7f3;
+}
+
+.member-guide-card h2 {
+  margin-bottom: 8px;
+}
+
+.member-guide-card p:last-child {
+  margin-bottom: 0;
+}
+
+.member-guide-action {
+  min-width: 210px;
+}
+
 .map-section {
   margin-top: 36px;
   padding-top: 8px;
@@ -902,6 +930,7 @@ footer {
 
   .next-session,
   .member-stats,
+  .member-guide-card,
   .trend-intro,
   .policy-content,
   .join-grid,
