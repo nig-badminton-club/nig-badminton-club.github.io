@@ -460,6 +460,31 @@ test("every public page loads the configured Google Analytics tag", () => {
   }
 });
 
+test("important outbound actions have explicit analytics events", async () => {
+  const data = structuredClone(baseData);
+  data.sessions = [{
+    sessionId: "2099-08-07",
+    date: "2099-08-07",
+    time: "19:00-21:00",
+    location: "Gym / 体育館",
+    status: "scheduled",
+    responseStatus: "open",
+    formUrl: "https://docs.google.com/forms/d/e/example/viewform",
+  }];
+  data.membership = { formUrl: "https://docs.google.com/forms/d/e/membership/viewform" };
+
+  const indexDom = await renderPage("index.html", "assets/app.js", data);
+  assert.equal(indexDom.window.document.getElementById("next-session-form").dataset.analyticsEvent, "attendance_form_click");
+  assert.equal(indexDom.window.document.querySelector("a.session-form-link").dataset.analyticsEvent, "attendance_form_click");
+  assert.equal(indexDom.window.document.getElementById("calendar-link").dataset.analyticsEvent, "calendar_open");
+  assert.equal(indexDom.window.document.getElementById("map-link").dataset.analyticsEvent, "map_open");
+
+  const joinDom = await renderPage("join.html", "assets/join.js", data);
+  assert.equal(joinDom.window.document.getElementById("membership-form-link").dataset.analyticsEvent, "membership_form_click");
+  assert.match(read("index.html"), /assets\/analytics-events\.js/);
+  assert.match(read("join.html"), /assets\/analytics-events\.js/);
+});
+
 test("Search Console verification and sitemap files cover the public site", () => {
   assert.equal(
     read("google77ff0f0e6e4e4ec5.html").trim(),

@@ -42,14 +42,14 @@
           <p id="next-session-location" class="muted"></p>
           <p id="next-session-reservation" class="reservation-details" hidden></p>
         </div>
-        <a id="next-session-form" class="primary-action" aria-disabled="true">Attendance Form / 出欠フォーム</a>
+        <a id="next-session-form" class="primary-action" aria-disabled="true" data-analytics-event="attendance_form_click">Attendance Form / 出欠フォーム</a>
       </section>
 
       <section aria-labelledby="schedule-title" class="schedule-section">
         <div class="section-heading">
           <h2 id="schedule-title">Practice Schedule / 練習予定</h2>
           <div class="heading-actions">
-            <a id="calendar-link" class="text-link" href="https://calendar.google.com/calendar/r?cid=c_25ec983b06e018c051d34f331d7ce2c0b03f4d07123d4134731f71ddd4c425f4%40group.calendar.google.com" rel="noopener">Google Calendar / Googleカレンダー</a>
+            <a id="calendar-link" class="text-link" href="https://calendar.google.com/calendar/r?cid=c_25ec983b06e018c051d34f331d7ce2c0b03f4d07123d4134731f71ddd4c425f4%40group.calendar.google.com" rel="noopener" data-analytics-event="calendar_open">Google Calendar / Googleカレンダー</a>
             <a id="group-link" class="text-link" href="join.html">Join or Leave / 入退会</a>
           </div>
         </div>
@@ -62,7 +62,7 @@
             <h2 id="map-title">Practice Location / 練習場所</h2>
             <p id="map-location-name" class="muted">Mishima Municipal Nishikida Elementary School Gym / 三島市立錦田小学校 体育館</p>
           </div>
-          <a id="map-link" class="text-link" href="https://maps.app.goo.gl/hiApbBiJLXQqRgfp9" rel="noopener">Open in Google Maps / Googleマップで開く</a>
+          <a id="map-link" class="text-link" href="https://maps.app.goo.gl/hiApbBiJLXQqRgfp9" rel="noopener" data-analytics-event="map_open">Open in Google Maps / Googleマップで開く</a>
         </div>
         <div class="map-frame">
           <iframe
@@ -87,6 +87,7 @@
     </footer>
 
     <script src="data/config.js"></script>
-    <script src="assets/app.js?v=20260724-1"></script>
+    <script src="assets/app.js?v=20260802-1"></script>
+    <script src="assets/analytics-events.js?v=20260802-1"></script>
   </body>
 </html>
