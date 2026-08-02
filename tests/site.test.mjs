@@ -441,6 +441,35 @@ test("setup-role instructions link to the members-only bilingual gym access guid
   });
 });
 
+test("every public page loads the configured Google Analytics tag", () => {
+  const pages = [
+    "index.html",
+    "attendance.html",
+    "about.html",
+    "workflow.html",
+    "role-assignment.html",
+    "join.html",
+    "admin.html",
+    "privacy.html",
+  ];
+  for (const htmlPath of pages) {
+    const document = new JSDOM(read(htmlPath)).window.document;
+    const loader = document.querySelector('script[src="https://www.googletagmanager.com/gtag/js?id=G-BEXF12PXEG"]');
+    assert.ok(loader, `${htmlPath}: missing Google Analytics loader`);
+    assert.match(document.head.textContent, /gtag\('config', 'G-BEXF12PXEG'\)/);
+  }
+});
+
+test("Search Console verification and sitemap files cover the public site", () => {
+  assert.equal(
+    read("google77ff0f0e6e4e4ec5.html").trim(),
+    "google-site-verification: google77ff0f0e6e4e4ec5.html",
+  );
+  const sitemap = read("sitemap.xml");
+  assert.match(sitemap, /https:\/\/nig-badminton-club\.github\.io\/<\/loc>/);
+  assert.match(read("robots.txt"), /Sitemap: https:\/\/nig-badminton-club\.github\.io\/sitemap\.xml/);
+});
+
 test("rendered public pages have no detectable structural accessibility violations", async () => {
   const data = structuredClone(baseData);
   data.generatedAt = new Date().toISOString();
