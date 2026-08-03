@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://nig-badminton-club.github.io/sitemap.xml

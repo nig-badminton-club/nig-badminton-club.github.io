@@ -267,7 +267,7 @@
       const statusClass = session.status === "cancelled" ? "status cancelled" : "status";
       const formUrl = safeHref(session.formUrl);
       const formLink = formUrl
-        ? `<a class="session-form-link" href="${escapeHtml(formUrl)}" rel="noopener">${session.responseStatus === "changes-open" ? "Update attendance / 出欠を変更" : "Attendance form / 出欠フォーム"}</a>`
+        ? `<a class="session-form-link" href="${escapeHtml(formUrl)}" rel="noopener" data-analytics-event="attendance_form_click">${session.responseStatus === "changes-open" ? "Update attendance / 出欠を変更" : "Attendance form / 出欠フォーム"}</a>`
         : session.responseStatus === "closed"
           ? `<span class="muted">${escapeHtml(responseStateText(session))}</span>`
           : "";

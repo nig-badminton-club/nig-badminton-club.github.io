@@ -4,6 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="strict-origin-when-cross-origin">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BEXF12PXEG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-BEXF12PXEG');
+    </script>
     <title>Join or Leave / 入退会 | NIG Badminton Club / 遺伝研バドミントン部</title>
     <meta name="description" content="Request to join or leave the NIG Badminton Club Google Group, update your registered email address, or contact the managers. / 遺伝研バドミントン部Google Groupへの入会、退会、登録メールアドレス変更、管理者への連絡。">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -37,7 +44,7 @@
         <div class="join-request-layout">
           <div class="request-form">
             <p id="membership-status" class="form-status" role="status">Loading the membership form... / メンバー手続きフォームを読み込んでいます...</p>
-            <a id="membership-form-link" class="primary-action" aria-disabled="true">Open Google Form / Googleフォームを開く</a>
+            <a id="membership-form-link" class="primary-action" aria-disabled="true" data-analytics-event="membership_form_click">Open Google Form / Googleフォームを開く</a>
           </div>
 
           <div class="join-request-notes">
@@ -105,5 +112,6 @@
 
     <script src="data/config.js"></script>
     <script src="assets/join.js?v=20260710-2"></script>
+    <script src="assets/analytics-events.js?v=20260802-1"></script>
   </body>
 </html>
