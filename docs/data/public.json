@@ -27,7 +27,7 @@
     "nigCount": 36,
     "externalCount": 3
   },
-  "generatedAt": "2026-08-07T18:17:56+09:00",
+  "generatedAt": "2026-08-07T18:33:33+09:00",
   "sessions": [
     {
       "sessionId": "2026-07-17",
@@ -91,7 +91,7 @@
       "status": "scheduled",
       "reservationStatus": "confirmed",
       "reservationTime": "18:00-21:30",
-      "responseStatus": "changes-open",
+      "responseStatus": "closed",
       "attendingCount": 4,
       "absentCount": 11,
       "unansweredCount": 24,
@@ -99,7 +99,7 @@
       "roleStatus": "assigned",
       "keyPickupStatus": "confirmed",
       "publicNote": "",
-      "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLSdrHQAGBWRh3btODxMM0dypzZCHK0YS1mh6-UVch0JJudfUMA/viewform?usp=pp_url&entry.1276326054=2026-08-07+(19:00-21:00)&entry.1509490790=0"
+      "formUrl": ""
     },
     {
       "sessionId": "2026-08-21",
