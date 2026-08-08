@@ -1,9 +1,10 @@
 {
   "name": "nig-badminton-club",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.22.2"
   },
   "scripts": {
     "serve": "python3 -m http.server 4173 --directory docs",
@@ -15,6 +16,6 @@
   "devDependencies": {
     "axe-core": "4.12.1",
     "html-validate": "11.5.6",
-    "jsdom": "29.1.1"
+    "jsdom": "30.0.1"
   }
 }

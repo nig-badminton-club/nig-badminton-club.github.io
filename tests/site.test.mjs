@@ -495,6 +495,16 @@ test("Search Console verification and sitemap files cover the public site", () =
   assert.match(read("robots.txt"), /Sitemap: https:\/\/nig-badminton-club\.github\.io\/sitemap\.xml/);
 });
 
+test("setup-role instructions explain when the portable net is optional", () => {
+  const roles = new JSDOM(read("role-assignment.html")).window.document;
+  const setupSection = roles.getElementById("gym-access-guide-link").closest("div");
+
+  assert.match(setupSection.textContent, /around 18:00 on Friday/);
+  assert.match(setupSection.textContent, /participating club members and guests is fewer than 10/);
+  assert.match(setupSection.textContent, /金曜18:00ごろの時点/);
+  assert.match(setupSection.textContent, /参加予定の部員とゲストの合計が10名未満/);
+});
+
 test("rendered public pages have no detectable structural accessibility violations", async () => {
   const data = structuredClone(baseData);
   data.generatedAt = new Date().toISOString();

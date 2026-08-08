@@ -16,7 +16,10 @@ concurrency:
 
 jobs:
   recover:
-    runs-on: ubuntu-latest
+    # This API-only check is a better fit for GitHub's lightweight container pool
+    # and does not compete with CI and Pages for a full Ubuntu VM.
+    runs-on: ubuntu-slim
+    timeout-minutes: 5
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
