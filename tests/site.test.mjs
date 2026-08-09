@@ -163,6 +163,29 @@ test("closed practices show counts without an attendance form link or role ident
   assert.equal(card.querySelector("a.session-form-link"), null);
 });
 
+test("cancelled practices direct interested members to coordinate through the Google Group", async () => {
+  const data = structuredClone(baseData);
+  data.generatedAt = new Date().toISOString();
+  data.sessions = [{
+    sessionId: "2099-07-10",
+    date: "2099-07-10",
+    time: "19:00-21:00",
+    location: "Gym / 体育館",
+    status: "cancelled",
+    responseStatus: "cancelled",
+    roleStatus: "pending",
+    keyPickupStatus: "not-required",
+    publicNote: "",
+    formUrl: "",
+  }];
+  const dom = await renderPage("index.html", "assets/app.js", data);
+  const card = dom.window.document.querySelector(".session-card");
+  assert.match(card.textContent, /Members who still want to practice can coordinate through the Google Group/i);
+  assert.match(card.textContent, /Google Groupで連絡を取り合って自主練習を調整できます/);
+  assert.match(card.querySelector(".key-pickup-not-required").textContent, /不要/);
+  assert.equal(card.querySelector("a.session-form-link"), null);
+});
+
 test("key pickup state changes from pending to confirmed without exposing identities", async () => {
   const data = structuredClone(baseData);
   data.generatedAt = new Date().toISOString();
@@ -228,6 +251,9 @@ test("workflow and role pages explain the Thursday role-candidate snapshot", () 
   const workflow = read("workflow.html");
   const roles = read("role-assignment.html");
   assert.match(workflow, /latest response received before 17:00 fixes the role-candidate pool/i);
+  assert.match(workflow, /If the total is three or fewer, the regular practice is cancelled/i);
+  assert.match(workflow, /グループで自主練習を相談/);
+  assert.match(workflow, /締切後の参加登録で中止が自動解除されることはなく/);
   assert.match(workflow, /自動担当選出の対象には含めません/);
   assert.match(workflow, /回答者本人へ、次回以降はできるだけ締切前に回答していただくよう、ご案内メールを送ります/);
   assert.doesNotMatch(workflow, /注意メール/);
