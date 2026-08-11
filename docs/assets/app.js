@@ -249,7 +249,7 @@
     if (session.responseStatus === "changes-open") {
       return "You can still update your attendance through the same form until 30 minutes before practice. A response indicating attendance that is submitted after Thursday 17:00 is added to the attendance list but is not included in automatic role selection. The respondent receives a reminder to reply before the deadline whenever possible. / 練習開始30分前までは同じフォームから出欠を変更できます。木曜17:00以降の新しい参加登録も出欠には反映しますが、自動担当選出の対象には含めません。回答者本人へ、次回以降はできるだけ締切前に回答していただくよう、ご案内メールを送ります。";
     }
-    if (session.responseStatus === "cancelled") return "This practice has been cancelled. / この練習は中止になりました。";
+    if (session.responseStatus === "cancelled") return "This practice has been cancelled. Please check the Google Group for the reason and any next steps. / この練習は中止になりました。理由と今後の対応はGoogle Groupで確認してください。";
     return "The attendance form is open. / 出欠回答を受け付けています。";
   }
 
