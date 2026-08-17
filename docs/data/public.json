@@ -21,13 +21,13 @@
     "status": "ok",
     "groupEmail": "nig.badminton-club@nig.ac.jp",
     "internalDomain": "nig.ac.jp",
-    "updatedAt": "2026-08-15T06:24:52+09:00",
-    "lastSuccessAt": "2026-08-15T06:24:52+09:00",
+    "updatedAt": "2026-08-17T06:26:45+09:00",
+    "lastSuccessAt": "2026-08-17T06:26:45+09:00",
     "totalCount": 39,
     "nigCount": 36,
     "externalCount": 3
   },
-  "generatedAt": "2026-08-15T06:25:00+09:00",
+  "generatedAt": "2026-08-17T21:13:41+09:00",
   "sessions": [
     {
       "sessionId": "2026-07-17",
@@ -109,15 +109,15 @@
       "status": "scheduled",
       "reservationStatus": "provisional",
       "reservationTime": "18:00-21:30",
-      "responseStatus": "upcoming",
-      "attendingCount": null,
-      "absentCount": null,
-      "unansweredCount": null,
-      "guestCount": null,
+      "responseStatus": "open",
+      "attendingCount": 3,
+      "absentCount": 2,
+      "unansweredCount": 34,
+      "guestCount": 1,
       "roleStatus": "pending",
       "keyPickupStatus": "awaiting-assignment",
       "publicNote": "",
-      "formUrl": ""
+      "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLSdrHQAGBWRh3btODxMM0dypzZCHK0YS1mh6-UVch0JJudfUMA/viewform?usp=pp_url&entry.1276326054=2026-08-21+(19:00-21:00)&entry.1509490790=0"
     },
     {
       "sessionId": "2026-08-28",
