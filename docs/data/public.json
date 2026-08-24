@@ -21,13 +21,13 @@
     "status": "ok",
     "groupEmail": "nig.badminton-club@nig.ac.jp",
     "internalDomain": "nig.ac.jp",
-    "updatedAt": "2026-08-24T06:23:51+09:00",
-    "lastSuccessAt": "2026-08-24T06:23:51+09:00",
+    "updatedAt": "2026-08-25T06:24:47+09:00",
+    "lastSuccessAt": "2026-08-25T06:24:47+09:00",
     "totalCount": 39,
     "nigCount": 36,
     "externalCount": 3
   },
-  "generatedAt": "2026-08-24T17:17:21+09:00",
+  "generatedAt": "2026-08-25T06:25:07+09:00",
   "sessions": [
     {
       "sessionId": "2026-07-17",
@@ -125,7 +125,7 @@
       "time": "19:00-21:00",
       "location": "Mishima Municipal Nishikida Elementary School Gym / 三島市立錦田小学校 体育館",
       "status": "scheduled",
-      "reservationStatus": "provisional",
+      "reservationStatus": "confirmed",
       "reservationTime": "18:00-21:30",
       "responseStatus": "open",
       "attendingCount": 2,
