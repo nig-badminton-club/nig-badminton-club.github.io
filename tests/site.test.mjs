@@ -5,6 +5,11 @@ import axe from "axe-core";
 import { JSDOM } from "jsdom";
 
 const docsUrl = new URL("../docs/", import.meta.url);
+const openWindows = new Set();
+test.afterEach(() => {
+  openWindows.forEach(window => window.close());
+  openWindows.clear();
+});
 
 function read(path) {
   return fs.readFileSync(new URL(path, docsUrl), "utf8");
@@ -15,6 +20,7 @@ async function renderPage(htmlPath, scriptPath, data) {
     runScripts: "outside-only",
     url: `https://nig-badminton-club.github.io/${htmlPath}`,
   });
+  openWindows.add(dom.window);
   dom.window.NIG_BADMINTON_PUBLIC_JSONP_URL = "";
   dom.window.fetch = async () => ({ json: async () => structuredClone(data) });
   dom.window.eval(read(scriptPath));
@@ -99,6 +105,24 @@ test("only the nearest four practices show details and later practices show date
   assert.equal(laterDates[0].textContent, "2099/8/21(金)");
   assert.equal(laterDates[1].textContent, "2099/8/28(金)");
   assert.doesNotMatch(laterList.textContent, /19:00|18:00|仮予約|体育館/);
+});
+
+test("cancelled and tentative states remain visible on both sides of the compact-list boundary", async () => {
+  for (const status of ["cancelled", "tentative"]) {
+    const data = structuredClone(baseData);
+    data.generatedAt = new Date().toISOString();
+    data.sessions = ["07-03", "07-10", "07-17", "07-24", "07-31"].map((date, i) => ({
+      sessionId: `2099-${date}`, date: `2099-${date}`, time: "19:00-21:00",
+      status: i >= 3 ? status : "scheduled", responseStatus: status === "cancelled" && i >= 3 ? "cancelled" : "upcoming",
+    }));
+    const dom = await renderPage("index.html", "assets/app.js", data);
+    const label = status === "cancelled" ? /Cancelled \/ 中止/ : /Tentative \/ 仮予定/;
+    assert.match(dom.window.document.querySelectorAll(".session-card")[3].textContent, label);
+    const compact = dom.window.document.querySelector(".session-date-item");
+    assert.match(compact.textContent, label);
+    assert.equal(compact.getAttribute("aria-hidden"), null);
+    assert.doesNotMatch(compact.textContent, /19:00|21:00/);
+  }
 });
 
 test("practice time and municipal gym reservation time are shown separately without private references", async () => {

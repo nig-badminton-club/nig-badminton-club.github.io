@@ -1,9 +1,13 @@
 name: Recover GitHub Pages deployment
 
 on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
   schedule:
-    # Avoid the start of the hour, when scheduled workflows are most likely to be delayed.
-    - cron: "17,47 * * * *"
+    # Catch missed push events without checking every half hour.
+    - cron: "17 */6 * * *"
   workflow_dispatch:
 
 permissions:
@@ -16,82 +20,30 @@ concurrency:
 
 jobs:
   recover:
-    # This API-only check is a better fit for GitHub's lightweight container pool
-    # and does not compete with CI and Pages for a full Ubuntu VM.
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.conclusion != 'success' &&
+       github.event.workflow_run.head_repository.full_name == github.repository &&
+       github.event.workflow_run.head_branch == 'main' &&
+       (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch'))
     runs-on: ubuntu-slim
     timeout-minutes: 5
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
-      DEPLOY_WORKFLOW: pages.yml
+      DEPLOY_WORKFLOW: ci.yml
       DEFAULT_BRANCH: main
       MAX_RECOVERY_RUNS: "3"
     steps:
+      # Never check out the triggering workflow's ref. This privileged workflow
+      # uses only the trusted default branch, and runs no package install/build.
+      - name: Checkout default-branch recovery script
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: false
+          sparse-checkout: scripts/recover_pages.sh
+          sparse-checkout-cone-mode: false
       - name: Recover a failed Pages deployment
         shell: bash
-        run: |
-          set -euo pipefail
-
-          gh_api_with_retry() {
-            local attempt
-            local output
-
-            for attempt in 1 2 3; do
-              if output="$(gh api "$@")"; then
-                printf '%s' "${output}"
-                return 0
-              fi
-
-              if (( attempt < 3 )); then
-                sleep "$((attempt * 15))"
-              fi
-            done
-
-            return 1
-          }
-
-          head_sha="$(
-            gh_api_with_retry "repos/${GH_REPO}/git/ref/heads/${DEFAULT_BRANCH}" \
-              --jq '.object.sha'
-          )"
-          runs="$(
-            gh_api_with_retry \
-              "repos/${GH_REPO}/actions/workflows/${DEPLOY_WORKFLOW}/runs?branch=${DEFAULT_BRANCH}&per_page=100"
-          )"
-
-          successful_runs="$(
-            jq --arg head_sha "${head_sha}" \
-              '[.workflow_runs[] | select(
-                .head_sha == $head_sha and .conclusion == "success"
-              )] | length' <<<"${runs}"
-          )"
-          active_runs="$(
-            jq --arg head_sha "${head_sha}" \
-              '[.workflow_runs[] | select(
-                .head_sha == $head_sha and .status != "completed"
-              )] | length' <<<"${runs}"
-          )"
-          recovery_runs="$(
-            jq --arg head_sha "${head_sha}" \
-              '[.workflow_runs[] | select(
-                .head_sha == $head_sha and .event == "workflow_dispatch"
-              )] | length' <<<"${runs}"
-          )"
-
-          if (( successful_runs > 0 )); then
-            echo "Pages is already deployed for ${head_sha}."
-            exit 0
-          fi
-
-          if (( active_runs > 0 )); then
-            echo "A Pages deployment is already active for ${head_sha}."
-            exit 0
-          fi
-
-          if (( recovery_runs >= MAX_RECOVERY_RUNS )); then
-            echo "::warning::Pages recovery limit reached for ${head_sha}; manual investigation is required."
-            exit 0
-          fi
-
-          echo "Dispatching Pages recovery $((recovery_runs + 1))/${MAX_RECOVERY_RUNS} for ${head_sha}."
-          gh workflow run "${DEPLOY_WORKFLOW}" --ref "${DEFAULT_BRANCH}"
+        run: bash scripts/recover_pages.sh

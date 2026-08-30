@@ -1,7 +1,6 @@
 # NIG Badminton Club / 遺伝研バドミントン部
 
 [![CI](https://github.com/nig-badminton-club/nig-badminton-club.github.io/actions/workflows/ci.yml/badge.svg)](https://github.com/nig-badminton-club/nig-badminton-club.github.io/actions/workflows/ci.yml)
-[![Deploy GitHub Pages](https://github.com/nig-badminton-club/nig-badminton-club.github.io/actions/workflows/pages.yml/badge.svg)](https://github.com/nig-badminton-club/nig-badminton-club.github.io/actions/workflows/pages.yml)
 [![Website](https://img.shields.io/badge/website-live-2ea44f)](https://nig-badminton-club.github.io/)
 
 Public website for the NIG Badminton Club.
@@ -82,9 +81,10 @@ details.
 
 ## GitHub Pages Deployment
 
-This repository includes a GitHub Actions workflow at
-`.github/workflows/pages.yml`. On pushes to `main`, the workflow publishes the
-`docs/` directory to GitHub Pages.
+On pushes to `main`, `.github/workflows/ci.yml` validates the commit once and
+then calls the reusable Pages workflow to publish that same commit’s `docs/`
+directory. See [development and recovery](DEVELOPMENT.md) for the checks and
+manual/recovery entry points.
 
 The expected setup is:
 
@@ -95,7 +95,7 @@ The expected setup is:
 
 ## Local Preview
 
-From the repository root:
+Use Node 24 (selected in `.node-version`) and Python 3. From the repository root:
 
 ```sh
 npm ci
