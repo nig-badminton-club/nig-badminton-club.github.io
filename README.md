@@ -5,7 +5,7 @@
 
 Public website for the NIG Badminton Club.
 
-This repository is intended to publish the club website with GitHub Pages. It
+This repository publishes the club website with GitHub Pages. It
 contains only public-facing site assets and aggregate public data. Private
 attendance responses, guest contact details, role assignment history,
 confirmation tokens, Google Sheets administration data, and Apps Script
@@ -13,30 +13,14 @@ deployment configuration should not be committed to this public repository.
 
 ## Website
 
-Preferred public URL:
-
-```text
-https://nig-badminton-club.github.io/
-```
-
-To use this root organization-site URL on GitHub Pages, create the repository
-under the `nig-badminton-club` organization with this exact name:
-
-```text
-nig-badminton-club.github.io
-```
-
-If a different repository name is used, GitHub Pages will publish it as a
-project site instead, for example:
-
-```text
-https://nig-badminton-club.github.io/<repository-name>/
-```
+Live site: [nig-badminton-club.github.io](https://nig-badminton-club.github.io/).
+The organization site is already configured. Normal changes use the existing
+CI and Pages delivery; see [development and delivery](DEVELOPMENT.md).
 
 ## Site Contents
 
 - `docs/index.html`: schedule, next practice, map, and participation policy
-- `docs/attendance.html`: year-over-year seasonal attendance chart and exact totals
+- `docs/attendance.html`: yearly historical participation chart, totals and TSV download
 - `docs/about.html`: club overview, practice photo, member count summary, and yearly officers
 - `docs/workflow.html`: weekly attendance and role-assignment workflow
 - `docs/role-assignment.html`: setup/return role assignment method
@@ -45,7 +29,7 @@ https://nig-badminton-club.github.io/<repository-name>/
 - `docs/privacy.html`: public data, Form data, access, and correction/deletion policy
 - `docs/favicon.svg`: site favicon
 - `docs/assets/`: CSS and JavaScript for the static site
-- `docs/data/public.json`: public fallback data for the static site
+- `docs/data/public.json`: committed aggregate schedule and attendance data
 - `docs/data/config.js`: optional live public-data endpoint configuration
 
 The site is bilingual Japanese/English.
@@ -54,9 +38,11 @@ The site is bilingual Japanese/English.
 
 The website may publish:
 
-- upcoming practice dates, times, locations, and status
-- aggregate attendance counts
-- aggregate guest counts
+- upcoming practice dates, times, locations, and status, plus dates retained
+  with historical aggregate records
+- current and historical aggregate attendance and guest counts, including the
+  yearly chart and downloadable TSV; these describe Form responses, not
+  confirmed physical attendance
 - aggregate key-pickup status without assignee identity, confirmation tokens, or timestamps
 - response and role status without member identities
 - aggregate Google Group member counts split into NIG and external members
@@ -79,6 +65,10 @@ Thursday role-assignment email may share the guest count by respondent account
 with the whole club, but not guest names, relationships, affiliations, or contact
 details.
 
+The [privacy page](docs/privacy.html) explains collection, private member-level
+statistics, historical aggregate publication and access. Update both languages
+there whenever the site's data use or public fields change.
+
 ## GitHub Pages Deployment
 
 On pushes to `main`, `.github/workflows/ci.yml` validates the commit once and
@@ -86,12 +76,9 @@ then calls the reusable Pages workflow to publish that same commit’s `docs/`
 directory. See [development and recovery](DEVELOPMENT.md) for the checks and
 manual/recovery entry points.
 
-The expected setup is:
-
-1. Create `nig-badminton-club.github.io` under the `nig-badminton-club` organization.
-2. Push this repository to `main`.
-3. In repository settings, enable GitHub Pages with GitHub Actions as the source.
-4. Confirm the deployed site at `https://nig-badminton-club.github.io/`.
+Initial repository creation is separate from routine delivery; the
+[initial setup reference](DEVELOPMENT.md#initial-site-setup-reference) is for
+recreating the site in a separate environment.
 
 ## Local Preview
 
@@ -139,20 +126,11 @@ project settings, sheet/template tooling, protected admin-console source, and
 maintainer-only setup notes. Those files can contain operational resource IDs
 and implementation details that are unnecessary for the public website.
 
-To resume development from a clean machine, maintainers should clone both
-repositories, then authenticate locally with `clasp login`. The public
-repository is enough to preview and publish the website; the private repository
-is needed to update Forms, Calendar, Sheets, triggers, and email automation.
-
-Before production launch, maintainers should separately confirm that:
-
-- automated email delivery is intentionally enabled only when ready
-- Google Group and Calendar sharing settings are intentional
-- the attendance form collects Google account email automatically
-- the spreadsheet is private to the owner and shared only with explicitly authorized administrators
-- guest details remain in private Sheets only
-- the public JSON file contains aggregate public data only
-- the practice photo remains appropriate for public display
+This repository alone is enough to preview, validate and publish the website;
+no Google login is needed for local checks. Clone the private repository when
+maintaining Forms, Calendar, Sheets, triggers or email automation, and follow its
+separate authorization and deployment instructions. Do not recreate production
+resources as part of a routine site update.
 
 ## License
 

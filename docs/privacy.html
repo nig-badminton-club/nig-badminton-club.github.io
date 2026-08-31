@@ -41,7 +41,7 @@
             <h2 id="public-data-title">Information Published Here / このサイトで公開する情報</h2>
           </div>
         </div>
-        <p>This website publishes practice dates and locations, aggregate attendance figures for the current week's practice, key-pickup status without the assignee identity or confirmation time, notices marked for public display by administrators, and aggregate Google Group member counts. It does not publish member email addresses or account IDs, assigned member names, individual form responses, confirmation links or tokens, or guest contact details. / このサイトでは、練習日時・場所、今週の練習の出欠集計、担当者名や確認時刻を含まない鍵受け取り状況、管理者が公開用に入力した連絡事項、Google Groupの部員数集計を掲載します。部員のメールアドレスやアカウントID、担当者名、個別のフォーム回答、確認リンクやトークン、ゲストの連絡先は公開しません。</p>
+        <p>This website publishes practice dates and locations, aggregate attendance and guest counts for the current week and retained past practices, key-pickup status without the assignee identity or confirmation time, notices marked for public display by administrators, and aggregate Google Group member counts. Historical participation totals are available in the <a class="text-link" href="attendance.html">yearly chart and TSV download</a>; these are counts from Form responses, not confirmed physical attendance. It does not publish member email addresses or account IDs, assigned member names, individual form responses, confirmation links or tokens, or guest contact details. / このサイトでは、練習日時・場所、今週と保存された過去の練習の出欠・ゲスト人数の集計、担当者名や確認時刻を含まない鍵受け取り状況、管理者が公開用に入力した連絡事項、Google Groupの部員数集計を掲載します。過去の参加人数は<a class="text-link" href="attendance.html">年別グラフとTSVダウンロード</a>でも公開します。人数はフォーム回答に基づき、実際の来場を確認した値ではありません。部員のメールアドレスやアカウントID、担当者名、個別のフォーム回答、確認リンクやトークン、ゲストの連絡先は公開しません。</p>
         <p>The About page includes a practice photo provided for publication by the club. Anyone shown in the photo may request its removal through the membership form. / Aboutページには、部の公開用として提供された練習写真を掲載しています。写真に写っている方は、メンバー手続きフォームから掲載の取り下げを依頼できます。</p>
       </section>
 
@@ -65,8 +65,8 @@
         <div class="policy-content">
           <div>
             <h3>Weekly attendance / 毎週の出欠</h3>
-            <p>The attendance form collects the signed-in account's email address, attendance, available roles, any reason entered after selecting “Other,” guest count and details, and messages for the club. This information is used to summarize weekly attendance, assign roles, prepare equipment, and share club notices. / 出欠フォームでは、ログイン中のアカウントのメールアドレス、出欠、担当できる役割、「その他」を選んだ場合に記入した理由、ゲストの人数と情報、全体への連絡事項を収集します。これらは、毎週の出欠集計、担当者の選出、道具の準備、部内連絡に利用します。</p>
-            <p>The system keeps a private roster of Google Group member email addresses, first-detected dates, and automatic-assignment eligibility dates. This is used only to exclude newly detected members from automatic role assignment for their first two months. The roster is not published. / システムは、Google Groupメンバーのメールアドレス、初回検出日、自動担当の対象開始日を非公開の名簿に保存します。この情報は、新しく検出されたメンバーを最初の2か月間、自動担当から除外するためにのみ利用し、公開しません。</p>
+            <p>The attendance form collects the signed-in account's email address, attendance, available roles, any reason entered after selecting “Other,” guest count and details, and messages for the club. This information is used to summarize attendance, assign roles, prepare equipment, share club notices, and calculate administrator-only planned-participation and registration-timing statistics. / 出欠フォームでは、ログイン中のアカウントのメールアドレス、出欠、担当できる役割、「その他」を選んだ場合に記入した理由、ゲストの人数と情報、全体への連絡事項を収集します。これらは、出欠集計、担当者の選出、道具の準備、部内連絡、管理者向けの参加予定率・登録時期の集計に利用します。</p>
+            <p>The system keeps a private roster of Google Group member email addresses, first-detected dates, automatic-assignment eligibility dates, and active or inactive membership status. It uses this record to apply the two-calendar-month newcomer grace period and to determine the active members and eligible practices in the administrator-only statistics. These statistics describe Form responses, not confirmed physical attendance. The roster and member-level statistics are not published. / システムは、Google Groupメンバーのメールアドレス、初回検出日、自動担当の対象開始日、在籍・退会の状態を非公開名簿に保存します。この情報は、初回検出から2暦月の新人猶予と、管理者向け集計での在籍メンバー・対象練習の判定に利用します。統計はフォーム回答に基づく参加予定を示し、実際の来場確認ではありません。名簿と個人別の統計は公開しません。</p>
           </div>
           <div>
             <h3>Membership procedures / メンバー手続き</h3>
@@ -90,6 +90,7 @@
           <div>
             <h3>Administrators / 管理者</h3>
             <p>Individual responses and request records are stored in a private Google spreadsheet that only the owner and explicitly authorized collaborators can open. The web-based admin console also requires Google sign-in and verification against the application's administrator allowlist. / 個別の回答と申請記録は、所有者と明示的に権限を付与された共同管理者だけが開ける非公開Googleスプレッドシートに保存します。ウェブ管理画面の利用にも、Googleログインとアプリの管理者許可リストによる確認が必要です。</p>
+            <p>Private operational records also retain notification recipients and content, delivery status, and membership snapshots used to preserve historical totals. These support recovery of incomplete work, prevention of duplicate notifications, and stable past aggregates; they are not public exports. / 非公開の運用記録には、通知の宛先・内容・送信状態と、過去の集計を保持するためのメンバー構成の記録も保存します。未完了処理の復旧、通知の重複防止、過去集計の維持に利用し、これらの記録は公開しません。</p>
           </div>
         </div>
       </section>

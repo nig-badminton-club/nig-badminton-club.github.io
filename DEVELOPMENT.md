@@ -38,3 +38,36 @@ The schedule retains cancellation and tentative-state text after the fourth
 practice, including accessible text in the compact date list. Public payload
 fields are unchanged. The operations repository owns historical attendance
 snapshots; deploying this static site does not deploy or migrate that system.
+
+## Documentation changes
+
+Keep the Japanese and English explanations aligned with the deployed behavior.
+The role page is the participant-facing reference for selection order, workload
+points, newcomer grace and manual exceptions. Review it together with the
+workflow page whenever deadlines or replacement instructions change. The
+private operations repository owns the corresponding implementation and Form,
+email and admin-console text.
+
+The privacy page must describe the actual use of responses and private member
+records, as well as current and retained historical public aggregates. Keep the
+README's public-data policy aligned with it. Do not add private diagnostics or
+operational identifiers to public documentation.
+
+Run `npm run check`, verify internal links and view affected pages at desktop
+and narrow widths before pushing. Existing checks catch markup, data and
+rendering problems; they do not prove that prose matches the business rules.
+
+## Initial site setup reference
+
+The current organization site is already configured. The following is only a
+reference for recreating a site, not a routine deployment sequence:
+
+1. An organization root site uses a repository named
+   `nig-badminton-club.github.io` under the `nig-badminton-club` organization.
+2. Push the site source and workflows to the default branch.
+3. Select GitHub Actions as the GitHub Pages source in repository settings.
+4. Confirm successful CI and Pages delivery at the organization site URL.
+
+A different repository name produces a project-site URL with a repository path,
+so check URL and asset handling before using that layout. Do not change the
+existing repository's Pages configuration as part of ordinary maintenance.
