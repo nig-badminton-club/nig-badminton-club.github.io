@@ -21,13 +21,13 @@
     "status": "ok",
     "groupEmail": "nig.badminton-club@nig.ac.jp",
     "internalDomain": "nig.ac.jp",
-    "updatedAt": "2026-09-03T06:24:29+09:00",
-    "lastSuccessAt": "2026-09-03T06:24:29+09:00",
+    "updatedAt": "2026-09-04T06:23:00+09:00",
+    "lastSuccessAt": "2026-09-04T06:23:00+09:00",
     "totalCount": 40,
     "nigCount": 37,
     "externalCount": 3
   },
-  "generatedAt": "2026-09-03T17:02:15+09:00",
+  "generatedAt": "2026-09-04T06:23:07+09:00",
   "sessions": [
     {
       "sessionId": "2026-07-17",
@@ -142,18 +142,18 @@
       "date": "2026-09-04",
       "time": "19:00-21:00",
       "location": "Mishima Municipal Nishikida Elementary School Gym / 三島市立錦田小学校 体育館",
-      "status": "scheduled",
+      "status": "cancelled",
       "reservationStatus": "confirmed",
       "reservationTime": "18:00-21:30",
-      "responseStatus": "changes-open",
-      "attendingCount": 2,
-      "absentCount": 10,
-      "unansweredCount": 28,
-      "guestCount": 0,
+      "responseStatus": "cancelled",
+      "attendingCount": null,
+      "absentCount": null,
+      "unansweredCount": null,
+      "guestCount": null,
       "roleStatus": "pending",
-      "keyPickupStatus": "awaiting-assignment",
+      "keyPickupStatus": "not-required",
       "publicNote": "",
-      "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLSdrHQAGBWRh3btODxMM0dypzZCHK0YS1mh6-UVch0JJudfUMA/viewform?usp=pp_url&entry.1276326054=2026-09-04+(19:00-21:00)&entry.1509490790=0"
+      "formUrl": ""
     },
     {
       "sessionId": "2026-09-11",
