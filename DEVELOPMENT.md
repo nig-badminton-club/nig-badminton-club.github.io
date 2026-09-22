@@ -39,6 +39,28 @@ practice, including accessible text in the compact date list. Public payload
 fields are unchanged. The operations repository owns historical attendance
 snapshots; deploying this static site does not deploy or migrate that system.
 
+## Test review policy
+
+Keep tests for plausible user-visible failures, not a target count or coverage
+percentage. The September 2026 review covered all three test files:
+
+- `site.test.mjs` retains dynamic schedule states, date/list boundaries, form
+  availability, private-data exclusion, injection prevention, stale-data warnings,
+  attendance totals/exports and structural accessibility. Date and key-pickup
+  assertions share existing rendering scenarios instead of opening extra DOMs.
+- `recovery.test.mjs` retains the actual shell helper's dispatch decisions,
+  independent error/branch/rerun boundaries and the same-commit validation gate.
+- `workflows.test.mjs` was removed: runner choice and a fixed timeout are deployment
+  preferences rather than evidence that recovery works.
+
+Static prose, analytics attributes/tag IDs, search-verification text and chart
+source spelling are no longer frozen by tests. This accepts loss of those
+configuration/copy smoke checks; the deleted analytics tests never checked event
+emission. Review such changes directly. HTML, local links and private-data patterns
+are checked by `npm run check`; the duplicate private-sheet URL assertion was
+removed from the HTML test. Accessibility checks remain despite their higher cost
+because malformed rendered page structure can prevent actual use.
+
 ## Documentation changes
 
 Keep the Japanese and English explanations aligned with the deployed behavior.

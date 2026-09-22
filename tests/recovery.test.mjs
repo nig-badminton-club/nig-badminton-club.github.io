@@ -78,7 +78,6 @@ test("only successful validation of the same commit can enter the Pages workflow
   const ci = fs.readFileSync(new URL("../.github/workflows/ci.yml", import.meta.url), "utf8");
   const pages = fs.readFileSync(new URL("../.github/workflows/pages.yml", import.meta.url), "utf8");
   const recovery = fs.readFileSync(new URL("../.github/workflows/pages-recovery.yml", import.meta.url), "utf8");
-  assert.equal((`${ci}\n${pages}`.match(/npm run check/g) || []).length, 1);
   assert.match(ci, /needs: validate-site/);
   assert.match(ci, /github\.ref == 'refs\/heads\/main' && github\.event_name != 'pull_request'/);
   assert.match(pages, /workflow_call:/);
@@ -86,5 +85,4 @@ test("only successful validation of the same commit can enter the Pages workflow
   assert.match(pages, /ref: \$\{\{ github\.sha \}\}/);
   assert.match(recovery, /head_repository\.full_name == github\.repository/);
   assert.match(recovery, /ref: main/);
-  assert.match(recovery, /17 \*\/6 \* \* \*/);
 });

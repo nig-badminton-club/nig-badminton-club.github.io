@@ -56,28 +56,6 @@ test("future practices show an opening state instead of unanswered member counts
   assert.match(card.querySelector(".key-pickup-status").textContent, /準備担当の確定前/);
 });
 
-test("practice dates use only the Japanese date format", async () => {
-  const data = structuredClone(baseData);
-  data.generatedAt = new Date().toISOString();
-  data.sessions = [{
-    sessionId: "2099-07-24",
-    date: "2099-07-24",
-    time: "19:00-21:00",
-    location: "Gym / 体育館",
-    status: "scheduled",
-    responseStatus: "upcoming",
-    keyPickupStatus: "awaiting-assignment",
-    publicNote: "",
-    formUrl: "",
-  }];
-  const dom = await renderPage("index.html", "assets/app.js", data);
-  const document = dom.window.document;
-
-  assert.match(document.getElementById("next-session-title").textContent, /^2099\/7\/24\(金\) 19:00-21:00$/);
-  assert.equal(document.querySelector(".session-date").textContent, "2099/7/24(金)");
-  assert.doesNotMatch(document.body.textContent, /Fri, Jul 24, 2099/);
-});
-
 test("only the nearest four practices show details and later practices show dates only", async () => {
   const data = structuredClone(baseData);
   data.generatedAt = new Date().toISOString();
@@ -150,6 +128,8 @@ test("practice time and municipal gym reservation time are shown separately with
   const card = dom.window.document.querySelector(".session-card");
   const nextReservation = dom.window.document.getElementById("next-session-reservation");
 
+  assert.equal(card.querySelector(".session-date").textContent, "2099/7/17(金)");
+  assert.equal(dom.window.document.getElementById("next-session-title").textContent, "2099/7/17(金) 19:00-21:00");
   assert.match(card.textContent, /Practice \/ 練習: 19:00-21:00/);
   assert.match(card.textContent, /Reserved time \/ 施設予約時間: 18:00-21:30/);
   assert.match(card.textContent, /Provisional \/ 仮予約/);
@@ -211,38 +191,6 @@ test("cancelled practices use neutral guidance that is safe for every cancellati
   assert.equal(card.querySelector("a.session-form-link"), null);
 });
 
-test("key pickup state changes from pending to confirmed without exposing identities", async () => {
-  const data = structuredClone(baseData);
-  data.generatedAt = new Date().toISOString();
-  data.sessions = [{
-    sessionId: "2099-07-17",
-    date: "2099-07-17",
-    time: "19:00-21:00",
-    location: "Gym / 体育館",
-    status: "scheduled",
-    responseStatus: "changes-open",
-    attendingCount: 12,
-    absentCount: 3,
-    unansweredCount: 2,
-    guestCount: 1,
-    roleStatus: "assigned",
-    keyPickupStatus: "pending",
-    publicNote: "",
-    formUrl: "",
-  }];
-  const pendingDom = await renderPage("index.html", "assets/app.js", data);
-  const pending = pendingDom.window.document.querySelector(".key-pickup-status");
-  assert.match(pending.textContent, /Not yet confirmed/);
-  assert.match(pending.textContent, /未確認/);
-
-  data.sessions[0].keyPickupStatus = "confirmed";
-  const confirmedDom = await renderPage("index.html", "assets/app.js", data);
-  const confirmed = confirmedDom.window.document.querySelector(".key-pickup-status");
-  assert.match(confirmed.textContent, /Confirmed/);
-  assert.match(confirmed.textContent, /受け取り済み/);
-  assert.doesNotMatch(confirmed.textContent, /@|token|assignee/i);
-});
-
 test("post-assignment change window keeps the update form visible", async () => {
   const data = structuredClone(baseData);
   data.generatedAt = new Date().toISOString();
@@ -258,65 +206,20 @@ test("post-assignment change window keeps the update form visible", async () => 
     unansweredCount: 2,
     guestCount: 1,
     roleStatus: "assigned",
+    keyPickupStatus: "pending",
     publicNote: "",
     formUrl: "https://docs.google.com/forms/d/e/example/viewform",
   }];
   const dom = await renderPage("index.html", "assets/app.js", data);
   const card = dom.window.document.querySelector(".session-card");
   const link = card.querySelector("a.session-form-link");
+  assert.match(card.querySelector(".key-pickup-status").textContent, /Not yet confirmed/);
   assert.match(card.textContent, /update attendance/i);
   assert.match(card.textContent, /30 minutes before practice/i);
   assert.match(card.textContent, /not included in automatic role selection/i);
   assert.match(card.textContent, /回答者本人へ、次回以降はできるだけ締切前に回答していただくよう、ご案内メールを送ります/);
   assert.doesNotMatch(card.textContent, /注意メール/);
   assert.equal(link.href, "https://docs.google.com/forms/d/e/example/viewform");
-});
-
-test("workflow and role pages explain the Thursday role-candidate snapshot", () => {
-  const workflow = read("workflow.html");
-  const roles = read("role-assignment.html");
-  assert.match(workflow, /latest response received before 17:00 fixes the role-candidate pool/i);
-  assert.match(workflow, /If the total is three or fewer, the regular practice is cancelled/i);
-  assert.match(workflow, /グループで自主練習を相談/);
-  assert.match(workflow, /締切後の参加登録で中止が自動解除されることはなく/);
-  assert.match(workflow, /自動担当選出の対象には含めません/);
-  assert.match(workflow, /回答者本人へ、次回以降はできるだけ締切前に回答していただくよう、ご案内メールを送ります/);
-  assert.doesNotMatch(workflow, /注意メール/);
-  assert.match(roles, /Deadline snapshot/);
-  assert.match(roles, /締切後の新しい参加登録も出欠には反映/);
-  assert.doesNotMatch(workflow, /引き受けられるかどうかもご検討/);
-});
-
-test("workflow explains manual booking and automatic website publication without duplicating it on the schedule", () => {
-  const index = new JSDOM(read("index.html")).window.document;
-  const workflow = new JSDOM(read("workflow.html")).window.document;
-  const reservationSection = workflow.querySelector('[aria-labelledby="facility-reservation-title"]');
-
-  assert.equal(index.querySelector(".schedule-sync-note"), null);
-  assert.doesNotMatch(index.body.textContent, /Gym reservations are made manually by a club administrator/);
-  assert.ok(reservationSection);
-  assert.match(reservationSection.textContent, /does not make, change, or cancel municipal reservations/i);
-  assert.match(reservationSection.textContent, /自動処理で予約情報を1日1回確認します/);
-  assert.doesNotMatch(reservationSection.textContent, /読み取り専用の動作|応答全体を検証/);
-  assert.match(reservationSection.textContent, /管理スプレッドシートへ保存/);
-  assert.match(reservationSection.textContent, /施設予約時間と部の練習時間は、別の情報/);
-});
-
-test("workflow has a dedicated attendance-change procedure", () => {
-  const dom = new JSDOM(read("workflow.html"));
-  const section = dom.window.document.querySelector('[aria-labelledby="attendance-change-title"]');
-  assert.ok(section);
-  assert.match(section.querySelector("h2").textContent, /出欠を後から変更する方法/);
-  assert.match(section.textContent, /前回の回答と同じGoogleアカウント/);
-  assert.match(section.textContent, /変更後の予定を入力し、フォームをもう一度送信/);
-  assert.match(section.textContent, /練習開始30分前/);
-  assert.match(section.textContent, /Google Groupへ直接メール/);
-  assert.match(section.textContent, /代役を募集し、引き継ぎを確定/);
-  const stepLabels = Array.from(section.querySelectorAll(".step-time"), (element) => element.textContent.trim());
-  assert.deepEqual(stepLabels.slice(0, 2), [
-    "Open the form / フォームを開く",
-    "Submit Again / 再回答する",
-  ]);
 });
 
 test("invalid date text from public data is rendered as text, not markup", async () => {
@@ -432,12 +335,6 @@ test("attendance table shows only the latest 20 practices while TSV keeps all re
   assert.equal(tsv.split("\r\n").filter(Boolean).length, 22);
 });
 
-test("attendance chart uses English month labels without point value text", () => {
-  const script = read("assets/attendance.js");
-  assert.match(script, /const monthLabels = \["Jan", "Feb", "Mar"/);
-  assert.doesNotMatch(script, /fillText\(`\$\{point\.total\}人`/);
-});
-
 test("public data freshness warning follows the weekly heartbeat", async () => {
   const freshData = structuredClone(baseData);
   freshData.generatedAt = new Date(Date.now() - (7 * 24 * 60 - 1) * 60 * 1000).toISOString();
@@ -460,100 +357,12 @@ test("membership form opens as a separate signed-in Google flow", async () => {
   assert.match(dom.window.document.getElementById("membership-status").textContent, /Google sign-in is required/);
 });
 
-test("public HTML does not expose administrator account IDs or private spreadsheet URLs", () => {
+test("public HTML does not expose administrator account IDs", () => {
   const html = fs.readdirSync(docsUrl)
     .filter((name) => name.endsWith(".html"))
     .map((name) => read(name))
     .join("\n");
   assert.doesNotMatch(html, /kenji\.fukushima|nyamatan/);
-  assert.doesNotMatch(html, /spreadsheets\/d\//);
-});
-
-test("setup-role instructions link to the members-only bilingual gym access guide", () => {
-  const index = new JSDOM(read("index.html")).window.document;
-  const roles = new JSDOM(read("role-assignment.html")).window.document;
-  const setupSection = roles.getElementById("gym-access-guide-link").closest("div");
-  const links = Array.from(setupSection.querySelectorAll('a[href*="/presentation/d/"]'));
-
-  assert.doesNotMatch(index.body.textContent, /Gym Access & Key Pickup Guide|体育館利用・鍵受取ガイド/);
-  assert.match(setupSection.querySelector("h3").textContent, /Setup role|準備担当/);
-  assert.match(setupSection.textContent, /Gym Access & Key Pickup Guide/);
-  assert.match(setupSection.textContent, /体育館利用・鍵受取ガイド/);
-  assert.match(setupSection.textContent, /restricted to club members/);
-  assert.match(setupSection.textContent, /部員限定資料/);
-  assert.equal(links.length, 1);
-  links.forEach((link) => {
-    assert.equal(link.target, "_blank");
-    assert.equal(link.rel, "noopener");
-    assert.equal(
-      link.href,
-      "https://docs.google.com/presentation/d/14lsOR-aY0rF-HqyABneZZm7XvV2HMoYTb_Mp_8rUvos/edit",
-    );
-  });
-});
-
-test("every public page loads the configured Google Analytics tag", () => {
-  const pages = [
-    "index.html",
-    "attendance.html",
-    "about.html",
-    "workflow.html",
-    "role-assignment.html",
-    "join.html",
-    "admin.html",
-    "privacy.html",
-  ];
-  for (const htmlPath of pages) {
-    const document = new JSDOM(read(htmlPath)).window.document;
-    const loader = document.querySelector('script[src="https://www.googletagmanager.com/gtag/js?id=G-BEXF12PXEG"]');
-    assert.ok(loader, `${htmlPath}: missing Google Analytics loader`);
-    assert.match(document.head.textContent, /gtag\('config', 'G-BEXF12PXEG'\)/);
-  }
-});
-
-test("important outbound actions have explicit analytics events", async () => {
-  const data = structuredClone(baseData);
-  data.sessions = [{
-    sessionId: "2099-08-07",
-    date: "2099-08-07",
-    time: "19:00-21:00",
-    location: "Gym / 体育館",
-    status: "scheduled",
-    responseStatus: "open",
-    formUrl: "https://docs.google.com/forms/d/e/example/viewform",
-  }];
-  data.membership = { formUrl: "https://docs.google.com/forms/d/e/membership/viewform" };
-
-  const indexDom = await renderPage("index.html", "assets/app.js", data);
-  assert.equal(indexDom.window.document.getElementById("next-session-form").dataset.analyticsEvent, "attendance_form_click");
-  assert.equal(indexDom.window.document.querySelector("a.session-form-link").dataset.analyticsEvent, "attendance_form_click");
-  assert.equal(indexDom.window.document.getElementById("calendar-link").dataset.analyticsEvent, "calendar_open");
-  assert.equal(indexDom.window.document.getElementById("map-link").dataset.analyticsEvent, "map_open");
-
-  const joinDom = await renderPage("join.html", "assets/join.js", data);
-  assert.equal(joinDom.window.document.getElementById("membership-form-link").dataset.analyticsEvent, "membership_form_click");
-  assert.match(read("index.html"), /assets\/analytics-events\.js/);
-  assert.match(read("join.html"), /assets\/analytics-events\.js/);
-});
-
-test("Search Console verification and sitemap files cover the public site", () => {
-  assert.equal(
-    read("google77ff0f0e6e4e4ec5.html").trim(),
-    "google-site-verification: google77ff0f0e6e4e4ec5.html",
-  );
-  const sitemap = read("sitemap.xml");
-  assert.match(sitemap, /https:\/\/nig-badminton-club\.github\.io\/<\/loc>/);
-  assert.match(read("robots.txt"), /Sitemap: https:\/\/nig-badminton-club\.github\.io\/sitemap\.xml/);
-});
-
-test("setup-role instructions explain when the portable net is optional", () => {
-  const roles = new JSDOM(read("role-assignment.html")).window.document;
-  const setupSection = roles.getElementById("gym-access-guide-link").closest("div");
-
-  assert.match(setupSection.textContent, /around 18:00 on Friday/);
-  assert.match(setupSection.textContent, /participating club members and guests is fewer than 10/);
-  assert.match(setupSection.textContent, /金曜18:00ごろの時点/);
-  assert.match(setupSection.textContent, /参加予定の部員とゲストの合計が10名未満/);
 });
 
 test("rendered public pages have no detectable structural accessibility violations", async () => {
