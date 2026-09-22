@@ -82,7 +82,8 @@ recreating the site in a separate environment.
 
 ## Local Preview
 
-Use Node 24 (selected in `.node-version`) and Python 3. From the repository root:
+Use Node 24.15 or newer within 24.x (selected in `.node-version`) and Python 3.
+From the repository root:
 
 ```sh
 npm ci

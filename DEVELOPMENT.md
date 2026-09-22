@@ -66,6 +66,40 @@ preview may load configured third-party resources; it is separate from the local
 mock suite. Do not modify automation-maintained `docs/data/public.json` just to
 simulate a state: rendering tests accept in-memory fixtures.
 
+## Public data loading and TSV output
+
+The browser reads `docs/data/config.js`. With the intentionally blank
+`NIG_BADMINTON_PUBLIC_JSONP_URL`, it fetches `data/public.json` relative to the
+page with `cache: "no-store"`. A configured JSONP URL is tried first; a load
+error or five-second timeout falls back to the committed JSON. There is no
+server-side environment-variable or CLI override and no local build/cache to
+regenerate. Use the HTTP preview rather than opening HTML via `file:`.
+
+`attendance.html` derives its chart and download from `sessions`: valid
+`YYYY-MM-DD` dates strictly before today in Asia/Tokyo, non-`cancelled` status,
+and finite numeric `attendingCount` are required. Today and future dates are
+excluded; a null/missing attendance count is unavailable, not zero. Missing or
+non-numeric `guestCount` is rendered as zero; negative numeric counts are
+clamped to zero by the consumer. This is display behavior, not a substitute for
+validating source data.
+
+The download is generated in the browser as `nig-badminton-attendance.tsv`;
+the browser chooses its destination and handles repeat-download filenames.
+No TSV is written into the repository by `serve` or `check`. It is UTF-8 with
+a BOM, tab separators and CRLF line endings, ordered by ascending date:
+
+| Column | Meaning |
+| --- | --- |
+| `date` | Practice date, `YYYY-MM-DD` |
+| `attending_count` | Members whose Form response indicates attendance, people |
+| `guest_count` | Registered guests, people |
+| `total_participants` | Sum of the preceding two counts, people |
+
+These are planned participation counts, not confirmed physical attendance or
+unique people across multiple practices. The table shows the latest 20 records
+in descending date order; the chart and TSV include all qualifying records.
+The download is disabled when no records qualify.
+
 ## Test review policy
 
 Keep tests for plausible user-visible failures, not a target count or coverage
