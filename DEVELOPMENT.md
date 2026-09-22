@@ -39,6 +39,33 @@ practice, including accessible text in the compact date list. Public payload
 fields are unchanged. The operations repository owns historical attendance
 snapshots; deploying this static site does not deploy or migrate that system.
 
+## Choosing local checks
+
+Run from this repository's root. Confirm `node --version` is v24.15 or newer within 24.x and
+`python3 --version` succeeds, then `npm ci`. `.node-version` is a selection file,
+not an automatic runtime switch. The locked jsdom requires at least Node 24.15
+on the 24.x line. Installation needs the npm registry; checks use local fixtures
+and mocked fetch/GitHub CLI, with no Google credentials.
+
+| Change | Focused command while iterating |
+| --- | --- |
+| Browser JavaScript, rendering, schedule or attendance/export data | `npm run lint` then `node --test tests/site.test.mjs` |
+| HTML, links, config or public JSON | `npm run validate:html` then `npm run validate:site`; also rendering tests for displayed data |
+| Pages recovery helper or delivery wiring | `node --test tests/recovery.test.mjs` |
+| Styles, bilingual prose, analytics or other browser configuration | Static checks plus direct review of the affected page/configuration; tests do not establish prose accuracy or analytics delivery |
+
+Use `npm run check` before push, including development-document changes because
+the private-data scan reads those too. Success means exit 0 with no failed tests
+or validation errors. There is no separate type checker. Recovery tests create
+and remove temporary fake CLI fixtures; running `scripts/recover_pages.sh`
+directly is an external GitHub action, not a local test.
+
+For page changes, `npm run serve` serves `docs/` at `http://localhost:4173/`.
+Check desktop and narrow layouts, then stop the server with Ctrl-C. Browser
+preview may load configured third-party resources; it is separate from the local
+mock suite. Do not modify automation-maintained `docs/data/public.json` just to
+simulate a state: rendering tests accept in-memory fixtures.
+
 ## Test review policy
 
 Keep tests for plausible user-visible failures, not a target count or coverage
