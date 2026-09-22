@@ -34,3 +34,34 @@ Repository-specific instructions override these defaults.
 - For GitHub Actions edits, use `optimize-github-actions` in `.agents/skills/`.
   Preserve required coverage; never run untrusted PR code on self-hosted runners.
 <!-- END KF AGENT POLICY -->
+
+# Repository instructions
+
+Read [README](README.md) for the public-data boundary, then
+[DEVELOPMENT.md](DEVELOPMENT.md#choosing-local-checks) for change-specific checks.
+Run commands in this repository's root with Node 24.15 or newer within 24.x,
+npm and Python 3:
+`npm ci`, `npm run check`; preview with `npm run serve` at
+`http://localhost:4173/` and stop it after use. Checks need no Google login.
+Individual stages are `npm run lint`, `npm run validate:html`,
+`npm run validate:site` and `npm test`. Lint checks JavaScript syntax, not style;
+there is no separate type-check command or build step.
+
+Start with the affected `docs/*.html` and its `docs/assets/*.js`; `app.js` renders
+schedule data and `attendance.js` owns historical totals/TSV export. Read the
+public-data policy before changing `docs/data/` or any exported fields. Counts
+represent Form responses, not confirmed physical attendance. Preserve payload
+status/null semantics, TSV compatibility, Japanese/English agreement and the
+intentionally blank anonymous JSONP endpoint.
+
+`docs/data/public.json` is automation-maintained published data, not a scratch
+fixture. Use in-memory test data for experiments. Keep private operational IDs,
+credentials, local settings, `node_modules/` and `build/` out of changes. Apps
+Script source and production operations belong in the separate private repo.
+
+Run the affected checks while iterating and full `npm run check` before push.
+Review changed pages at desktop and narrow widths when markup/style/rendering
+changes. Report commands/results, omitted checks and browser/live limitations;
+check `git diff --check` and the final diff. Keep `VERSION`, package and lockfile
+root versions aligned for push. Pushing `main` triggers CI and then Pages;
+it does not deploy Apps Script. See DEVELOPMENT for recovery, not routine setup.
