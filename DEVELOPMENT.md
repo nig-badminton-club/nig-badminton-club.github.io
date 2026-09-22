@@ -74,6 +74,8 @@ page with `cache: "no-store"`. A configured JSONP URL is tried first; a load
 error or five-second timeout falls back to the committed JSON. There is no
 server-side environment-variable or CLI override and no local build/cache to
 regenerate. Use the HTTP preview rather than opening HTML via `file:`.
+The schedule, attendance and membership pages use the same loading order and
+reject unsuccessful HTTP responses before rendering their JSON bodies.
 
 `attendance.html` derives its chart and download from `sessions`: valid
 `YYYY-MM-DD` dates strictly before today in Asia/Tokyo, non-`cancelled` status,

@@ -15,20 +15,70 @@ function read(path) {
   return fs.readFileSync(new URL(path, docsUrl), "utf8");
 }
 
-async function renderPage(htmlPath, scriptPath, data) {
+async function renderPage(htmlPath, scriptPath, data, configure = () => {}) {
   const dom = new JSDOM(read(htmlPath), {
     runScripts: "outside-only",
     url: `https://nig-badminton-club.github.io/${htmlPath}`,
   });
   openWindows.add(dom.window);
   dom.window.NIG_BADMINTON_PUBLIC_JSONP_URL = "";
-  dom.window.fetch = async () => ({ json: async () => structuredClone(data) });
+  dom.window.fetch = async () => ({ ok: true, json: async () => structuredClone(data) });
+  configure(dom.window);
   dom.window.eval(read(scriptPath));
   await new Promise((resolve) => dom.window.setTimeout(resolve, 20));
   return dom;
 }
 
 const baseData = JSON.parse(read("data/public.json"));
+
+for (const [page, script, target, errorText] of [
+  ["index.html", "assets/app.js", "next-session-title", /schedule unavailable/i],
+  ["attendance.html", "assets/attendance.js", "attendance-empty", /could not be loaded/i],
+  ["join.html", "assets/join.js", "membership-status", /currently unavailable/i],
+]) {
+  test(`${page} rejects HTTP errors even when their bodies are valid JSON`, async () => {
+    const dom = await renderPage(page, script, baseData, window => {
+      window.console.error = () => {};
+      window.fetch = async () => ({ ok: false, status: 503, json: async () => structuredClone(baseData) });
+    });
+    assert.match(dom.window.document.getElementById(target).textContent, errorText);
+  });
+
+  test(`${page} tries configured JSONP first and falls back only on failure`, async () => {
+    for (const failure of [null, "error", "timeout"]) {
+      let fetches = 0;
+      let jsonpRequests = 0;
+      const dom = await renderPage(page, script, baseData, window => {
+        window.console.warn = () => {};
+        window.console.error = () => {};
+        window.NIG_BADMINTON_PUBLIC_JSONP_URL = "https://example.test/public";
+        const setTimeout = window.setTimeout.bind(window);
+        window.setTimeout = (callback, delay) => setTimeout(callback, delay === 5000 ? 0 : delay);
+        window.fetch = async () => {
+          fetches++;
+          if (!failure) throw new Error("Static data unavailable");
+          return { ok: true, json: async () => structuredClone(baseData) };
+        };
+        const appendChild = window.document.head.appendChild.bind(window.document.head);
+        window.document.head.appendChild = element => {
+          const result = appendChild(element);
+          if (element.tagName === "SCRIPT") {
+            jsonpRequests++;
+            const callback = new URL(element.src).searchParams.get("callback");
+            if (failure !== "timeout") {
+              window.queueMicrotask(() => failure ? element.onerror() : window[callback](structuredClone(baseData)));
+            }
+          }
+          return result;
+        };
+      });
+      assert.equal(jsonpRequests, 1);
+      assert.equal(fetches, failure ? 1 : 0);
+      assert.doesNotMatch(dom.window.document.getElementById(target).textContent, errorText);
+      assert.equal(dom.window.document.querySelector('script[src^="https://example.test/public"]'), null);
+    }
+  });
+}
 
 test("future practices show an opening state instead of unanswered member counts", async () => {
   const data = structuredClone(baseData);

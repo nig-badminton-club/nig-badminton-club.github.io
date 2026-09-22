@@ -44,6 +44,7 @@
       }
     }
     const response = await fetch(fallbackUrl, { cache: "no-store" });
+    if (!response.ok) throw new Error(`Public data request failed: HTTP ${response.status}`);
     return response.json();
   }
 
