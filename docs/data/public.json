@@ -27,7 +27,7 @@
     "nigCount": 36,
     "externalCount": 3
   },
-  "generatedAt": "2026-10-07T06:23:03+09:00",
+  "generatedAt": "2026-10-07T10:02:05+09:00",
   "sessions": [
     {
       "sessionId": "2026-07-17",
@@ -239,7 +239,7 @@
       "attendingCount": 1,
       "absentCount": 2,
       "unansweredCount": 36,
-      "guestCount": 0,
+      "guestCount": 1,
       "roleStatus": "pending",
       "keyPickupStatus": "awaiting-assignment",
       "publicNote": "",
