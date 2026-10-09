@@ -27,7 +27,7 @@
     "nigCount": 36,
     "externalCount": 4
   },
-  "generatedAt": "2026-10-08T17:08:22+09:00",
+  "generatedAt": "2026-10-09T09:47:05+09:00",
   "sessions": [
     {
       "sessionId": "2026-07-17",
@@ -237,10 +237,10 @@
       "reservationTime": "18:00-21:30",
       "responseStatus": "changes-open",
       "attendingCount": 5,
-      "absentCount": 3,
-      "unansweredCount": 32,
+      "absentCount": 4,
+      "unansweredCount": 31,
       "guestCount": 4,
-      "roleStatus": "pending",
+      "roleStatus": "assigned",
       "keyPickupStatus": "pending",
       "publicNote": "",
       "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLSdrHQAGBWRh3btODxMM0dypzZCHK0YS1mh6-UVch0JJudfUMA/viewform?usp=pp_url&entry.1276326054=2026-10-09+(19:00-21:00)&entry.1509490790=0"
