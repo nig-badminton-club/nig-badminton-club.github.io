@@ -26,6 +26,8 @@ CI and Pages delivery; see [development and delivery](DEVELOPMENT.md).
 - `docs/role-assignment.html`: setup/return role assignment method
 - `docs/admin.html`: public entry point to the protected Apps Script admin console
 - `docs/join.html`: joining, leaving, email-address changes, and manager contact
+- Annual membership renewal starts in March 2027; the joining page explains the
+  March 29 deadline, manual April removal, completion notices, verification, and rejoining procedure.
 - `docs/privacy.html`: public data, Form data, access, and correction/deletion policy
 - `docs/favicon.svg`: site favicon
 - `docs/assets/`: CSS and JavaScript for the static site
