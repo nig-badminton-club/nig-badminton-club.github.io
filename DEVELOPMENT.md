@@ -124,6 +124,21 @@ are checked by `npm run check`; the duplicate private-sheet URL assertion was
 removed from the HTML test. Accessibility checks remain despite their higher cost
 because malformed rendered page structure can prevent actual use.
 
+The October 2026 follow-up retains accessibility scans on all four rendered
+pages and every recovery-shell scenario in the default suite. Fake GitHub CLI
+responses use Bash and prewritten JSON while the real recovery shell and jq
+filters still execute. Rendering fixtures observe the DOM update instead of
+waiting 20 ms on every page; missing rendering fails after a bounded timeout.
+The fee-copy test was merged into the existing injection scenario, which now
+checks that dynamic policy text is displayed safely. No suite is skipped.
+
+Measured on macOS with Node v24.19.0 on 2026-10-09, against `2e48bb5`, running
+`node --test --test-reporter=tap tests/*.test.mjs` three times before and after,
+with no concurrent repository tests or builds: median full-suite wall time fell
+from 2.34 s to 1.85 s (21%). The respective trial ranges were 2.25–2.52 s and
+1.78–2.18 s. All tests passed (30 before, 29 after consolidation); these local
+timings do not include dependency installation or predict CI runner timings.
+
 ## Documentation changes
 
 Keep the Japanese and English explanations aligned with the deployed behavior.

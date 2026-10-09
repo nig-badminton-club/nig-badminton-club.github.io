@@ -24,8 +24,22 @@ async function renderPage(htmlPath, scriptPath, data, configure = () => {}) {
   dom.window.NIG_BADMINTON_PUBLIC_JSONP_URL = "";
   dom.window.fetch = async () => ({ ok: true, json: async () => structuredClone(data) });
   configure(dom.window);
+  // These scripts render synchronously when their data promise settles. Wait
+  // for that DOM update, including error rendering and JSONP fallback.
+  const rendered = new Promise((resolve, reject) => {
+    const observer = new dom.window.MutationObserver(() => {
+      observer.disconnect();
+      dom.window.clearTimeout(timeout);
+      resolve();
+    });
+    const timeout = dom.window.setTimeout(() => {
+      observer.disconnect();
+      reject(new Error(`${htmlPath} did not render`));
+    }, 1000);
+    observer.observe(dom.window.document.body, { childList: true, subtree: true, attributes: true, characterData: true });
+  });
   dom.window.eval(read(scriptPath));
-  await new Promise((resolve) => dom.window.setTimeout(resolve, 20));
+  await rendered;
   return dom;
 }
 
@@ -272,9 +286,10 @@ test("post-assignment change window keeps the update form visible", async () => 
   assert.equal(link.href, "https://docs.google.com/forms/d/e/example/viewform");
 });
 
-test("invalid date text from public data is rendered as text, not markup", async () => {
+test("invalid dates and policy text from public data are rendered as text, not markup", async () => {
   const data = structuredClone(baseData);
   data.generatedAt = new Date().toISOString();
+  data.policy.fees = "Fee / 参加費: <img src=x onerror=alert(1)>";
   data.sessions = [{
     sessionId: "invalid-date",
     date: "zz<img src=x onerror=alert(1)>",
@@ -293,6 +308,9 @@ test("invalid date text from public data is rendered as text, not markup", async
   const date = dom.window.document.querySelector(".session-date");
   assert.equal(date.querySelector("img"), null);
   assert.match(date.textContent, /<img src=x onerror=alert\(1\)>/);
+  const policy = dom.window.document.getElementById("policy-content");
+  assert.equal(policy.querySelector("img"), null);
+  assert.match(policy.textContent, /Fee \/ 参加費: <img src=x onerror=alert\(1\)>/);
 });
 
 test("stale public data produces a visible warning", async () => {
@@ -303,16 +321,6 @@ test("stale public data produces a visible warning", async () => {
   const banner = dom.window.document.getElementById("data-health");
   assert.equal(banner.hidden, false);
   assert.match(banner.textContent, /may not have the latest data/);
-});
-
-test("participation information explains the current and possible future fee", async () => {
-  const data = structuredClone(baseData);
-  data.generatedAt = new Date().toISOString();
-  data.policy.fees = "There is currently no participation fee. A fee of a few hundred yen per practice may be introduced in the future. / 現在、参加費は徴収していません。将来は練習1回につき数百円程度の参加費をお願いする可能性があります。";
-  const dom = await renderPage("index.html", "assets/app.js", data);
-  const policy = dom.window.document.getElementById("policy-content");
-  assert.match(policy.textContent, /currently no participation fee/);
-  assert.match(policy.textContent, /現在、参加費は徴収していません/);
 });
 
 test("attendance trends combine attending members and guests across yearly series", async () => {

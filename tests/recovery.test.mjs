@@ -8,35 +8,39 @@ import { spawnSync } from "node:child_process";
 function recover(config) {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "nig-pages-recovery-"));
   try {
-    fs.writeFileSync(path.join(directory, "fixture.json"), JSON.stringify(config));
-    fs.writeFileSync(path.join(directory, "gh"), `#!/usr/bin/env node
-const fs = require('node:fs');
-const dir = process.env.FIXTURE_DIR;
-const config = JSON.parse(fs.readFileSync(dir + '/fixture.json'));
-const args = process.argv.slice(2);
-if (args[0] === 'api') {
-  if (config.apiFails) process.exit(1);
-  if (args[1].includes('/git/ref/')) {
-    const counter = dir + '/head-reads';
-    const count = fs.existsSync(counter) ? Number(fs.readFileSync(counter)) : 0;
-    fs.writeFileSync(counter, String(count + 1));
-    console.log(count && config.nextHead ? config.nextHead : 'current-head');
-  } else {
-    if (!args[1].includes('head_sha=current-head')) process.exit(2);
-    console.log(JSON.stringify({ workflow_runs: config.runs || [] }));
-  }
-} else if (args[0] === 'workflow' && args[1] === 'run') {
-  fs.writeFileSync(dir + '/dispatch.json', JSON.stringify(args));
-} else process.exit(2);
+    fs.writeFileSync(path.join(directory, "runs.json"), JSON.stringify({ workflow_runs: config.runs || [] }));
+    // Exercise the real recovery shell and jq filters without starting Node for
+    // each fake API response or dispatch.
+    fs.writeFileSync(path.join(directory, "gh"), `#!/usr/bin/env bash
+set -eu
+if [[ "$1" == api ]]; then
+  [[ "$FIXTURE_API_FAILS" == 0 ]] || exit 1
+  if [[ "$2" == */git/ref/* ]]; then
+    if [[ -f "$FIXTURE_DIR/head-read" ]]; then
+      printf '%s\\n' "$FIXTURE_NEXT_HEAD"
+    else
+      printf 'current-head\\n'
+    fi
+    : > "$FIXTURE_DIR/head-read"
+  else
+    [[ "$2" == *head_sha=current-head* ]] || exit 2
+    cat "$FIXTURE_DIR/runs.json"
+  fi
+elif [[ "$1" == workflow && "$2" == run ]]; then
+  printf '%s\\n' "$@" > "$FIXTURE_DIR/dispatch"
+else
+  exit 2
+fi
 `, { mode: 0o755 });
     fs.writeFileSync(path.join(directory, "sleep"), "#!/usr/bin/env bash\nexit 0\n", { mode: 0o755 });
     const result = spawnSync("bash", ["scripts/recover_pages.sh"], {
       encoding: "utf8", timeout: 10000,
       env: { ...process.env, PATH: `${directory}${path.delimiter}${process.env.PATH}`, FIXTURE_DIR: directory,
+        FIXTURE_API_FAILS: config.apiFails ? "1" : "0", FIXTURE_NEXT_HEAD: config.nextHead || "current-head",
         GH_REPO: "fixture/site", GH_TOKEN: "fixture", DEPLOY_WORKFLOW: "ci.yml", DEFAULT_BRANCH: "main", MAX_RECOVERY_RUNS: "3" },
     });
-    const dispatch = path.join(directory, "dispatch.json");
-    return { ...result, dispatch: fs.existsSync(dispatch) ? JSON.parse(fs.readFileSync(dispatch)) : null };
+    const dispatch = path.join(directory, "dispatch");
+    return { ...result, dispatch: fs.existsSync(dispatch) ? fs.readFileSync(dispatch, "utf8").trim().split("\n") : null };
   } finally { fs.rmSync(directory, { recursive: true, force: true }); }
 }
 const run = (overrides = {}) => ({ head_sha: "current-head", status: "completed", conclusion: "failure", event: "push", ...overrides });
