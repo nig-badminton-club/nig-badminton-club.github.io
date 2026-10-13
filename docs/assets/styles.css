@@ -248,6 +248,15 @@ code {
   font-weight: 700;
 }
 
+.session-date-item.is-cancelled {
+  color: #8b2020;
+  border-color: currentColor;
+}
+
+.session-date-item.is-tentative {
+  border-style: dashed;
+}
+
 .reservation-details {
   margin: 10px 0;
   color: var(--muted);

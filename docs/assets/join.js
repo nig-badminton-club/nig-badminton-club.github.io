@@ -12,7 +12,7 @@
       const timeout = window.setTimeout(() => {
         cleanup();
         reject(new Error("JSONP load timed out"));
-      }, 3500);
+      }, 5000);
       function cleanup() {
         window.clearTimeout(timeout);
         delete window[callbackName];
@@ -33,15 +33,16 @@
   }
 
   async function loadData() {
-    const response = await fetch(fallbackUrl, { cache: "no-store" });
-    const fallback = await response.json();
-    if (!jsonpUrl) return fallback;
-    try {
-      return await loadJsonp(jsonpUrl);
-    } catch (error) {
-      console.warn(error);
-      return fallback;
+    if (jsonpUrl) {
+      try {
+        return await loadJsonp(jsonpUrl);
+      } catch (error) {
+        console.warn(error);
+      }
     }
+    const response = await fetch(fallbackUrl, { cache: "no-store" });
+    if (!response.ok) throw new Error(`Public data request failed: HTTP ${response.status}`);
+    return response.json();
   }
 
   function safeHref(value) {

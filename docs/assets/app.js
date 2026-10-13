@@ -40,6 +40,7 @@
       }
     }
     const response = await fetch(fallbackUrl, { cache: "no-store" });
+    if (!response.ok) throw new Error(`Public data request failed: HTTP ${response.status}`);
     return response.json();
   }
 
@@ -309,9 +310,12 @@
     }).join("");
     const laterMarkup = laterSessions.length
       ? `<div class="session-date-list" aria-label="Later practice dates / 以降の練習日">
-          ${laterSessions.map((session) => (
-            `<span class="session-date-item">${escapeHtml(formatDate(session.date))}</span>`
-          )).join("")}
+          ${laterSessions.map((session) => {
+            const cancelled = session.status === "cancelled" || session.responseStatus === "cancelled";
+            const state = cancelled ? "cancelled" : session.status === "tentative" ? "tentative" : "";
+            const label = state ? ` — ${formatStatus(state)}` : "";
+            return `<span class="session-date-item${state ? ` is-${state}` : ""}">${escapeHtml(formatDate(session.date))}${escapeHtml(label)}</span>`;
+          }).join("")}
         </div>`
       : "";
     container.innerHTML = detailedMarkup + laterMarkup;

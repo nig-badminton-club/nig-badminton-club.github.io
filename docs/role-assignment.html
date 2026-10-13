@@ -56,7 +56,7 @@
           <div>
             <h3>Support / サポート</h3>
             <p>If you need help carrying equipment, arranging a handoff, or completing another part of your role, please ask the Google Group for support. / 道具の運搬や受け渡しなどで手助けが必要な場合は、Google Groupでサポートを募ってください。</p>
-            <p>If you become unable to attend after roles are announced, update the attendance form. The Google Group will be notified automatically, but the system will not assign a replacement. Reply to the group yourself, find someone who can take over, and confirm the handoff. / 担当確定後に参加できなくなった場合は、出欠フォームを更新してください。Google Groupへ自動通知されますが、代役の自動割当は行いません。担当者本人がグループへ返信して代役を募集し、引き継ぎを確定してください。</p>
+            <p>If you become unable to attend after roles are announced, update the attendance form before it closes 30 minutes before practice (normally Friday 18:30); this triggers a notice to the Google Group. After the form closes, email the group directly. In either case, the system does not assign a replacement: contact the group yourself, find someone who can take over, and confirm the handoff. / 担当確定後に参加できなくなった場合、練習開始30分前（通常は金曜18:30）の締切までは出欠フォームを更新してください。Google Groupへ自動通知されます。締切後はフォームを更新できないため、グループへ直接メールしてください。どちらの場合も代役の自動割当は行いません。担当者本人がグループで代役を募集し、引き継ぎを確定してください。</p>
           </div>
         </div>
       </section>
@@ -82,7 +82,12 @@
           <li class="flow-step">
             <span class="step-time">3</span>
             <h3>Role choice / 担当選択</h3>
-            <p>Members who choose setup, return, or either role become candidates for the corresponding role. A response entered after selecting “Other” is treated as a reason the member cannot take a role. Because the key confirmation page is restricted to NIG accounts, only attendees who respond using an NIG account can be selected for setup. / 準備担当、返却担当、どちらでも可を選んだ方が、それぞれの担当候補になります。「その他」を選んだ場合の記入内容は、今週担当できない理由として扱います。鍵確認ページは遺伝研アカウント限定のため、準備担当は遺伝研アカウントで回答した参加者から選びます。</p>
+            <p>Current Google Group members who choose setup, return, or either role can become automatic candidates for that role once their newcomer grace period has ended. A response entered after selecting “Other” is treated as a reason the member cannot take a role. Because the key confirmation page is restricted to NIG accounts, setup candidates must respond using an <code>@nig.ac.jp</code> account. / Google Groupに在籍し、準備担当、返却担当、どちらでも可を選んだ方は、新人猶予期間が終了すると、それぞれの自動担当候補になります。「その他」の記入内容は、今週担当できない理由として扱います。鍵確認ページは遺伝研アカウント限定のため、準備担当には<code>@nig.ac.jp</code>のアカウントで回答する必要があります。</p>
+          </li>
+          <li class="flow-step">
+            <span class="step-time">4</span>
+            <h3>Newcomer grace / 新人の猶予期間</h3>
+            <p>Newly detected members are excluded from automatic assignment until two calendar months after their Google Group address was first recorded by the system. This uses the first-detected date, not a self-reported joining date or a fixed 60-day period. Members already present when the roster was first created were exempt from this initial grace period. Leaving and rejoining does not reset the original record. / 新しく検出されたメンバーは、システムがGoogle Groupのアドレスを初めて記録した日から2暦月後まで、自動担当から除外します。自己申告の入会日や一律60日ではなく、初回検出日を基準にします。名簿を初めて作成した時点の既存メンバーには、この猶予期間を適用していません。退会後に再入会しても元の記録は引き継がれます。</p>
           </li>
         </ol>
       </section>
@@ -94,32 +99,44 @@
             <h2 id="selection-title">Balancing the Load / 負担が偏らないように選びます</h2>
           </div>
         </div>
-        <div class="operation-details">
+        <div class="policy-content">
           <article class="operation-note">
             <h3>Manual entries / 手動指定</h3>
-            <p>If an administrator names a setup or return assignee in the <code>Practice Sessions</code> sheet, that assignment takes priority only if the person is eligible based on the deadline snapshot and has not subsequently changed their response to “Not attending.” A manually assigned setup assignee must use an NIG account. / 管理者が<code>Practice Sessions</code>シートで担当者を指定した場合は、その方が締切時点の回答で候補条件を満たし、その後「不参加」へ変更していないときに限り、手動指定を優先します。準備担当の手動指定には遺伝研アカウントが必要です。</p>
+            <p>An administrator's explicit manual assignment takes priority and can override the role preference and newcomer grace period. The person must still be a current member who answered “Attend” before the deadline and has not since changed to “Not attending.” A manually assigned setup assignee must use an <code>@nig.ac.jp</code> account. / 管理者による明示的な手動指定は優先され、担当希望と新人猶予期間の例外にできます。ただし、Google Groupに在籍し、締切前に「参加」と回答して、その後「不参加」に変更していないことが必要です。準備担当の手動指定にも<code>@nig.ac.jp</code>のアカウントが必要です。</p>
           </article>
           <article class="operation-note">
             <h3>No reshuffle / 再抽選しない</h3>
-            <p>Before the announcement, rerunning the process keeps an existing assignment only while that person remains eligible. After the assignment has been announced, the system preserves it instead of silently selecting a replacement; the assignee arranges any necessary handoff through the Google Group. / 担当発表前は、既存の担当者が引き続き候補条件を満たす場合に限って再実行時も担当を維持します。担当発表後は、システムが黙って代役を再選出することはなく、担当者がGoogle Groupで必要な引き継ぎを調整します。</p>
-          </article>
-          <article class="operation-note">
-            <h3>History / 履歴</h3>
-            <p>Among eligible volunteers, priority goes to people with fewer previous assignments recorded in the <code>Role Assignments</code> sheet. / 候補者の中では、<code>Role Assignments</code>シートに記録された過去の担当回数が少ない方を優先します。</p>
-          </article>
-          <article class="operation-note">
-            <h3>Same-week load / 同週の重複</h3>
-            <p>When another eligible volunteer is available, the system avoids assigning both roles to the same person. / 他に候補者がいる場合は、同じ方が準備担当と返却担当を兼ねないようにします。</p>
-          </article>
-          <article class="operation-note">
-            <h3>Role-specific history / 担当別の履歴</h3>
-            <p>If total assignment counts are tied, priority goes to the person who has performed that particular role fewer times. / 担当総数が同じ場合は、その役割の過去の担当回数が少ない方を優先します。</p>
-          </article>
-          <article class="operation-note">
-            <h3>Recency and final tie / 直近担当と最終判定</h3>
-            <p>If the counts are still tied, priority goes to the person whose most recent assignment was furthest in the past. Any remaining tie is resolved by a consistent ordering unique to that practice date, rather than alphabetically. / それでも回数が同じ場合は、最後の担当から最も時間がたっている方を優先します。なお同順位の場合は、氏名順に偏らないよう、その練習日に固有の固定順で決定します。</p>
+            <p>Before the announcement, an existing assignment is kept while the attendance and account requirements still hold and, for an automatic assignment, the deadline response volunteers for that role. After the announcement, the system preserves the assignment; the assignee arranges any necessary replacement through the Google Group. The priorities below apply when selecting a new assignee. / 担当発表前は、参加とアカウントの条件を引き続き満たし、自動担当の場合は締切時点の回答でその担当を希望していれば、既存の割当を維持します。担当発表後も割当は維持し、必要な代役は本人がGoogle Groupで調整します。以下の優先順位は、新たに担当者を選ぶ場合に適用します。</p>
           </article>
         </div>
+        <p>New automatic assignments use the following priority order. / 新しい自動担当は、次の順に比較して選びます。</p>
+        <ol class="flow-diagram">
+          <li class="flow-step">
+            <span class="step-time">1</span>
+            <h3>Same-practice load / 同じ練習での重複</h3>
+            <p>First, when another eligible volunteer is available, the system avoids assigning both roles to the same person. / まず、他に候補者がいる場合は、同じ方が準備担当と返却担当を兼ねないようにします。</p>
+          </li>
+          <li class="flow-step">
+            <span class="step-time">2</span>
+            <h3>Workload over 12 months / 直近12か月の負担</h3>
+            <p>Next, priority goes to the person with fewer workload points in the 12 calendar months before the practice date. Setup is worth 2 points and return is worth 1 point; doing both is worth 3 points. Manual and automatic assignments count equally. Older assignments do not add workload points. / 次に、その練習日より前の12暦月の負担ポイントが少ない方を優先します。準備担当は2点、返却担当は1点、両方を担当した場合は3点です。手動指定も自動割当も同じ重みで数え、それより古い担当は負担ポイントに加算しません。</p>
+          </li>
+          <li class="flow-step">
+            <span class="step-time">3</span>
+            <h3>Time since the last assignment / 最後の担当からの期間</h3>
+            <p>If workload points are tied, priority goes to the person whose most recent assignment was longest ago, using all recorded history. Someone with no assignment history takes priority at this step. / 負担ポイントが同じ場合は、記録された全履歴をもとに、最後の担当から最も時間がたっている方を優先します。担当履歴がない方は、この比較で優先されます。</p>
+          </li>
+          <li class="flow-step">
+            <span class="step-time">4</span>
+            <h3>Role-specific history / 担当別の履歴</h3>
+            <p>If still tied, priority goes to the person who has performed that particular role fewer times in the previous 12 calendar months. / それでも同順位の場合は、直近12暦月にその役割を担当した回数が少ない方を優先します。</p>
+          </li>
+          <li class="flow-step">
+            <span class="step-time">5</span>
+            <h3>Final tie / 最終判定</h3>
+            <p>Any remaining tie uses a fixed ordering calculated from the practice date, role and account. Repeating the selection with the same inputs does not create a new random draw. / 最後まで同順位の場合は、練習日・役割・アカウントから計算した固定順で決めます。同じ条件で再実行しても、無作為に選び直すことはありません。</p>
+          </li>
+        </ol>
         <div class="note-band">
           <strong>If no volunteer is available / 候補者がいない場合:</strong>
           The role remains unassigned, and members coordinate through the Google Group. / 担当は未割当となり、Google Groupで対応を相談します。
