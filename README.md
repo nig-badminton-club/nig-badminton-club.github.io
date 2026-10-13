@@ -20,7 +20,7 @@ CI and Pages delivery; see [development and delivery](DEVELOPMENT.md).
 ## Site Contents
 
 - `docs/index.html`: schedule, next practice, map, and participation policy
-- `docs/attendance.html`: yearly historical participation chart, totals and TSV download
+- `docs/attendance.html`: yearly participation chart, cancellation dates/reasons, totals and TSV download
 - `docs/about.html`: club overview, practice photo, member count summary, and yearly officers
 - `docs/workflow.html`: weekly attendance and role-assignment workflow
 - `docs/role-assignment.html`: setup/return role assignment method
@@ -40,8 +40,8 @@ The site is bilingual Japanese/English.
 
 The website may publish:
 
-- upcoming practice dates, times, locations, and status, plus dates retained
-  with historical aggregate records
+- upcoming and historical practice dates, times, locations, status and public
+  cancellation reasons
 - current and historical aggregate attendance and guest counts, including the
   yearly chart and downloadable TSV; these describe Form responses, not
   confirmed physical attendance

@@ -7,6 +7,12 @@ recovery tests. This is the same command CI runs. No Google credentials are
 needed. The public `scripts/` directory now holds only these development tools;
 Apps Script source and deployment bindings remain in the private operations repo.
 
+The check entrypoint runs JavaScript syntax, HTML validation, static validation
+and the test stage concurrently. It waits for every stage and returns failure
+if any stage fails, retaining all diagnostics. The test stage includes Node
+behavior/recovery tests and Python public-data/link validation tests. Python
+bytecode output is disabled so the tests leave no cache files in the checkout.
+
 `VERSION`, `package.json` and `package-lock.json` must share the release version.
 The 0.1.3 update also replaces the affected transitive URI parser with compatible
 `fast-uri` 3.1.6. It is a validation dependency, not browser code shipped in `docs`.
@@ -52,6 +58,7 @@ and mocked fetch/GitHub CLI, with no Google credentials.
 | Browser JavaScript, rendering, schedule or attendance/export data | `npm run lint` then `node --test tests/site.test.mjs` |
 | HTML, links, config or public JSON | `npm run validate:html` then `npm run validate:site`; also rendering tests for displayed data |
 | Pages recovery helper or delivery wiring | `node --test tests/recovery.test.mjs` |
+| Static validation or the check entrypoint | `python3 -B -m unittest discover -s tests -p '*_test.py'` and `node --test tests/check.test.mjs` |
 | Styles, bilingual prose, analytics or other browser configuration | Static checks plus direct review of the affected page/configuration; tests do not establish prose accuracy or analytics delivery |
 
 Use `npm run check` before push, including development-document changes because
@@ -102,6 +109,15 @@ unique people across multiple practices. The table shows the latest 20 records
 in descending date order; the chart and TSV include all qualifying records.
 The download is disabled when no records qualify.
 
+Recorded past sessions with `status` or `responseStatus` equal to `cancelled`
+are shown separately: year-specific × marks below the participant chart, with
+hover/tap details, and a complete reverse-chronological cancellation table.
+Valid dates strictly before today in Asia/Tokyo are required; counts may be null.
+`publicNote` supplies the public reason/notices; blank notes display
+"Reason not recorded / 理由未記録". Cancellation-only years remain visible.
+Cancelled sessions do not become zero-person data points or enter the attendance
+TSV. Dates absent from `sessions` are not inferred to be cancellations.
+
 ## Test review policy
 
 Keep tests for plausible user-visible failures, not a target count or coverage
@@ -138,6 +154,24 @@ with no concurrent repository tests or builds: median full-suite wall time fell
 from 2.34 s to 1.85 s (21%). The respective trial ranges were 2.25–2.52 s and
 1.78–2.18 s. All tests passed (30 before, 29 after consolidation); these local
 timings do not include dependency installation or predict CI runner timings.
+
+The 2026-10-13 audit expands structural accessibility scans to all eight club
+pages. Response states, reservation details, privacy and the four-card boundary
+share one mixed schedule fixture; all earlier assertions remain. Each scan
+uses an independent DOM and closes it immediately. Real browser checks also
+cover color contrast, which jsdom cannot establish. Static validation now
+checks calendar dates, unique session IDs, numeric/null count semantics,
+cancellation consistency, approved session fields and internal anchors.
+
+Measured on macOS with Node v24.19.0, using the same 33 Node tests, five Python
+tests, locked dependencies and validation stages, with one warmup and three
+timed runs per candidate and no concurrent repository tests/builds: changing
+`npm run check` from sequential stages to `scripts/check.mjs` reduced median
+wall time from 5.674 s to 2.642 s (53%). Ranges were 5.066–5.976 s and
+2.564–2.702 s. Peak RSS stayed about 446 MiB. Reproduce the sequential workload
+with `npm run lint && npm run validate:html && npm run validate:site && npm test`,
+and compare with `npm run check`. All checks remain mandatory; these local
+measurements exclude installation and do not predict CI runner timings.
 
 ## Documentation changes
 

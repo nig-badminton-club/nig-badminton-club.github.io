@@ -94,23 +94,31 @@
     return `${parts.en} / ${parts.ja}`;
   }
 
-  function sessionPoint(session) {
+  function sessionDate(session) {
     const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(session.date || ""));
-    if (!match || !Number.isFinite(session.attendingCount)) return null;
+    if (!match) return null;
     const year = Number(match[1]);
     const month = Number(match[2]);
     const day = Number(match[3]);
     if (month < 1 || month > 12) return null;
     const daysInMonth = new Date(Date.UTC(year, month, 0)).getUTCDate();
     if (day < 1 || day > daysInMonth) return null;
-    const attending = Math.max(0, Number(session.attendingCount));
-    const guests = Number.isFinite(session.guestCount) ? Math.max(0, Number(session.guestCount)) : 0;
     return {
       date: session.date,
       year,
       month,
       day,
       xValue: month - 1 + (day - 1) / daysInMonth,
+    };
+  }
+
+  function sessionPoint(session) {
+    const date = sessionDate(session);
+    if (!date || !Number.isFinite(session.attendingCount)) return null;
+    const attending = Math.max(0, Number(session.attendingCount));
+    const guests = Number.isFinite(session.guestCount) ? Math.max(0, Number(session.guestCount)) : 0;
+    return {
+      ...date,
       attending,
       guests,
       total: attending + guests,
@@ -119,22 +127,29 @@
 
   function collectSeries(sessions) {
     const todayKey = getTodayKey();
-    const points = sessions
-      .filter((session) => String(session.status || "") !== "cancelled" && String(session.date || "") < todayKey)
+    const pastSessions = sessions.filter((session) => String(session.date || "") < todayKey);
+    const isCancelled = (session) => session.status === "cancelled" || session.responseStatus === "cancelled";
+    const cancellations = pastSessions.filter(isCancelled).map((session) => {
+      const date = sessionDate(session);
+      return date ? { ...date, cancelled: true, reason: String(session.publicNote || "").trim() } : null;
+    }).filter(Boolean).sort((a, b) => a.date.localeCompare(b.date));
+    const points = pastSessions
+      .filter((session) => !isCancelled(session))
       .map(sessionPoint)
       .filter(Boolean)
       .sort((a, b) => a.date.localeCompare(b.date));
     const grouped = new Map();
-    points.forEach((point) => {
-      if (!grouped.has(point.year)) grouped.set(point.year, []);
-      grouped.get(point.year).push(point);
+    [...points, ...cancellations].forEach((point) => {
+      if (!grouped.has(point.year)) grouped.set(point.year, { points: [], cancellations: [] });
+      grouped.get(point.year)[point.cancelled ? "cancellations" : "points"].push(point);
     });
     const years = Array.from(grouped.keys()).sort((a, b) => a - b);
     return {
       points,
+      cancellations,
       series: years.map((year, index) => ({
         year,
-        points: grouped.get(year),
+        ...grouped.get(year),
         color: colorForYear(index, years.length),
         lineWidth: index === years.length - 1 ? 3 : 2,
       })),
@@ -198,6 +213,23 @@
       : `<tr><td colspan="4">No completed totals / 集計済みデータなし</td></tr>`;
   }
 
+  function cancellationReason(point) {
+    return point.reason || "Reason not recorded / 理由未記録";
+  }
+
+  function renderCancellations(cancellations) {
+    const body = document.getElementById("cancelled-records-body");
+    if (!body) return;
+    body.innerHTML = cancellations.length
+      ? cancellations.slice().reverse().map((point) => `
+          <tr>
+            <th scope="row">${escapeHtml(formatDate(point.date))}</th>
+            <td>${escapeHtml(cancellationReason(point))}</td>
+          </tr>
+        `).join("")
+      : `<tr><td colspan="2">No recorded cancellations / 休み・中止の記録なし</td></tr>`;
+  }
+
   function renderDownload(points) {
     const link = document.getElementById("attendance-download");
     if (!link) return;
@@ -218,12 +250,12 @@
     link.removeAttribute("tabindex");
   }
 
-  function chartLayout(width, height, maxTotal) {
+  function chartLayout(width, height, maxTotal, cancellationRows) {
     const narrow = width < 620;
     const margin = {
       top: 22,
       right: narrow ? 14 : 24,
-      bottom: narrow ? 58 : 54,
+      bottom: (narrow ? 58 : 54) + cancellationRows * 28 + (cancellationRows ? 22 : 0),
       left: narrow ? 44 : 54,
     };
     const plotWidth = width - margin.left - margin.right;
@@ -242,11 +274,14 @@
   }
 
   function drawChart(series) {
+    hideTooltip();
     const canvas = document.getElementById("attendance-chart");
     if (!canvas || !window.CanvasRenderingContext2D) return;
     const wrap = canvas.parentElement;
-    const width = Math.max(320, Math.floor(wrap.clientWidth));
-    const height = width < 620 ? 390 : 470;
+    const width = Math.max(1, Math.floor(wrap.clientWidth));
+    const cancelledSeries = series.filter((item) => item.cancellations.length);
+    const bandHeight = cancelledSeries.length * 28 + (cancelledSeries.length ? 22 : 0);
+    const height = (width < 620 ? 390 : 470) + bandHeight;
     const ratio = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = Math.floor(width * ratio);
     canvas.height = Math.floor(height * ratio);
@@ -257,7 +292,7 @@
     context.scale(ratio, ratio);
 
     const maxTotal = Math.max(...series.flatMap((item) => item.points.map((point) => point.total)), 0);
-    const layout = chartLayout(width, height, maxTotal);
+    const layout = chartLayout(width, height, maxTotal, cancelledSeries.length);
     const { margin, plotWidth, plotHeight, yMax } = layout;
     context.clearRect(0, 0, width, height);
     context.font = "12px system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
@@ -322,6 +357,33 @@
       });
     });
 
+    if (cancelledSeries.length) {
+      const bandTop = height - bandHeight;
+      context.fillStyle = "#5d6878";
+      context.textAlign = "left";
+      context.fillText("Cancelled / 休み・中止", margin.left, bandTop + 2);
+      cancelledSeries.forEach((item, index) => {
+        const y = bandTop + 24 + index * 28;
+        context.fillStyle = "#f4f6f9";
+        context.fillRect(margin.left, y - 10, plotWidth, 20);
+        context.textAlign = "right";
+        context.fillStyle = "#5d6878";
+        context.fillText(String(item.year), margin.left - 8, y);
+        item.cancellations.forEach((point) => {
+          const x = layout.x(point.xValue);
+          context.strokeStyle = item.color;
+          context.lineWidth = 2;
+          context.beginPath();
+          context.moveTo(x - 4, y - 4);
+          context.lineTo(x + 4, y + 4);
+          context.moveTo(x - 4, y + 4);
+          context.lineTo(x + 4, y - 4);
+          context.stroke();
+          hitPoints.push({ x, y, point, color: item.color });
+        });
+      });
+    }
+
     context.save();
     context.translate(14, margin.top + plotHeight / 2);
     context.rotate(-Math.PI / 2);
@@ -352,10 +414,15 @@
       hideTooltip();
       return;
     }
-    tooltip.innerHTML = `<strong>${escapeHtml(formatDate(nearest.point.date))}</strong><span>Total / 合計: ${escapeHtml(nearest.point.total)}</span><span>Attending / 参加回答者: ${escapeHtml(nearest.point.attending)} · Guests / ゲスト: ${escapeHtml(nearest.point.guests)}</span>`;
-    tooltip.style.left = `${Math.min(Math.max(nearest.x, 108), chartState.layout.width - 108)}px`;
-    tooltip.style.top = `${Math.max(nearest.y - 12, 62)}px`;
+    tooltip.innerHTML = nearest.point.cancelled
+      ? `<strong>${escapeHtml(formatDate(nearest.point.date))} · Cancelled / 休み・中止</strong><span>${escapeHtml(cancellationReason(nearest.point))}</span>`
+      : `<strong>${escapeHtml(formatDate(nearest.point.date))}</strong><span>Total / 合計: ${escapeHtml(nearest.point.total)}</span><span>Attending / 参加回答者: ${escapeHtml(nearest.point.attending)} · Guests / ゲスト: ${escapeHtml(nearest.point.guests)}</span>`;
     tooltip.hidden = false;
+    const halfWidth = tooltip.offsetWidth / 2;
+    tooltip.style.left = `${Math.min(Math.max(nearest.x, halfWidth), chartState.layout.width - halfWidth)}px`;
+    const above = nearest.y - 12 - tooltip.offsetHeight;
+    const below = Math.min(nearest.y + 12, chartState.layout.height - tooltip.offsetHeight);
+    tooltip.style.top = `${Math.max(0, above >= 0 ? above : below)}px`;
   }
 
   function renderMeta(data) {
@@ -387,25 +454,36 @@
   }
 
   function render(data) {
-    const { points, series } = collectSeries(data.sessions || []);
+    if (!data || !Array.isArray(data.sessions) || data.sessions.some((session) => !session || typeof session !== "object")) {
+      throw new Error("Public data has an invalid sessions list.");
+    }
+    const { points, cancellations, series } = collectSeries(data.sessions || []);
     renderMeta(data);
     renderDataHealth(data);
     renderSummary(points, series);
     renderLegend(series);
     renderTable(points);
+    renderCancellations(cancellations);
     renderDownload(points);
 
     const empty = document.getElementById("attendance-empty");
     const figure = document.getElementById("attendance-figure");
     if (empty) empty.hidden = points.length > 0;
-    if (figure) figure.hidden = points.length === 0;
-    if (!points.length) return;
+    if (figure) figure.hidden = series.length === 0;
+    if (!series.length) return;
 
     drawChart(series);
     const canvas = document.getElementById("attendance-chart");
     if (canvas) {
       canvas.addEventListener("pointermove", showNearestPoint);
-      canvas.addEventListener("pointerleave", hideTooltip);
+      canvas.addEventListener("pointerdown", showNearestPoint);
+      canvas.addEventListener("pointerleave", (event) => {
+        if (event.pointerType !== "touch") hideTooltip();
+      });
+      canvas.addEventListener("pointercancel", hideTooltip);
+      document.addEventListener("pointerdown", (event) => {
+        if (event.target !== canvas) hideTooltip();
+      });
     }
     let resizeFrame = 0;
     window.addEventListener("resize", () => {
@@ -425,5 +503,7 @@
         empty.textContent = "Attendance data could not be loaded. / 参加者数のデータを読み込めませんでした。";
       }
       if (figure) figure.hidden = true;
+      const cancellations = document.getElementById("cancelled-records-body");
+      if (cancellations) cancellations.innerHTML = `<tr><td colspan="2">Cancellation data could not be loaded. / 休み・中止日のデータを読み込めませんでした。</td></tr>`;
     });
 })();

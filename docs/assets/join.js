@@ -58,6 +58,9 @@
 
   loadData()
     .then((data) => {
+      if (!data || !Array.isArray(data.sessions) || data.sessions.some((session) => !session || typeof session !== "object")) {
+        throw new Error("Public data has an invalid sessions list.");
+      }
       const formUrl = safeHref(data.membership && data.membership.formUrl);
       if (!formUrl) {
         status.textContent = "The membership form is being prepared. Please check back soon. / メンバー手続きフォームを準備中です。しばらくしてから再度ご確認ください。";

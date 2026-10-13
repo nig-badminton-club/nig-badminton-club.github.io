@@ -85,6 +85,10 @@ p {
   margin-top: 0;
 }
 
+.section-label {
+  color: #8a5b1a;
+}
+
 h1 {
   margin-bottom: 10px;
   font-size: 3.4rem;
@@ -711,7 +715,7 @@ code {
   z-index: 2;
   width: 216px;
   padding: 10px 12px;
-  transform: translate(-50%, -100%);
+  transform: translateX(-50%);
   border: 1px solid #c8d1dd;
   border-radius: 8px;
   background: rgba(255, 253, 248, 0.97);
@@ -719,6 +723,7 @@ code {
   color: var(--ink);
   font-size: 0.8rem;
   pointer-events: none;
+  overflow-wrap: anywhere;
 }
 
 .attendance-tooltip strong,
@@ -787,6 +792,25 @@ code {
 .attendance-table tr:last-child th,
 .attendance-table tr:last-child td {
   border-bottom: 0;
+}
+
+.cancelled-table th,
+.cancelled-table td {
+  text-align: left;
+}
+
+.cancelled-table th:first-child {
+  width: 140px;
+  white-space: nowrap;
+}
+
+.cancelled-table td {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.cancelled-table {
+  table-layout: fixed;
 }
 
 .join-grid {
@@ -998,5 +1022,9 @@ footer {
 
   .attendance-table {
     min-width: 620px;
+  }
+
+  .cancelled-table {
+    min-width: 0;
   }
 }

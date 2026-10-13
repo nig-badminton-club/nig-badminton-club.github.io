@@ -82,7 +82,28 @@
 
   function findNextSession(sessions) {
     const todayKey = getTodayKey();
-    return sessions.find((session) => session.date >= todayKey && session.status !== "cancelled") || null;
+    const now = Date.now();
+    return sessions.find((session) => {
+      if (session.date < todayKey || isCancelled(session)) return false;
+      const end = /^\d{2}:\d{2}-(\d{2}:\d{2})$/.exec(String(session.time || ""));
+      const endedAt = end ? new Date(`${session.date}T${end[1]}:00+09:00`).getTime() : NaN;
+      return !Number.isFinite(endedAt) || endedAt > now;
+    }) || null;
+  }
+
+  function validDate(value) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(value || ""))) return false;
+    const date = new Date(`${value}T00:00:00Z`);
+    return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value;
+  }
+
+  function isCancelled(session) {
+    return session.status === "cancelled" || session.responseStatus === "cancelled";
+  }
+
+  function sessionFormUrl(session) {
+    return !isCancelled(session) && ["open", "changes-open"].includes(session.responseStatus)
+      ? safeHref(session.formUrl) : "";
   }
 
   function getTodayKey() {
@@ -100,7 +121,7 @@
   function upcomingSessions(sessions) {
     const todayKey = getTodayKey();
     return sessions
-      .filter((session) => String(session.date || "") >= todayKey)
+      .filter((session) => validDate(session.date) && session.date >= todayKey)
       .sort((a, b) => String(a.date || "").localeCompare(String(b.date || "")));
   }
 
@@ -179,7 +200,7 @@
       reservation.textContent = reservationDetailsText(session);
       reservation.hidden = !reservation.textContent;
     }
-    const formUrl = safeHref(session.formUrl);
+    const formUrl = sessionFormUrl(session);
     if (formUrl) {
       form.href = formUrl;
       form.removeAttribute("aria-disabled");
@@ -193,6 +214,8 @@
       form.tabIndex = -1;
       form.textContent = session.responseStatus === "upcoming"
         ? "Opens during the practice week / 練習週に受付開始"
+        : session.responseStatus === "unavailable"
+          ? "Attendance form unavailable / 出欠フォームを利用できません"
         : "Attendance form closed / 出欠フォーム受付終了";
     }
   }
@@ -204,7 +227,7 @@
   function keyPickupStatusBlock(session) {
     const requestedStatus = String(session.keyPickupStatus || "");
     const fallbackStatus = session.responseStatus === "upcoming" ? "awaiting-assignment" : "pending";
-    const status = ["confirmed", "pending", "awaiting-assignment", "unassigned", "not-required"].includes(requestedStatus)
+    const status = isCancelled(session) ? "not-required" : ["confirmed", "pending", "awaiting-assignment", "unassigned", "not-required"].includes(requestedStatus)
       ? requestedStatus
       : fallbackStatus;
     const labels = {
@@ -241,6 +264,7 @@
   }
 
   function responseStateText(session) {
+    if (isCancelled(session)) return "This practice has been cancelled. Please check the Google Group for the reason and any next steps. / この練習は中止になりました。理由と今後の対応はGoogle Groupで確認してください。";
     if (session.responseStatus === "upcoming") {
       return "The attendance form opens during the week of the practice. / 出欠フォームは練習のある週に受付を開始します。";
     }
@@ -250,7 +274,7 @@
     if (session.responseStatus === "changes-open") {
       return "You can still update your attendance through the same form until 30 minutes before practice. A response indicating attendance that is submitted after Thursday 17:00 is added to the attendance list but is not included in automatic role selection. The respondent receives a reminder to reply before the deadline whenever possible. / 練習開始30分前までは同じフォームから出欠を変更できます。木曜17:00以降の新しい参加登録も出欠には反映しますが、自動担当選出の対象には含めません。回答者本人へ、次回以降はできるだけ締切前に回答していただくよう、ご案内メールを送ります。";
     }
-    if (session.responseStatus === "cancelled") return "This practice has been cancelled. Please check the Google Group for the reason and any next steps. / この練習は中止になりました。理由と今後の対応はGoogle Groupで確認してください。";
+    if (!["open", "changes-open"].includes(session.responseStatus)) return "Attendance status is unavailable. Please check the Google Group for updates. / 出欠の受付状況を確認できません。最新の情報はGoogle Groupで確認してください。";
     return "The attendance form is open. / 出欠回答を受け付けています。";
   }
 
@@ -265,14 +289,15 @@
     const laterSessions = sessions.slice(4);
     const detailedMarkup = detailedSessions.map((session) => {
       const isNext = nextSession && session.sessionId === nextSession.sessionId;
-      const statusClass = session.status === "cancelled" ? "status cancelled" : "status";
-      const formUrl = safeHref(session.formUrl);
+      const cancelled = isCancelled(session);
+      const statusClass = cancelled ? "status cancelled" : "status";
+      const formUrl = sessionFormUrl(session);
       const formLink = formUrl
         ? `<a class="session-form-link" href="${escapeHtml(formUrl)}" rel="noopener" data-analytics-event="attendance_form_click">${session.responseStatus === "changes-open" ? "Update attendance / 出欠を変更" : "Attendance form / 出欠フォーム"}</a>`
         : session.responseStatus === "closed"
           ? `<span class="muted">${escapeHtml(responseStateText(session))}</span>`
           : "";
-      const countMarkup = session.responseStatus === "upcoming" || session.responseStatus === "cancelled"
+      const countMarkup = cancelled || !["open", "changes-open", "closed"].includes(session.responseStatus)
         ? `<p class="response-state">${escapeHtml(responseStateText(session))}</p>`
         : `<div class="counts">
             ${countBlock(session.attendingCount, "Attending / 参加")}
@@ -297,7 +322,7 @@
               <div class="session-date">${escapeHtml(formatDate(session.date))}</div>
               <div class="muted">Practice / 練習: ${escapeHtml(session.time)}</div>
             </div>
-            <span class="${statusClass}">${escapeHtml(formatStatus(session.status))}</span>
+            <span class="${statusClass}">${escapeHtml(formatStatus(cancelled ? "cancelled" : session.status))}</span>
           </div>
           ${reservationMarkup}
           ${countMarkup}
@@ -420,6 +445,9 @@
 
   loadData()
     .then((data) => {
+      if (!data || !Array.isArray(data.sessions) || data.sessions.some((session) => !session || typeof session !== "object")) {
+        throw new Error("Public data has an invalid sessions list.");
+      }
       const sessions = upcomingSessions(data.sessions || []);
       const nextSession = findNextSession(sessions);
       renderMeta(data);
@@ -435,6 +463,8 @@
       if (title) title.textContent = "Practice schedule unavailable / 練習予定を読み込めません";
       const detail = document.getElementById("member-stats-detail");
       if (detail) detail.textContent = "Member counts are unavailable. / 部員数を読み込めません。";
+      const sessions = document.getElementById("session-list");
+      if (sessions) sessions.innerHTML = `<p class="muted">The practice schedule could not be loaded. / 練習予定を読み込めませんでした。</p>`;
       const banner = document.getElementById("data-health");
       if (banner) {
         banner.hidden = false;

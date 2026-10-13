@@ -15,6 +15,11 @@ function read(path) {
   return fs.readFileSync(new URL(path, docsUrl), "utf8");
 }
 
+function close(dom) {
+  dom.window.close();
+  openWindows.delete(dom.window);
+}
+
 async function renderPage(htmlPath, scriptPath, data, configure = () => {}) {
   const dom = new JSDOM(read(htmlPath), {
     runScripts: "outside-only",
@@ -24,6 +29,10 @@ async function renderPage(htmlPath, scriptPath, data, configure = () => {}) {
   dom.window.NIG_BADMINTON_PUBLIC_JSONP_URL = "";
   dom.window.fetch = async () => ({ ok: true, json: async () => structuredClone(data) });
   configure(dom.window);
+  if (!scriptPath) {
+    await new Promise((resolve) => dom.window.document.addEventListener("DOMContentLoaded", resolve, { once: true }));
+    return dom;
+  }
   // These scripts render synchronously when their data promise settles. Wait
   // for that DOM update, including error rendering and JSONP fallback.
   const rendered = new Promise((resolve, reject) => {
@@ -45,6 +54,33 @@ async function renderPage(htmlPath, scriptPath, data, configure = () => {}) {
 
 const baseData = JSON.parse(read("data/public.json"));
 
+test("next practice skips finished, cancelled and invalid dates and never reopens a stale form", async () => {
+  const formUrl = "https://docs.google.com/forms/d/e/example/viewform";
+  const data = { ...baseData, sessions: [
+    { sessionId: "2026-10-09", date: "2026-10-09", time: "19:00-21:00", status: "scheduled", responseStatus: "closed", formUrl },
+    { sessionId: "2026-10-10", date: "2026-10-10", status: "scheduled", responseStatus: "cancelled", formUrl },
+    { sessionId: "2026-10-11", date: "2026-10-11", status: "cancelled", responseStatus: "open", formUrl },
+    { sessionId: "2026-10-12", date: "2026-10-12", status: "scheduled", responseStatus: "upcoming", formUrl },
+    { sessionId: "2099-02-30", date: "2099-02-30", status: "scheduled", responseStatus: "open", formUrl },
+  ] };
+  const dom = await renderPage("index.html", "assets/app.js", data, window => {
+    const OriginalDate = window.Date;
+    window.Date = class extends OriginalDate {
+      constructor(...args) { super(...(args.length ? args : ["2026-10-09T13:00:00Z"])); }
+      static now() { return new OriginalDate("2026-10-09T13:00:00Z").getTime(); }
+    };
+  });
+  const document = dom.window.document;
+  assert.match(document.getElementById("next-session-title").textContent, /2026\/10\/12/);
+  assert.equal(document.getElementById("next-session-form").hasAttribute("href"), false);
+  assert.equal(document.querySelectorAll(".session-card").length, 4);
+  assert.equal(document.querySelectorAll(".session-form-link[href]").length, 0);
+  for (const card of [...document.querySelectorAll(".session-card")].slice(1, 3)) {
+    assert.match(card.querySelector(".status").textContent, /Cancelled/);
+    assert.equal(card.querySelector(".counts"), null);
+  }
+});
+
 for (const [page, script, target, errorText] of [
   ["index.html", "assets/app.js", "next-session-title", /schedule unavailable/i],
   ["attendance.html", "assets/attendance.js", "attendance-empty", /could not be loaded/i],
@@ -54,6 +90,16 @@ for (const [page, script, target, errorText] of [
     const dom = await renderPage(page, script, baseData, window => {
       window.console.error = () => {};
       window.fetch = async () => ({ ok: false, status: 503, json: async () => structuredClone(baseData) });
+    });
+    assert.match(dom.window.document.getElementById(target).textContent, errorText);
+    if (page === "attendance.html") {
+      assert.match(dom.window.document.getElementById("cancelled-records-body").textContent, /could not be loaded/);
+    }
+  });
+
+  test(`${page} rejects a malformed sessions list`, async () => {
+    const dom = await renderPage(page, script, { ...baseData, sessions: [null] }, window => {
+      window.console.error = () => {};
     });
     assert.match(dom.window.document.getElementById(target).textContent, errorText);
   });
@@ -94,59 +140,55 @@ for (const [page, script, target, errorText] of [
   });
 }
 
-test("future practices show an opening state instead of unanswered member counts", async () => {
-  const data = structuredClone(baseData);
-  data.generatedAt = new Date().toISOString();
-  data.sessions = [{
-    sessionId: "2099-07-17",
-    date: "2099-07-17",
-    time: "19:00-21:00",
-    location: "Gym / 体育館",
-    status: "scheduled",
-    responseStatus: "upcoming",
-    attendingCount: null,
-    absentCount: null,
-    unansweredCount: null,
-    guestCount: null,
-    keyPickupStatus: "awaiting-assignment",
-    publicNote: "",
-    formUrl: "",
-  }];
-  const dom = await renderPage("index.html", "assets/app.js", data);
-  const card = dom.window.document.querySelector(".session-card");
-  assert.match(card.textContent, /attendance form opens during the week of the practice/i);
-  assert.doesNotMatch(card.textContent, /no response \/ 未回答/);
-  assert.equal(card.querySelector(".counts"), null);
-  assert.match(card.querySelector(".key-pickup-status").textContent, /準備担当の確定前/);
-});
-
-test("only the nearest four practices show details and later practices show dates only", async () => {
-  const data = structuredClone(baseData);
-  data.generatedAt = new Date().toISOString();
-  data.sessions = ["07-24", "07-31", "08-07", "08-14", "08-21", "08-28"].map((monthDay) => ({
-    sessionId: `2099-${monthDay}`,
-    date: `2099-${monthDay}`,
-    time: "19:00-21:00",
-    reservationTime: "18:00-21:30",
-    reservationStatus: "provisional",
-    location: "Gym / 体育館",
-    status: "scheduled",
-    responseStatus: "upcoming",
-    keyPickupStatus: "awaiting-assignment",
-    publicNote: "",
-    formUrl: "",
-  }));
+test("schedule cards preserve response states, reservation times, privacy and the four-card boundary", async () => {
+  const formUrl = "https://docs.google.com/forms/d/e/example/viewform";
+  const data = { ...baseData, generatedAt: new Date().toISOString(), sessions:
+    ["07-17", "07-24", "07-31", "08-07", "08-21", "08-28"].map((monthDay, index) => ({
+      sessionId: `2099-${monthDay}`, date: `2099-${monthDay}`, time: "19:00-21:00",
+      reservationTime: "18:00-21:30", reservationStatus: "provisional", reservationReference: "PRIVATE-TEST-REFERENCE",
+      location: "Gym / 体育館", status: "scheduled",
+      responseStatus: ["upcoming", "closed", "changes-open", "unavailable"][index] || "upcoming",
+      attendingCount: index === 1 || index === 2 ? 12 : null,
+      absentCount: index === 1 || index === 2 ? 3 : null,
+      unansweredCount: index === 1 || index === 2 ? 2 : null,
+      guestCount: index === 1 || index === 2 ? 1 : null,
+      keyPickupStatus: ["awaiting-assignment", "confirmed", "pending", "awaiting-assignment"][index],
+      roles: "Setup: private.person", formUrl: index === 2 ? formUrl : "",
+    })) };
   const dom = await renderPage("index.html", "assets/app.js", data);
   const document = dom.window.document;
-  const detailedCards = document.querySelectorAll(".session-card");
-  const laterDates = document.querySelectorAll(".session-date-item");
-  const laterList = document.querySelector(".session-date-list");
-
-  assert.equal(detailedCards.length, 4);
-  assert.equal(laterDates.length, 2);
-  assert.equal(laterDates[0].textContent, "2099/8/21(金)");
-  assert.equal(laterDates[1].textContent, "2099/8/28(金)");
-  assert.doesNotMatch(laterList.textContent, /19:00|18:00|仮予約|体育館/);
+  const cards = document.querySelectorAll(".session-card");
+  assert.equal(cards.length, 4);
+  assert.equal(cards[0].querySelector(".session-date").textContent, "2099/7/17(金)");
+  assert.match(cards[0].textContent, /Practice \/ 練習: 19:00-21:00/);
+  assert.match(cards[0].textContent, /Reserved time \/ 施設予約時間: 18:00-21:30/);
+  assert.match(cards[0].textContent, /Provisional \/ 仮予約/);
+  assert.match(cards[0].textContent, /attendance form opens during the week of the practice/i);
+  assert.doesNotMatch(cards[0].textContent, /no response \/ 未回答/);
+  assert.equal(cards[0].querySelector(".counts"), null);
+  assert.match(cards[0].querySelector(".key-pickup-status").textContent, /準備担当の確定前/);
+  assert.equal(document.getElementById("next-session-title").textContent, "2099/7/17(金) 19:00-21:00");
+  assert.equal(document.getElementById("next-session-reservation").hidden, false);
+  assert.match(document.getElementById("next-session-reservation").textContent, /18:00-21:30/);
+  assert.match(cards[1].textContent, /12/);
+  assert.match(cards[1].textContent, /attendance change window in the form has closed/i);
+  assert.match(cards[1].querySelector(".key-pickup-confirmed").textContent, /受け取り済み/);
+  assert.equal(cards[1].querySelector(".session-form-link"), null);
+  assert.equal(cards[2].querySelector(".session-form-link").href, formUrl);
+  assert.match(cards[2].textContent, /update attendance/i);
+  assert.match(cards[2].querySelector(".key-pickup-status").textContent, /Not yet confirmed/);
+  assert.match(cards[2].textContent, /30 minutes before practice/i);
+  assert.match(cards[2].textContent, /not included in automatic role selection/i);
+  assert.match(cards[2].textContent, /回答者本人へ、次回以降はできるだけ締切前に回答していただくよう、ご案内メールを送ります/);
+  assert.doesNotMatch(cards[2].textContent, /注意メール/);
+  assert.match(cards[3].textContent, /Attendance status is unavailable/);
+  assert.equal(cards[3].querySelector(".counts"), null);
+  assert.doesNotMatch(document.body.textContent, /PRIVATE-TEST-REFERENCE|private\.person/);
+  const later = document.querySelectorAll(".session-date-item");
+  assert.equal(later.length, 2);
+  assert.equal(later[0].textContent, "2099/8/21(金)");
+  assert.equal(later[1].textContent, "2099/8/28(金)");
+  assert.doesNotMatch(document.querySelector(".session-date-list").textContent, /19:00|18:00|仮予約|体育館/);
 });
 
 test("cancelled and tentative states remain visible on both sides of the compact-list boundary", async () => {
@@ -165,70 +207,6 @@ test("cancelled and tentative states remain visible on both sides of the compact
     assert.equal(compact.getAttribute("aria-hidden"), null);
     assert.doesNotMatch(compact.textContent, /19:00|21:00/);
   }
-});
-
-test("practice time and municipal gym reservation time are shown separately without private references", async () => {
-  const data = structuredClone(baseData);
-  data.generatedAt = new Date().toISOString();
-  data.sessions = [{
-    sessionId: "2099-07-17",
-    date: "2099-07-17",
-    time: "19:00-21:00",
-    reservationTime: "18:00-21:30",
-    reservationStatus: "provisional",
-    reservationReference: "PRIVATE-TEST-REFERENCE",
-    location: "Gym / 体育館",
-    status: "scheduled",
-    responseStatus: "upcoming",
-    attendingCount: null,
-    absentCount: null,
-    unansweredCount: null,
-    guestCount: null,
-    keyPickupStatus: "awaiting-assignment",
-    publicNote: "",
-    formUrl: "",
-  }];
-  const dom = await renderPage("index.html", "assets/app.js", data);
-  const card = dom.window.document.querySelector(".session-card");
-  const nextReservation = dom.window.document.getElementById("next-session-reservation");
-
-  assert.equal(card.querySelector(".session-date").textContent, "2099/7/17(金)");
-  assert.equal(dom.window.document.getElementById("next-session-title").textContent, "2099/7/17(金) 19:00-21:00");
-  assert.match(card.textContent, /Practice \/ 練習: 19:00-21:00/);
-  assert.match(card.textContent, /Reserved time \/ 施設予約時間: 18:00-21:30/);
-  assert.match(card.textContent, /Provisional \/ 仮予約/);
-  assert.match(nextReservation.textContent, /18:00-21:30/);
-  assert.equal(nextReservation.hidden, false);
-  assert.doesNotMatch(dom.window.document.body.textContent, /PRIVATE-TEST-REFERENCE/);
-});
-
-test("closed practices show counts without an attendance form link or role identity", async () => {
-  const data = structuredClone(baseData);
-  data.generatedAt = new Date().toISOString();
-  data.sessions = [{
-    sessionId: "2099-07-10",
-    date: "2099-07-10",
-    time: "19:00-21:00",
-    location: "Gym / 体育館",
-    status: "scheduled",
-    responseStatus: "closed",
-    attendingCount: 12,
-    absentCount: 3,
-    unansweredCount: 2,
-    guestCount: 1,
-    roleStatus: "assigned",
-    keyPickupStatus: "confirmed",
-    roles: "Setup: private.person",
-    publicNote: "Bring water / 飲み物持参",
-    formUrl: "",
-  }];
-  const dom = await renderPage("index.html", "assets/app.js", data);
-  const card = dom.window.document.querySelector(".session-card");
-  assert.match(card.textContent, /12/);
-  assert.match(card.textContent, /attendance change window in the form has closed/i);
-  assert.doesNotMatch(card.textContent, /private\.person/);
-  assert.match(card.querySelector(".key-pickup-confirmed").textContent, /受け取り済み/);
-  assert.equal(card.querySelector("a.session-form-link"), null);
 });
 
 test("cancelled practices use neutral guidance that is safe for every cancellation reason", async () => {
@@ -255,44 +233,13 @@ test("cancelled practices use neutral guidance that is safe for every cancellati
   assert.equal(card.querySelector("a.session-form-link"), null);
 });
 
-test("post-assignment change window keeps the update form visible", async () => {
-  const data = structuredClone(baseData);
-  data.generatedAt = new Date().toISOString();
-  data.sessions = [{
-    sessionId: "2099-07-10",
-    date: "2099-07-10",
-    time: "19:00-21:00",
-    location: "Gym / 体育館",
-    status: "scheduled",
-    responseStatus: "changes-open",
-    attendingCount: 12,
-    absentCount: 3,
-    unansweredCount: 2,
-    guestCount: 1,
-    roleStatus: "assigned",
-    keyPickupStatus: "pending",
-    publicNote: "",
-    formUrl: "https://docs.google.com/forms/d/e/example/viewform",
-  }];
-  const dom = await renderPage("index.html", "assets/app.js", data);
-  const card = dom.window.document.querySelector(".session-card");
-  const link = card.querySelector("a.session-form-link");
-  assert.match(card.querySelector(".key-pickup-status").textContent, /Not yet confirmed/);
-  assert.match(card.textContent, /update attendance/i);
-  assert.match(card.textContent, /30 minutes before practice/i);
-  assert.match(card.textContent, /not included in automatic role selection/i);
-  assert.match(card.textContent, /回答者本人へ、次回以降はできるだけ締切前に回答していただくよう、ご案内メールを送ります/);
-  assert.doesNotMatch(card.textContent, /注意メール/);
-  assert.equal(link.href, "https://docs.google.com/forms/d/e/example/viewform");
-});
-
-test("invalid dates and policy text from public data are rendered as text, not markup", async () => {
+test("invalid dates are excluded and public notices and policy render as text, not markup", async () => {
   const data = structuredClone(baseData);
   data.generatedAt = new Date().toISOString();
   data.policy.fees = "Fee / 参加費: <img src=x onerror=alert(1)>";
   data.sessions = [{
-    sessionId: "invalid-date",
-    date: "zz<img src=x onerror=alert(1)>",
+    sessionId: "2099-07-10",
+    date: "2099-07-10",
     time: "19:00-21:00",
     location: "Gym / 体育館",
     status: "scheduled",
@@ -301,13 +248,15 @@ test("invalid dates and policy text from public data are rendered as text, not m
     absentCount: 0,
     unansweredCount: 0,
     guestCount: 0,
-    publicNote: "",
-    formUrl: "",
-  }];
+    publicNote: "<img src=x onerror=alert(1)>",
+    formUrl: "javascript:alert(1)",
+  }, { date: "zz<img src=x onerror=alert(1)>" }, { date: "2099-02-30" }];
   const dom = await renderPage("index.html", "assets/app.js", data);
-  const date = dom.window.document.querySelector(".session-date");
-  assert.equal(date.querySelector("img"), null);
-  assert.match(date.textContent, /<img src=x onerror=alert\(1\)>/);
+  assert.equal(dom.window.document.querySelectorAll(".session-card").length, 1);
+  const note = dom.window.document.querySelector(".session-note");
+  assert.equal(note.querySelector("img"), null);
+  assert.match(note.textContent, /<img src=x onerror=alert\(1\)>/);
+  assert.equal(dom.window.document.querySelector(".session-form-link"), null);
   const policy = dom.window.document.getElementById("policy-content");
   assert.equal(policy.querySelector("img"), null);
   assert.match(policy.textContent, /Fee \/ 参加費: <img src=x onerror=alert\(1\)>/);
@@ -393,6 +342,89 @@ test("attendance table shows only the latest 20 practices while TSV keeps all re
   assert.equal(tsv.split("\r\n").filter(Boolean).length, 22);
 });
 
+test("cancellation marks show reasons on hover and tap without entering attendance totals or TSV", async () => {
+  const reason = "Gym unavailable / 体育館が利用できないため\n<img src=x onerror=alert(1)>";
+  const data = { ...baseData, sessions: [
+    { date: "2024-02-29", status: "cancelled", attendingCount: null, guestCount: null, publicNote: reason },
+    { date: "2025-01-03", status: "cancelled", attendingCount: 99, guestCount: 99, publicNote: " " },
+    { date: "2025-01-10", status: "scheduled", attendingCount: 0, guestCount: 0 },
+    { date: "2025-02-29", status: "cancelled", publicNote: "Invalid date" },
+    { date: "2099-01-03", status: "cancelled", publicNote: "Future" },
+  ] };
+  for (const width of [900, 264]) {
+    const marks = [];
+    let path = [];
+    const dom = await renderPage("attendance.html", "assets/attendance.js", data, window => {
+      window.CanvasRenderingContext2D = function () {};
+      const canvas = window.document.getElementById("attendance-chart");
+      Object.defineProperty(canvas.parentElement, "clientWidth", { value: width });
+      canvas.getContext = () => new Proxy({
+        beginPath: () => { path = []; },
+        moveTo: (x, y) => path.push([x, y]),
+        lineTo: (x, y) => path.push([x, y]),
+        stroke: () => {
+          if (path.length === 4) marks.push({ x: path[0][0] + 4, y: path[0][1] + 4 });
+        },
+      }, { get: (target, key) => target[key] || (() => {}) });
+    });
+    const document = dom.window.document;
+    assert.equal(document.getElementById("recorded-session-count").textContent, "1");
+    assert.equal(document.getElementById("recorded-year-range").textContent, "2024–2025");
+    const rows = document.querySelectorAll("#cancelled-records-body tr");
+    assert.equal(rows.length, 2);
+    assert.match(rows[0].textContent, /Reason not recorded/);
+    assert.equal(rows[1].querySelector("td").textContent, reason);
+    assert.equal(document.querySelector("#cancelled-records-body img"), null);
+    const tsv = decodeURIComponent(document.getElementById("attendance-download").href.split(",")[1]);
+    assert.equal(tsv, "\uFEFFdate\tattending_count\tguest_count\ttotal_participants\r\n2025-01-10\t0\t0\t0\r\n");
+    assert.equal(marks.length, 2);
+    const canvas = document.getElementById("attendance-chart");
+    const tooltip = document.getElementById("attendance-tooltip");
+    assert.equal(canvas.style.width, `${width}px`);
+    for (const event of ["pointermove", "pointerdown"]) {
+      canvas.dispatchEvent(new dom.window.MouseEvent(event, { clientX: marks[0].x, clientY: marks[0].y }));
+      assert.equal(tooltip.hidden, false);
+      assert.match(tooltip.textContent, /2024\/2\/29/);
+      assert.match(tooltip.textContent, /体育館が利用できないため/);
+      assert.equal(tooltip.querySelector("img"), null);
+      assert.doesNotMatch(tooltip.textContent, /Total \/ 合計/);
+    }
+    canvas.dispatchEvent(new dom.window.MouseEvent("pointerdown", { clientX: marks[1].x, clientY: marks[1].y }));
+    assert.match(tooltip.textContent, /理由未記録/);
+    const touchLeave = new dom.window.Event("pointerleave");
+    Object.defineProperty(touchLeave, "pointerType", { value: "touch" });
+    canvas.dispatchEvent(touchLeave);
+    assert.equal(tooltip.hidden, false, "A tap keeps its details visible after the finger leaves");
+    document.body.dispatchEvent(new dom.window.Event("pointerdown", { bubbles: true }));
+    assert.equal(tooltip.hidden, true);
+    canvas.dispatchEvent(new dom.window.MouseEvent("pointermove", { clientX: marks[0].x, clientY: marks[0].y }));
+    canvas.dispatchEvent(new dom.window.MouseEvent("pointerleave"));
+    assert.equal(tooltip.hidden, true);
+  }
+});
+
+test("cancellation-only history remains visible and excludes today in Japan", async () => {
+  const data = { ...baseData, sessions: [
+    { date: "2026-10-12", responseStatus: "cancelled", publicNote: "休館" },
+    { date: "2026-10-13", status: "cancelled", publicNote: "Today" },
+    { date: "2026-10-14", status: "cancelled", publicNote: "Future" },
+    { date: "2026-10-11", status: "scheduled", attendingCount: null },
+  ] };
+  const dom = await renderPage("attendance.html", "assets/attendance.js", data, window => {
+    const OriginalDate = window.Date;
+    window.Date = class extends OriginalDate {
+      constructor(...args) { super(...(args.length ? args : ["2026-10-12T15:00:00Z"])); }
+    };
+  });
+  const document = dom.window.document;
+  assert.equal(document.querySelectorAll("#cancelled-records-body tr").length, 1);
+  assert.match(document.getElementById("cancelled-records-body").textContent, /2026\/10\/12.*休館/s);
+  assert.equal(document.getElementById("attendance-figure").hidden, false);
+  assert.equal(document.getElementById("attendance-empty").hidden, false);
+  assert.equal(document.getElementById("attendance-download").getAttribute("aria-disabled"), "true");
+  assert.equal(document.getElementById("recorded-session-count").textContent, "0");
+});
+
 test("public data freshness warning follows the weekly heartbeat", async () => {
   const freshData = structuredClone(baseData);
   freshData.generatedAt = new Date(Date.now() - (7 * 24 * 60 - 1) * 60 * 1000).toISOString();
@@ -415,6 +447,18 @@ test("membership form opens as a separate signed-in Google flow", async () => {
   assert.match(dom.window.document.getElementById("membership-status").textContent, /Google sign-in is required/);
 });
 
+test("admin and membership links reject unsafe URLs and remain unavailable without a valid destination", async () => {
+  for (const url of ["javascript:alert(1)", "data:text/html,<script>alert(1)</script>", ""]) {
+    const admin = await renderPage("admin.html", "assets/admin.js", baseData, window => {
+      window.NIG_BADMINTON_ADMIN_URL = url;
+    });
+    assert.equal(admin.window.document.getElementById("admin-console-link").hasAttribute("href"), false);
+    const join = await renderPage("join.html", "assets/join.js", { ...baseData, membership: { formUrl: url } });
+    assert.equal(join.window.document.getElementById("membership-form-link").hasAttribute("href"), false);
+    assert.match(join.window.document.getElementById("membership-status").textContent, /being prepared/);
+  }
+});
+
 test("public HTML does not expose administrator account IDs", () => {
   const html = fs.readdirSync(docsUrl)
     .filter((name) => name.endsWith(".html"))
@@ -431,19 +475,21 @@ test("rendered public pages have no detectable structural accessibility violatio
     ["attendance.html", "assets/attendance.js"],
     ["about.html", "assets/app.js"],
     ["join.html", "assets/join.js"],
+    ["admin.html", "assets/admin.js"],
+    ["workflow.html", null],
+    ["role-assignment.html", null],
+    ["privacy.html", null],
   ];
   for (const [htmlPath, scriptPath] of pages) {
     const dom = await renderPage(htmlPath, scriptPath, data);
-    dom.window.eval(axe.source);
-    const results = await dom.window.axe.run(dom.window.document, {
-      rules: {
-        "color-contrast": { enabled: false },
-      },
-    });
-    assert.equal(
-      results.violations.length,
-      0,
-      `${htmlPath}: ${results.violations.map((violation) => `${violation.id} (${violation.nodes.length})`).join(", ")}`,
-    );
+    try {
+      dom.window.eval(axe.source);
+      const results = await dom.window.axe.run(dom.window.document, {
+        resultTypes: ["violations"],
+        rules: { "color-contrast": { enabled: false } },
+      });
+      assert.equal(results.violations.length, 0,
+        `${htmlPath}: ${results.violations.map(v => `${v.id} (${v.nodes.length})`).join(", ")}`);
+    } finally { close(dom); }
   }
 });
