@@ -48,7 +48,7 @@ class PublicDataTest(unittest.TestCase):
             with self.subTest(data_type=type(data).__name__):
                 self.assertTrue(validator.validate_public_data(data))
 
-    def test_internal_fragments_are_checked_by_the_real_entrypoint(self):
+    def test_entrypoint_checks_fragments_and_preserves_nested_scan_coverage(self):
         with tempfile.TemporaryDirectory(prefix="nig-site-validation-") as directory:
             root = Path(directory)
             docs = root / "docs"
@@ -72,3 +72,19 @@ class PublicDataTest(unittest.TestCase):
                 self.assertEqual(result.returncode, 0 if fragment == "details" else 1, result.stdout + result.stderr)
                 if fragment == "missing":
                     self.assertIn("missing local anchor", result.stdout)
+            (docs / "index.html").write_text('<a href="privacy.html#details">Privacy</a>')
+            private_pattern = "spreadsheets" + "/d/"
+            for excluded in ["node_modules", ".git", "build"]:
+                target = root / "nested" / excluded / "deeper" / "private.txt"
+                target.parent.mkdir(parents=True)
+                target.write_text(private_pattern)
+            result = subprocess.run([sys.executable, str(ROOT / "scripts/validate_site.py")],
+                                    cwd=root, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            target = root / "nested" / "source" / ".private.txt"
+            target.parent.mkdir()
+            target.write_text(private_pattern)
+            result = subprocess.run([sys.executable, str(ROOT / "scripts/validate_site.py")],
+                                    cwd=root, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn("nested/source/.private.txt", result.stdout)

@@ -1,4 +1,5 @@
 import json
+import os
 import re
 import sys
 from datetime import date
@@ -112,19 +113,17 @@ def main():
         r"confirmation_token",
         r"nig\.badminton-club\+managers",
     ]
-    for path in [
-        p
-        for p in Path(".").rglob("*")
-        if p.is_file()
-        and ".git" not in p.parts
-        and "node_modules" not in p.parts
-        and str(p) != "scripts/validate_site.py"
-        and "build" not in p.parts
-    ]:
-        text = path.read_text(errors="ignore")
-        for pattern in forbidden_patterns:
-            if re.search(pattern, text, re.IGNORECASE):
-                failures.append(f"Forbidden public pattern {pattern!r} found in {path}")
+    for directory, directories, files in os.walk("."):
+        # Prune before descent; filtering rglob results still visits every dependency.
+        directories[:] = [name for name in directories if name not in {".git", "node_modules", "build"}]
+        for name in files:
+            path = Path(directory) / name
+            if not path.is_file() or str(path) == "scripts/validate_site.py":
+                continue
+            text = path.read_text(errors="ignore")
+            for pattern in forbidden_patterns:
+                if re.search(pattern, text, re.IGNORECASE):
+                    failures.append(f"Forbidden public pattern {pattern!r} found in {path}")
 
     class LinkParser(HTMLParser):
         def __init__(self):

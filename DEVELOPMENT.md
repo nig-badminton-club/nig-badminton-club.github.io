@@ -173,6 +173,68 @@ with `npm run lint && npm run validate:html && npm run validate:site && npm test
 and compare with `npm run check`. All checks remain mandatory; these local
 measurements exclude installation and do not predict CI runner timings.
 
+## 2026-10-15 efficiency review
+
+The review covered public-data loading, schedule and attendance rendering,
+chart/export work, styles/assets, membership/admin links, validation, tests and
+Pages recovery. Schedule dates now share one Japanese `Intl.DateTimeFormat` per
+page instead of constructing one for the next practice and every displayed date.
+For 52 upcoming dates that reduces practice-date formatter constructions from
+53 to one. Tokyo timezone, labels, cancellation states, payload fields, loading
+order and downloads are unchanged. Script query versions were updated on both
+pages that load `app.js`.
+
+The public-data pattern scan now prunes `.git`, `node_modules` and `build` before
+descending into them. The same source files and patterns remain covered, with
+real-entrypoint fixtures for nested excluded trees and hidden source files.
+Data/link validation, every accessibility scan and all recovery cases still run.
+
+Reproduce the date-formatting comparison from this root with Node 24:
+
+```sh
+node --expose-gc scripts/benchmark_schedule.mjs
+```
+
+The default baseline is `5fa30a77144e1e82fceafd7c9790f8b8a34852bb`; an optional
+first argument selects another locally available commit containing `app.js`.
+The benchmark extracts the actual date-formatting code from both candidates,
+includes formatter initialization per page, warms both paths and alternates five
+trials of 20 simulated pages. Values below are per-page CPU medians for the next
+practice plus every upcoming date. Each trial compares formatted strings; complete
+jsdom-generated schedule HTML also matches for every fixture.
+
+Measured on macOS arm64 with Node v24.19.0 and the locked dependencies, on
+2026-10-15, with benchmarks run serially without repository checks/builds:
+
+| Upcoming dates | Previous formatting median | Reused formatter median |
+| --- | ---: | ---: |
+| 12 | 0.787 ms | 0.272 ms |
+| 52 | 3.173 ms | 0.126 ms |
+| 260 | 33.767 ms | 1.526 ms |
+
+The largest fixture ranged from 12.10–54.03 ms before and 0.32–2.48 ms after.
+These measure date formatting only. Full-page jsdom rendering was noisy, so no
+overall page-load speedup is claimed. Network, browser layout and DOM setup are
+excluded. Optional explicit GC runs between batches outside the timed workload;
+whole-process peak RSS was 362.3 MiB across compatibility checks and both paths,
+not a comparison of browser memory use.
+
+For the static validator, keep the same installed dependencies and working tree:
+
+```sh
+git show 5fa30a77144e1e82fceafd7c9790f8b8a34852bb:scripts/validate_site.py > /tmp/nig-site-validation-before.py
+python3 /tmp/nig-site-validation-before.py
+python3 scripts/validate_site.py
+```
+
+With Python 3.9.6, one warmup per path and five alternating subprocess timings,
+median validation time fell from 313.99 ms to 130.64 ms (58%); ranges were
+270–627 ms and 107–172 ms. Exit status and output matched. Peak child RSS across
+the comparisons was 19.9 MiB, not a per-path memory measurement. Installation and
+whole-suite time are excluded. Local browser review of schedule and about pages
+at 1280×900 and 390×844 found matching dates/member counts, no horizontal overflow
+and no JavaScript console errors.
+
 ## Documentation changes
 
 Keep the Japanese and English explanations aligned with the deployed behavior.

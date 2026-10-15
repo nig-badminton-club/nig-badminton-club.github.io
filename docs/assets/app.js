@@ -2,6 +2,13 @@
   const fallbackUrl = "data/public.json";
   const jsonpUrl = window.NIG_BADMINTON_PUBLIC_JSONP_URL || "";
   const publicDataFreshHours = 7 * 24;
+  const practiceDateFormatter = new Intl.DateTimeFormat("ja-JP", {
+    timeZone: "Asia/Tokyo",
+    year: "numeric",
+    weekday: "short",
+    month: "numeric",
+    day: "numeric",
+  });
 
   function loadJsonp(url) {
     return new Promise((resolve, reject) => {
@@ -47,13 +54,7 @@
   function formatDate(dateString) {
     const date = new Date(`${dateString}T00:00:00+09:00`);
     if (Number.isNaN(date.getTime())) return String(dateString || "");
-    return new Intl.DateTimeFormat("ja-JP", {
-      timeZone: "Asia/Tokyo",
-      year: "numeric",
-      weekday: "short",
-      month: "numeric",
-      day: "numeric",
-    }).format(date);
+    return practiceDateFormatter.format(date);
   }
 
   function formatDateTimeParts(value) {
