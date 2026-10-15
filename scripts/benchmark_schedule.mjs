@@ -17,7 +17,8 @@ function compileFormatter(source) {
   const start = source.indexOf("  function formatDate(");
   assert.notEqual(start, -1, "Practice-date formatter is missing");
   const end = source.indexOf("\n  function ", start + 1);
-  const cached = source.match(/^  const practiceDateFormatter = [\s\S]+?^  \}\);/m)?.[0] || "";
+  const cached = source.match(/^  const practiceDateFormatter = [\s\S]+?^  \}\);/m)?.[0]
+    || source.match(/^  let practiceDateFormatter;/m)?.[0] || "";
   return new vm.Script(`(() => { ${cached}\n${source.slice(start, end)}\nreturn formatDate; })()`);
 }
 const formatters = { before: compileFormatter(before), after: compileFormatter(after) };
@@ -42,6 +43,7 @@ async function render(source, sessions) {
   const dom = new JSDOM(html, { runScripts: "outside-only", url: "https://example.test/" });
   try {
     dom.window.fetch = async () => ({ ok: true, json: async () => ({ ...data, sessions }) });
+    dom.window.eval(fs.readFileSync("docs/assets/public-data.js", "utf8"));
     dom.window.eval(source);
     await new Promise(resolve => setImmediate(resolve));
     assert.equal(dom.window.document.querySelectorAll(".session-card").length, 4);

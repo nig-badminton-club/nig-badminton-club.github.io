@@ -23,6 +23,7 @@ function close(dom) {
 async function renderPage(htmlPath, scriptPath, data, configure = () => {}) {
   const dom = new JSDOM(read(htmlPath), {
     runScripts: "outside-only",
+    pretendToBeVisual: true,
     url: `https://nig-badminton-club.github.io/${htmlPath}`,
   });
   openWindows.add(dom.window);
@@ -47,12 +48,52 @@ async function renderPage(htmlPath, scriptPath, data, configure = () => {}) {
     }, 1000);
     observer.observe(dom.window.document.body, { childList: true, subtree: true, attributes: true, characterData: true });
   });
+  if (dom.window.document.querySelector('script[src^="assets/public-data.js"]')) {
+    dom.window.eval(read("assets/public-data.js"));
+  }
   dom.window.eval(read(scriptPath));
   await rendered;
   return dom;
 }
 
 const baseData = JSON.parse(read("data/public.json"));
+
+test("shared loader isolates concurrent JSONP callbacks and validates without a silent fallback", async () => {
+  const dom = new JSDOM(read("join.html"), { runScripts: "outside-only", url: "https://example.test/" });
+  openWindows.add(dom.window);
+  const window = dom.window;
+  window.NIG_BADMINTON_PUBLIC_JSONP_URL = "https://example.test/live";
+  window.Date.now = () => 123;
+  let fetches = 0;
+  window.fetch = async () => { fetches++; return { ok: true, json: async () => baseData }; };
+  window.eval(read("assets/public-data.js"));
+  const api = window.NigBadmintonPublic;
+  const pending = [api.loadData(), api.loadData()];
+  const scripts = [...window.document.querySelectorAll('script[src^="https://example.test/live"]')];
+  const callbacks = scripts.map(script => new URL(script.src).searchParams.get("callback"));
+  assert.notEqual(callbacks[0], callbacks[1]);
+  window[callbacks[1]]({ sessions: [] });
+  window[callbacks[0]]({ sessions: null });
+  const results = await Promise.all(pending);
+  assert.throws(() => api.validateData(results[0]), /invalid sessions/);
+  assert.equal(api.validateData(results[1]).sessions.length, 0);
+  assert.equal(fetches, 0);
+  for (const name of callbacks) assert.equal(window[name], undefined);
+  assert.ok(scripts.every(script => !script.isConnected));
+});
+
+test("about page skips schedule dates and practice formatter allocation", async () => {
+  let dateReads = 0;
+  let formatters = 0;
+  const data = { ...baseData, sessions: [{ get date() { dateReads++; return "2099-01-01"; } }] };
+  await renderPage("about.html", "assets/app.js", data, window => {
+    window.fetch = async () => ({ ok: true, json: async () => data });
+    const OriginalFormatter = window.Intl.DateTimeFormat;
+    window.Intl.DateTimeFormat = function (...args) { if (args[1]?.weekday) formatters++; return new OriginalFormatter(...args); };
+  });
+  assert.equal(dateReads, 0);
+  assert.equal(formatters, 0);
+});
 
 test("next practice skips finished, cancelled and invalid dates and never reopens a stale form", async () => {
   const formUrl = "https://docs.google.com/forms/d/e/example/viewform";
@@ -381,14 +422,28 @@ test("cancellation marks show reasons on hover and tap without entering attendan
     const canvas = document.getElementById("attendance-chart");
     const tooltip = document.getElementById("attendance-tooltip");
     assert.equal(canvas.style.width, `${width}px`);
+    let tooltipUpdates = 0;
+    const observer = new dom.window.MutationObserver(records => { tooltipUpdates += records.filter(row => row.type === "childList").length; });
+    observer.observe(tooltip, { childList: true });
+    for (let i = 0; i < 100; i++) {
+      const point = marks[i === 99 ? 0 : 1];
+      canvas.dispatchEvent(new dom.window.MouseEvent("pointermove", { clientX: point.x, clientY: point.y }));
+    }
+    assert.equal(tooltip.hidden, true);
+    await new Promise(resolve => dom.window.requestAnimationFrame(resolve));
+    assert.match(tooltip.textContent, /2024\/2\/29/);
+    assert.equal(tooltipUpdates, 1);
     for (const event of ["pointermove", "pointerdown"]) {
       canvas.dispatchEvent(new dom.window.MouseEvent(event, { clientX: marks[0].x, clientY: marks[0].y }));
+      if (event === "pointermove") await new Promise(resolve => dom.window.requestAnimationFrame(resolve));
       assert.equal(tooltip.hidden, false);
       assert.match(tooltip.textContent, /2024\/2\/29/);
       assert.match(tooltip.textContent, /体育館が利用できないため/);
       assert.equal(tooltip.querySelector("img"), null);
       assert.doesNotMatch(tooltip.textContent, /Total \/ 合計/);
     }
+    assert.equal(tooltipUpdates, 1, "Repeated hover/tap on the same point keeps the DOM");
+    observer.disconnect();
     canvas.dispatchEvent(new dom.window.MouseEvent("pointerdown", { clientX: marks[1].x, clientY: marks[1].y }));
     assert.match(tooltip.textContent, /理由未記録/);
     const touchLeave = new dom.window.Event("pointerleave");
@@ -399,6 +454,7 @@ test("cancellation marks show reasons on hover and tap without entering attendan
     assert.equal(tooltip.hidden, true);
     canvas.dispatchEvent(new dom.window.MouseEvent("pointermove", { clientX: marks[0].x, clientY: marks[0].y }));
     canvas.dispatchEvent(new dom.window.MouseEvent("pointerleave"));
+    await new Promise(resolve => dom.window.requestAnimationFrame(resolve));
     assert.equal(tooltip.hidden, true);
   }
 });

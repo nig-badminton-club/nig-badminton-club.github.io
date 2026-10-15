@@ -1,66 +1,11 @@
 (function () {
-  const fallbackUrl = "data/public.json";
-  const jsonpUrl = window.NIG_BADMINTON_PUBLIC_JSONP_URL || "";
+  const { loadData, validateData, safeHref } = window.NigBadmintonPublic;
   const status = document.getElementById("membership-status");
   const link = document.getElementById("membership-form-link");
 
-  function loadJsonp(url) {
-    return new Promise((resolve, reject) => {
-      const callbackName = `nigBadmintonJoinCallback_${Date.now()}`;
-      const script = document.createElement("script");
-      const separator = url.indexOf("?") === -1 ? "?" : "&";
-      const timeout = window.setTimeout(() => {
-        cleanup();
-        reject(new Error("JSONP load timed out"));
-      }, 5000);
-      function cleanup() {
-        window.clearTimeout(timeout);
-        delete window[callbackName];
-        script.remove();
-      }
-      window[callbackName] = (payload) => {
-        cleanup();
-        resolve(payload);
-      };
-      script.onerror = () => {
-        cleanup();
-        reject(new Error("JSONP load failed"));
-      };
-      script.async = true;
-      script.src = `${url}${separator}callback=${callbackName}`;
-      document.head.appendChild(script);
-    });
-  }
-
-  async function loadData() {
-    if (jsonpUrl) {
-      try {
-        return await loadJsonp(jsonpUrl);
-      } catch (error) {
-        console.warn(error);
-      }
-    }
-    const response = await fetch(fallbackUrl, { cache: "no-store" });
-    if (!response.ok) throw new Error(`Public data request failed: HTTP ${response.status}`);
-    return response.json();
-  }
-
-  function safeHref(value) {
-    const raw = String(value || "").trim();
-    if (!raw) return "";
-    try {
-      const url = new URL(raw, window.location.href);
-      return ["http:", "https:"].includes(url.protocol) ? url.href : "";
-    } catch (error) {
-      return "";
-    }
-  }
-
   loadData()
     .then((data) => {
-      if (!data || !Array.isArray(data.sessions) || data.sessions.some((session) => !session || typeof session !== "object")) {
-        throw new Error("Public data has an invalid sessions list.");
-      }
+      validateData(data);
       const formUrl = safeHref(data.membership && data.membership.formUrl);
       if (!formUrl) {
         status.textContent = "The membership form is being prepared. Please check back soon. / メンバー手続きフォームを準備中です。しばらくしてから再度ご確認ください。";

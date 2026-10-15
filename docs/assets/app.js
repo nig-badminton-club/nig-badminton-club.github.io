@@ -1,59 +1,14 @@
 (function () {
-  const fallbackUrl = "data/public.json";
-  const jsonpUrl = window.NIG_BADMINTON_PUBLIC_JSONP_URL || "";
+  const { loadData, validateData, safeHref } = window.NigBadmintonPublic;
   const publicDataFreshHours = 7 * 24;
-  const practiceDateFormatter = new Intl.DateTimeFormat("ja-JP", {
-    timeZone: "Asia/Tokyo",
-    year: "numeric",
-    weekday: "short",
-    month: "numeric",
-    day: "numeric",
-  });
-
-  function loadJsonp(url) {
-    return new Promise((resolve, reject) => {
-      const callbackName = `nigBadmintonCallback_${Date.now()}`;
-      const script = document.createElement("script");
-      const separator = url.indexOf("?") === -1 ? "?" : "&";
-      const timeout = window.setTimeout(() => {
-        cleanup();
-        reject(new Error("JSONP load timed out"));
-      }, 5000);
-      function cleanup() {
-        window.clearTimeout(timeout);
-        delete window[callbackName];
-        script.remove();
-      }
-      window[callbackName] = (payload) => {
-        cleanup();
-        resolve(payload);
-      };
-      script.onerror = () => {
-        cleanup();
-        reject(new Error("JSONP load failed"));
-      };
-      script.async = true;
-      script.src = `${url}${separator}callback=${callbackName}`;
-      document.head.appendChild(script);
-    });
-  }
-
-  async function loadData() {
-    if (jsonpUrl) {
-      try {
-        return await loadJsonp(jsonpUrl);
-      } catch (error) {
-        console.warn(error);
-      }
-    }
-    const response = await fetch(fallbackUrl, { cache: "no-store" });
-    if (!response.ok) throw new Error(`Public data request failed: HTTP ${response.status}`);
-    return response.json();
-  }
+  let practiceDateFormatter;
 
   function formatDate(dateString) {
     const date = new Date(`${dateString}T00:00:00+09:00`);
     if (Number.isNaN(date.getTime())) return String(dateString || "");
+    if (!practiceDateFormatter) practiceDateFormatter = new Intl.DateTimeFormat("ja-JP", {
+      timeZone: "Asia/Tokyo", year: "numeric", weekday: "short", month: "numeric", day: "numeric",
+    });
     return practiceDateFormatter.format(date);
   }
 
@@ -134,17 +89,6 @@
       "\"": "&quot;",
       "'": "&#39;",
     }[character]));
-  }
-
-  function safeHref(value) {
-    const raw = String(value || "").trim();
-    if (!raw) return "";
-    try {
-      const url = new URL(raw, window.location.href);
-      return ["http:", "https:"].includes(url.protocol) ? url.href : "";
-    } catch (error) {
-      return "";
-    }
   }
 
   function formatCount(value) {
@@ -446,17 +390,17 @@
 
   loadData()
     .then((data) => {
-      if (!data || !Array.isArray(data.sessions) || data.sessions.some((session) => !session || typeof session !== "object")) {
-        throw new Error("Public data has an invalid sessions list.");
-      }
-      const sessions = upcomingSessions(data.sessions || []);
-      const nextSession = findNextSession(sessions);
+      validateData(data);
       renderMeta(data);
       renderDataHealth(data);
-      renderNextSession(nextSession);
       renderMemberStats(data.memberStats || {});
-      renderSessions(sessions, nextSession);
       renderPolicy(data.policy || {});
+      if (document.getElementById("session-list") || document.getElementById("next-session-title")) {
+        const sessions = upcomingSessions(data.sessions);
+        const nextSession = findNextSession(sessions);
+        renderNextSession(nextSession);
+        renderSessions(sessions, nextSession);
+      }
     })
     .catch((error) => {
       console.error(error);

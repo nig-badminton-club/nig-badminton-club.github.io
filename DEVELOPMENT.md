@@ -47,6 +47,16 @@ snapshots; deploying this static site does not deploy or migrate that system.
 
 ## Choosing local checks
 
+The 0.1.16 browser scripts share `assets/public-data.js` for loading, validation
+and safe links. JSONP calls have distinct callbacks, retain timeout cleanup and
+fall back only on transport failure. Successful malformed responses still fail
+validation. About skips schedule filtering/sorting and practice-date formatter
+creation; its photograph reserves its dimensions and loads lazily. Chart hover
+work runs at most once per animation frame, uses the latest pointer position and
+keeps tooltip DOM when the selected point is unchanged. Taps remain immediate.
+Rendering tests cover these paths, cancellation text, TSV output and unsafe links.
+These changes have no payload, participant-rule or endpoint configuration change.
+
 Run from this repository's root. Confirm `node --version` is v24.15 or newer within 24.x and
 `python3 --version` succeeds, then `npm ci`. `.node-version` is a selection file,
 not an automatic runtime switch. The locked jsdom requires at least Node 24.15

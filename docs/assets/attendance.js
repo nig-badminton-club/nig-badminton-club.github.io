@@ -1,52 +1,10 @@
 (function () {
-  const fallbackUrl = "data/public.json";
-  const jsonpUrl = window.NIG_BADMINTON_PUBLIC_JSONP_URL || "";
+  const { loadData, validateData } = window.NigBadmintonPublic;
   const publicDataFreshHours = 7 * 24;
   const monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   let chartState = null;
-
-  function loadJsonp(url) {
-    return new Promise((resolve, reject) => {
-      const callbackName = `nigBadmintonAttendanceCallback_${Date.now()}`;
-      const script = document.createElement("script");
-      const separator = url.indexOf("?") === -1 ? "?" : "&";
-      const timeout = window.setTimeout(() => {
-        cleanup();
-        reject(new Error("JSONP load timed out"));
-      }, 5000);
-
-      function cleanup() {
-        window.clearTimeout(timeout);
-        delete window[callbackName];
-        script.remove();
-      }
-
-      window[callbackName] = (payload) => {
-        cleanup();
-        resolve(payload);
-      };
-      script.onerror = () => {
-        cleanup();
-        reject(new Error("JSONP load failed"));
-      };
-      script.async = true;
-      script.src = `${url}${separator}callback=${callbackName}`;
-      document.head.appendChild(script);
-    });
-  }
-
-  async function loadData() {
-    if (jsonpUrl) {
-      try {
-        return await loadJsonp(jsonpUrl);
-      } catch (error) {
-        console.warn(error);
-      }
-    }
-    const response = await fetch(fallbackUrl, { cache: "no-store" });
-    if (!response.ok) throw new Error(`Public data request failed: HTTP ${response.status}`);
-    return response.json();
-  }
+  let tooltipFrame = 0;
+  let pointerPosition = null;
 
   function escapeHtml(value) {
     return String(value ?? "").replace(/[&<>"']/g, (character) => ({
@@ -395,6 +353,10 @@
   }
 
   function hideTooltip() {
+    window.cancelAnimationFrame(tooltipFrame);
+    tooltipFrame = 0;
+    pointerPosition = null;
+    if (chartState) chartState.shownPoint = null;
     const tooltip = document.getElementById("attendance-tooltip");
     if (tooltip) tooltip.hidden = true;
   }
@@ -406,14 +368,18 @@
     const rect = chartState.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    const nearest = chartState.hitPoints.reduce((best, candidate) => {
-      const distance = Math.hypot(candidate.x - x, candidate.y - y);
-      return !best || distance < best.distance ? { ...candidate, distance } : best;
-    }, null);
-    if (!nearest || nearest.distance > 22) {
+    let nearest = null;
+    let distanceSquared = Infinity;
+    for (const candidate of chartState.hitPoints) {
+      const distance = (candidate.x - x) ** 2 + (candidate.y - y) ** 2;
+      if (distance < distanceSquared) { nearest = candidate; distanceSquared = distance; }
+    }
+    if (!nearest || distanceSquared > 22 ** 2) {
       hideTooltip();
       return;
     }
+    if (chartState.shownPoint === nearest.point && !tooltip.hidden) return;
+    chartState.shownPoint = nearest.point;
     tooltip.innerHTML = nearest.point.cancelled
       ? `<strong>${escapeHtml(formatDate(nearest.point.date))} · Cancelled / 休み・中止</strong><span>${escapeHtml(cancellationReason(nearest.point))}</span>`
       : `<strong>${escapeHtml(formatDate(nearest.point.date))}</strong><span>Total / 合計: ${escapeHtml(nearest.point.total)}</span><span>Attending / 参加回答者: ${escapeHtml(nearest.point.attending)} · Guests / ゲスト: ${escapeHtml(nearest.point.guests)}</span>`;
@@ -423,6 +389,17 @@
     const above = nearest.y - 12 - tooltip.offsetHeight;
     const below = Math.min(nearest.y + 12, chartState.layout.height - tooltip.offsetHeight);
     tooltip.style.top = `${Math.max(0, above >= 0 ? above : below)}px`;
+  }
+
+  function queueNearestPoint(event) {
+    pointerPosition = { clientX: event.clientX, clientY: event.clientY };
+    if (tooltipFrame) return;
+    tooltipFrame = window.requestAnimationFrame(() => {
+      tooltipFrame = 0;
+      const position = pointerPosition;
+      pointerPosition = null;
+      if (position) showNearestPoint(position);
+    });
   }
 
   function renderMeta(data) {
@@ -454,9 +431,7 @@
   }
 
   function render(data) {
-    if (!data || !Array.isArray(data.sessions) || data.sessions.some((session) => !session || typeof session !== "object")) {
-      throw new Error("Public data has an invalid sessions list.");
-    }
+    validateData(data);
     const { points, cancellations, series } = collectSeries(data.sessions || []);
     renderMeta(data);
     renderDataHealth(data);
@@ -475,8 +450,13 @@
     drawChart(series);
     const canvas = document.getElementById("attendance-chart");
     if (canvas) {
-      canvas.addEventListener("pointermove", showNearestPoint);
-      canvas.addEventListener("pointerdown", showNearestPoint);
+      canvas.addEventListener("pointermove", queueNearestPoint);
+      canvas.addEventListener("pointerdown", event => {
+        window.cancelAnimationFrame(tooltipFrame);
+        tooltipFrame = 0;
+        pointerPosition = null;
+        showNearestPoint(event);
+      });
       canvas.addEventListener("pointerleave", (event) => {
         if (event.pointerType !== "touch") hideTooltip();
       });
