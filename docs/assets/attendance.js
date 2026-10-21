@@ -83,14 +83,37 @@
     };
   }
 
-  function collectSeries(sessions) {
+  function noPracticePoints(weeks, sessions, today) {
+    if (!Array.isArray(weeks)) throw new Error("No-practice weeks must be an array.");
+    const occupiedWeeks = new Set(sessions.map(sessionDate).filter(Boolean).map(date => {
+      const monday = new Date(Date.UTC(date.year, date.month - 1, date.day));
+      monday.setUTCDate(monday.getUTCDate() - (monday.getUTCDay() + 6) % 7);
+      return monday.toISOString().slice(0, 10);
+    }));
+    const seen = new Set();
+    return weeks.map(week => {
+      const date = week && sessionDate({ date: week.weekStart });
+      if (!date) throw new Error("Invalid no-practice week.");
+      const start = new Date(Date.UTC(date.year, date.month - 1, date.day));
+      const end = new Date(Date.UTC(date.year, date.month - 1, date.day + 6)).toISOString().slice(0, 10);
+      if (start.getUTCDay() !== 1 || week.weekEnd !== end || week.reason !== "no-reservation" || seen.has(date.date)) {
+        throw new Error("Invalid or duplicate no-practice week.");
+      }
+      seen.add(date.date);
+      return date.date <= today && !occupiedWeeks.has(date.date)
+        ? { ...date, cancelled: true, noPractice: true, weekEnd: end, reason: "No gym reservation / 体育館の予約なし" } : null;
+    }).filter(Boolean);
+  }
+
+  function collectSeries(sessions, noPracticeWeeks) {
     const todayKey = getTodayKey();
     const pastSessions = sessions.filter((session) => String(session.date || "") < todayKey);
     const isCancelled = (session) => session.status === "cancelled" || session.responseStatus === "cancelled";
     const cancellations = pastSessions.filter(isCancelled).map((session) => {
       const date = sessionDate(session);
       return date ? { ...date, cancelled: true, reason: String(session.publicNote || "").trim() } : null;
-    }).filter(Boolean).sort((a, b) => a.date.localeCompare(b.date));
+    }).filter(Boolean).concat(noPracticePoints(noPracticeWeeks, sessions, todayKey))
+      .sort((a, b) => a.date.localeCompare(b.date));
     const points = pastSessions
       .filter((session) => !isCancelled(session))
       .map(sessionPoint)
@@ -181,7 +204,7 @@
     body.innerHTML = cancellations.length
       ? cancellations.slice().reverse().map((point) => `
           <tr>
-            <th scope="row">${escapeHtml(formatDate(point.date))}</th>
+            <th scope="row">${escapeHtml(formatDate(point.date))}${point.noPractice ? `<span class="no-practice-week-end">– ${escapeHtml(formatDate(point.weekEnd))}</span>` : ""}</th>
             <td>${escapeHtml(cancellationReason(point))}</td>
           </tr>
         `).join("")
@@ -237,7 +260,9 @@
     if (!canvas || !window.CanvasRenderingContext2D) return;
     const wrap = canvas.parentElement;
     const width = Math.max(1, Math.floor(wrap.clientWidth));
-    const cancelledSeries = series.filter((item) => item.cancellations.length);
+    const cancelledSeries = series.flatMap(item => [false, true].map(noPractice => ({
+      ...item, cancellations: item.cancellations.filter(point => Boolean(point.noPractice) === noPractice),
+    })).filter(row => row.cancellations.length));
     const bandHeight = cancelledSeries.length * 28 + (cancelledSeries.length ? 22 : 0);
     const height = (width < 620 ? 390 : 470) + bandHeight;
     const ratio = Math.min(window.devicePixelRatio || 1, 2);
@@ -319,7 +344,7 @@
       const bandTop = height - bandHeight;
       context.fillStyle = "#5d6878";
       context.textAlign = "left";
-      context.fillText("Cancelled / 休み・中止", margin.left, bandTop + 2);
+      context.fillText("Breaks / 休み・中止", margin.left, bandTop + 2);
       cancelledSeries.forEach((item, index) => {
         const y = bandTop + 24 + index * 28;
         context.fillStyle = "#f4f6f9";
@@ -331,12 +356,16 @@
           const x = layout.x(point.xValue);
           context.strokeStyle = item.color;
           context.lineWidth = 2;
-          context.beginPath();
-          context.moveTo(x - 4, y - 4);
-          context.lineTo(x + 4, y + 4);
-          context.moveTo(x - 4, y + 4);
-          context.lineTo(x + 4, y - 4);
-          context.stroke();
+          if (point.noPractice) {
+            context.strokeRect(x - 4, y - 4, 8, 8);
+          } else {
+            context.beginPath();
+            context.moveTo(x - 4, y - 4);
+            context.lineTo(x + 4, y + 4);
+            context.moveTo(x - 4, y + 4);
+            context.lineTo(x + 4, y - 4);
+            context.stroke();
+          }
           hitPoints.push({ x, y, point, color: item.color });
         });
       });
@@ -380,8 +409,10 @@
     }
     if (chartState.shownPoint === nearest.point && !tooltip.hidden) return;
     chartState.shownPoint = nearest.point;
+    const breakDate = nearest.point.noPractice
+      ? `${formatDate(nearest.point.date)}–${formatDate(nearest.point.weekEnd)}` : formatDate(nearest.point.date);
     tooltip.innerHTML = nearest.point.cancelled
-      ? `<strong>${escapeHtml(formatDate(nearest.point.date))} · Cancelled / 休み・中止</strong><span>${escapeHtml(cancellationReason(nearest.point))}</span>`
+      ? `<strong>${escapeHtml(breakDate)} · ${nearest.point.noPractice ? "No practice / 練習なし" : "Cancelled / 休み・中止"}</strong><span>${escapeHtml(cancellationReason(nearest.point))}</span>`
       : `<strong>${escapeHtml(formatDate(nearest.point.date))}</strong><span>Total / 合計: ${escapeHtml(nearest.point.total)}</span><span>Attending / 参加回答者: ${escapeHtml(nearest.point.attending)} · Guests / ゲスト: ${escapeHtml(nearest.point.guests)}</span>`;
     tooltip.hidden = false;
     const halfWidth = tooltip.offsetWidth / 2;
@@ -432,7 +463,7 @@
 
   function render(data) {
     validateData(data);
-    const { points, cancellations, series } = collectSeries(data.sessions || []);
+    const { points, cancellations, series } = collectSeries(data.sessions || [], data.noPracticeWeeks === undefined ? [] : data.noPracticeWeeks);
     renderMeta(data);
     renderDataHealth(data);
     renderSummary(points, series);

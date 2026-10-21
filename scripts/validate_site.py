@@ -2,7 +2,7 @@ import json
 import os
 import re
 import sys
-from datetime import date
+from datetime import date, timedelta
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlparse
@@ -63,6 +63,28 @@ def validate_public_data(data):
                     errors.append(f"{response_status} session {session_id} must use null for {key}")
             elif count is not None and (type(count) is not int or count < 0):
                 errors.append(f"session {session_id} has invalid {key}")
+    weeks = data.get("noPracticeWeeks", [])
+    if not isinstance(weeks, list):
+        return errors + ["noPracticeWeeks must be an array"]
+    seen_weeks = set()
+    for week in weeks:
+        if not isinstance(week, dict) or set(week) != {"weekStart", "weekEnd", "reason"}:
+            errors.append("No-practice weeks must contain only weekStart, weekEnd and reason")
+            continue
+        try:
+            start, end = week["weekStart"], week["weekEnd"]
+            if any(not isinstance(value, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value) for value in [start, end]):
+                raise ValueError()
+            monday = date.fromisoformat(start)
+            if monday.weekday() != 0 or date.fromisoformat(end) != monday + timedelta(days=6) or start in seen_weeks:
+                raise ValueError()
+            seen_weeks.add(start)
+            if week["reason"] != "no-reservation":
+                raise ValueError()
+            if any(isinstance(session, dict) and isinstance(session.get("date"), str) and start <= session["date"] <= end for session in sessions):
+                errors.append("A no-practice week conflicts with an actual session")
+        except ValueError:
+            errors.append("Invalid or duplicate no-practice week")
     return errors
 
 def main():

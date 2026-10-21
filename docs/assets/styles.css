@@ -804,9 +804,17 @@ code {
   white-space: nowrap;
 }
 
+.cancelled-table thead th:first-child {
+  white-space: normal;
+}
+
 .cancelled-table td {
   overflow-wrap: anywhere;
   white-space: pre-wrap;
+}
+
+.no-practice-week-end {
+  display: block;
 }
 
 .cancelled-table {

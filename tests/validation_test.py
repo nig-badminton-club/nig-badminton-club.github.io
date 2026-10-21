@@ -88,3 +88,18 @@ class PublicDataTest(unittest.TestCase):
                                     cwd=root, capture_output=True, text=True)
             self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
             self.assertIn("nested/source/.private.txt", result.stdout)
+
+    def test_no_practice_weeks_have_valid_nonconflicting_public_ranges(self):
+        week = {"weekStart": "2026-10-19", "weekEnd": "2026-10-25", "reason": "no-reservation"}
+        data = {**copy.deepcopy(DATA), "sessions": [], "noPracticeWeeks": [week]}
+        self.assertEqual(validator.validate_public_data(data), [])
+        for invalid in [None, {}, [None], [week, week],
+                        [{**week, "weekStart": "2026-10-20"}],
+                        [{**week, "weekEnd": "2026-10-26"}],
+                        [{**week, "reason": "unknown"}],
+                        [{**week, "privateContact": "private@example.invalid"}]]:
+            with self.subTest(invalid=invalid):
+                self.assertTrue(validator.validate_public_data({**data, "noPracticeWeeks": invalid}))
+        conflicting = copy.deepcopy(DATA["sessions"][0])
+        conflicting["date"] = "2026-10-23"
+        self.assertTrue(validator.validate_public_data({**data, "sessions": [conflicting]}))
