@@ -260,9 +260,7 @@
     if (!canvas || !window.CanvasRenderingContext2D) return;
     const wrap = canvas.parentElement;
     const width = Math.max(1, Math.floor(wrap.clientWidth));
-    const cancelledSeries = series.flatMap(item => [false, true].map(noPractice => ({
-      ...item, cancellations: item.cancellations.filter(point => Boolean(point.noPractice) === noPractice),
-    })).filter(row => row.cancellations.length));
+    const cancelledSeries = series.filter(item => item.cancellations.length);
     const bandHeight = cancelledSeries.length * 28 + (cancelledSeries.length ? 22 : 0);
     const height = (width < 620 ? 390 : 470) + bandHeight;
     const ratio = Math.min(window.devicePixelRatio || 1, 2);
@@ -409,10 +407,15 @@
     }
     if (chartState.shownPoint === nearest.point && !tooltip.hidden) return;
     chartState.shownPoint = nearest.point;
-    const breakDate = nearest.point.noPractice
-      ? `${formatDate(nearest.point.date)}–${formatDate(nearest.point.weekEnd)}` : formatDate(nearest.point.date);
+    const nearbyBreaks = nearest.point.cancelled
+      ? chartState.hitPoints.filter(candidate => candidate.point.cancelled && candidate.y === nearest.y
+        && Math.abs(candidate.x - nearest.x) < 8)
+      : [];
     tooltip.innerHTML = nearest.point.cancelled
-      ? `<strong>${escapeHtml(breakDate)} · ${nearest.point.noPractice ? "No practice / 練習なし" : "Cancelled / 休み・中止"}</strong><span>${escapeHtml(cancellationReason(nearest.point))}</span>`
+      ? nearbyBreaks.map(({ point }) => {
+        const date = point.noPractice ? `${formatDate(point.date)}–${formatDate(point.weekEnd)}` : formatDate(point.date);
+        return `<strong>${escapeHtml(date)} · ${point.noPractice ? "No practice / 練習なし" : "Cancelled / 休み・中止"}</strong><span>${escapeHtml(cancellationReason(point))}</span>`;
+      }).join("")
       : `<strong>${escapeHtml(formatDate(nearest.point.date))}</strong><span>Total / 合計: ${escapeHtml(nearest.point.total)}</span><span>Attending / 参加回答者: ${escapeHtml(nearest.point.attending)} · Guests / ゲスト: ${escapeHtml(nearest.point.guests)}</span>`;
     tooltip.hidden = false;
     const halfWidth = tooltip.offsetWidth / 2;

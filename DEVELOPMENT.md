@@ -105,7 +105,10 @@ validating source data.
 Optional `noPracticeWeeks` records use only `weekStart` (Monday), `weekEnd`
 (Sunday), and `reason: "no-reservation"`. The operations publisher records these
 from successful reservation syncs. The attendance page shows current and past
-confirmed weeks as squares and week ranges in the breaks table. It does not
+confirmed weeks as squares and week ranges in the breaks table. Cancellations
+and reservation-free weeks share one chart bar per calendar year. Overlapping
+marks show their nearby dates and reasons together in the tooltip, keeping each
+mark at its actual date. It does not
 infer missing weeks, count them as zero participants, or add them to the TSV.
 An actual session in the same week takes precedence over a no-practice record.
 

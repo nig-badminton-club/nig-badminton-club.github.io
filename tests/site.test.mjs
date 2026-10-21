@@ -459,11 +459,13 @@ test("cancellation marks show reasons on hover and tap without entering attendan
   }
 });
 
-test("confirmed reservation-free weeks show square marks and date ranges without changing attendance counts or TSV", async () => {
+test("breaks share one bar per year while retaining reasons, date ranges and attendance exports", async () => {
   const data = { ...baseData, sessions: [
+    { date: "2025-11-14", status: "cancelled", publicNote: "Gym closed / 休館" },
     { date: "2026-10-09", status: "scheduled", attendingCount: 3, guestCount: 1 },
     { date: "2026-10-16", status: "cancelled", publicNote: "Low attendance / 人数不足" },
   ], noPracticeWeeks: [
+    { weekStart: "2025-11-03", weekEnd: "2025-11-09", reason: "no-reservation" },
     { weekStart: "2026-09-28", weekEnd: "2026-10-04", reason: "no-reservation" },
     { weekStart: "2026-10-12", weekEnd: "2026-10-18", reason: "no-reservation" },
     { weekStart: "2026-10-19", weekEnd: "2026-10-25", reason: "no-reservation" },
@@ -471,30 +473,51 @@ test("confirmed reservation-free weeks show square marks and date ranges without
   ] };
   for (const width of [900, 264]) {
     const squares = [];
+    const crosses = [];
+    const bars = [];
+    const years = [];
+    let path = [];
     const dom = await renderPage("attendance.html", "assets/attendance.js", data, window => {
       const OriginalDate = window.Date;
       window.Date = class extends OriginalDate { constructor(...args) { super(...(args.length ? args : ["2026-10-21T12:00:00+09:00"])); } };
       window.CanvasRenderingContext2D = function () {};
       const canvas = window.document.getElementById("attendance-chart");
       Object.defineProperty(canvas.parentElement, "clientWidth", { value: width });
-      canvas.getContext = () => new Proxy({ strokeRect: (x, y) => squares.push({ x: x + 4, y: y + 4 }) },
+      canvas.getContext = () => new Proxy({
+        strokeRect: (x, y) => squares.push({ x: x + 4, y: y + 4 }),
+        fillRect: (x, y) => bars.push({ x, y }),
+        fillText: (text, x, y) => { if (/^202[56]$/.test(text)) years.push({ text, x, y }); },
+        beginPath: () => { path = []; },
+        moveTo: (x, y) => path.push([x, y]),
+        lineTo: (x, y) => path.push([x, y]),
+        stroke: () => { if (path.length === 4) crosses.push({ x: path[0][0] + 4, y: path[0][1] + 4 }); },
+      },
         { get: (target, key) => target[key] || (() => {}) });
     });
     const document = dom.window.document;
     assert.equal(document.getElementById("recorded-session-count").textContent, "1");
-    assert.equal(document.querySelectorAll("#cancelled-records-body tr").length, 3);
-    assert.equal(document.querySelectorAll(".no-practice-week-end").length, 2);
+    assert.equal(document.querySelectorAll("#cancelled-records-body tr").length, 5);
+    assert.equal(document.querySelectorAll(".no-practice-week-end").length, 3);
     assert.match(document.getElementById("cancelled-records-body").textContent, /2026\/10\/19.*2026\/10\/25.*体育館の予約なし/s);
     assert.doesNotMatch(document.getElementById("cancelled-records-body").textContent, /2026\/10\/26|2026\/10\/12/);
     const tsv = decodeURIComponent(document.getElementById("attendance-download").href.split(",")[1]);
     assert.equal(tsv, "\uFEFFdate\tattending_count\tguest_count\ttotal_participants\r\n2026-10-09\t3\t1\t4\r\n");
-    assert.equal(squares.length, 2);
+    assert.equal(squares.length, 3);
+    assert.equal(crosses.length, 2);
+    assert.equal(bars.length, 2);
+    assert.deepEqual(years.map(item => item.text), ["2025", "2026"]);
+    assert.equal(squares[0].y, crosses[0].y);
+    assert.equal(squares[1].y, crosses[1].y);
+    assert.equal(squares[2].y, crosses[1].y);
+    assert.notEqual(crosses[0].y, crosses[1].y);
     document.getElementById("attendance-chart").dispatchEvent(new dom.window.MouseEvent("pointerdown", {
-      clientX: squares[1].x, clientY: squares[1].y,
+      clientX: squares[2].x, clientY: squares[2].y,
     }));
     const tooltip = document.getElementById("attendance-tooltip");
     assert.equal(tooltip.hidden, false);
     assert.match(tooltip.textContent, /2026\/10\/19–2026\/10\/25.*練習なし.*体育館の予約なし/);
+    assert.match(tooltip.textContent, /2026\/10\/16.*人数不足/);
+    assert.doesNotMatch(tooltip.textContent, /2025\/11/);
     assert.doesNotMatch(tooltip.textContent, /Total \/ 合計/);
   }
 });
