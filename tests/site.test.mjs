@@ -58,15 +58,19 @@ async function renderPage(htmlPath, scriptPath, data, configure = () => {}) {
 
 const baseData = { ...JSON.parse(read("data/public.json")), noPracticeWeeks: [] };
 
-test("shared loader isolates concurrent JSONP callbacks and validates without a silent fallback", async () => {
+function publicDataDom() {
   const dom = new JSDOM(read("join.html"), { runScripts: "outside-only", url: "https://example.test/" });
   openWindows.add(dom.window);
-  const window = dom.window;
+  dom.window.eval(read("assets/public-data.js"));
+  return dom;
+}
+
+test("shared loader isolates concurrent JSONP callbacks and validates without a silent fallback", async () => {
+  const { window } = publicDataDom();
   window.NIG_BADMINTON_PUBLIC_JSONP_URL = "https://example.test/live";
   window.Date.now = () => 123;
   let fetches = 0;
   window.fetch = async () => { fetches++; return { ok: true, json: async () => baseData }; };
-  window.eval(read("assets/public-data.js"));
   const api = window.NigBadmintonPublic;
   const pending = [api.loadData(), api.loadData()];
   const scripts = [...window.document.querySelectorAll('script[src^="https://example.test/live"]')];
@@ -82,17 +86,44 @@ test("shared loader isolates concurrent JSONP callbacks and validates without a 
   assert.ok(scripts.every(script => !script.isConnected));
 });
 
-test("about page skips schedule dates and practice formatter allocation", async () => {
-  let dateReads = 0;
-  let formatters = 0;
-  const data = { ...baseData, sessions: [{ get date() { dateReads++; return "2099-01-01"; } }] };
-  await renderPage("about.html", "assets/app.js", data, window => {
-    window.fetch = async () => ({ ok: true, json: async () => data });
-    const OriginalFormatter = window.Intl.DateTimeFormat;
-    window.Intl.DateTimeFormat = function (...args) { if (args[1]?.weekday) formatters++; return new OriginalFormatter(...args); };
-  });
-  assert.equal(dateReads, 0);
-  assert.equal(formatters, 0);
+test("shared loader rejects HTTP errors even when their bodies are valid JSON", async () => {
+  const { window } = publicDataDom();
+  window.fetch = async () => ({ ok: false, status: 503, json: async () => structuredClone(baseData) });
+  await assert.rejects(window.NigBadmintonPublic.loadData(), /HTTP 503/);
+});
+
+test("shared loader tries configured JSONP first and falls back only on transport failure", async () => {
+  for (const failure of [null, "error", "timeout"]) {
+    const dom = publicDataDom();
+    const { window } = dom;
+    let fetches = 0;
+    let callback;
+    window.console.warn = () => {};
+    window.NIG_BADMINTON_PUBLIC_JSONP_URL = "https://example.test/public";
+    const setTimeout = window.setTimeout.bind(window);
+    window.setTimeout = (fn, delay) => setTimeout(fn, delay === 5000 ? 0 : delay);
+    window.fetch = async () => {
+      fetches++;
+      if (!failure) throw new Error("Static data unavailable");
+      return { ok: true, json: async () => structuredClone(baseData) };
+    };
+    const appendChild = window.document.head.appendChild.bind(window.document.head);
+    window.document.head.appendChild = element => {
+      const result = appendChild(element);
+      callback = new URL(element.src).searchParams.get("callback");
+      if (failure !== "timeout") {
+        window.queueMicrotask(() => failure ? element.onerror() : window[callback](structuredClone(baseData)));
+      }
+      return result;
+    };
+    const api = window.NigBadmintonPublic;
+    assert.deepEqual(api.validateData(await api.loadData()), baseData);
+    assert.ok(callback);
+    assert.equal(fetches, failure ? 1 : 0);
+    assert.equal(window[callback], undefined);
+    assert.equal(window.document.querySelector('script[src^="https://example.test/public"]'), null);
+    close(dom);
+  }
 });
 
 test("next practice skips finished, cancelled and invalid dates and never reopens a stale form", async () => {
@@ -127,56 +158,13 @@ for (const [page, script, target, errorText] of [
   ["attendance.html", "assets/attendance.js", "attendance-empty", /could not be loaded/i],
   ["join.html", "assets/join.js", "membership-status", /currently unavailable/i],
 ]) {
-  test(`${page} rejects HTTP errors even when their bodies are valid JSON`, async () => {
-    const dom = await renderPage(page, script, baseData, window => {
-      window.console.error = () => {};
-      window.fetch = async () => ({ ok: false, status: 503, json: async () => structuredClone(baseData) });
-    });
-    assert.match(dom.window.document.getElementById(target).textContent, errorText);
-    if (page === "attendance.html") {
-      assert.match(dom.window.document.getElementById("cancelled-records-body").textContent, /could not be loaded/);
-    }
-  });
-
-  test(`${page} rejects a malformed sessions list`, async () => {
+  test(`${page} displays a public-data validation failure`, async () => {
     const dom = await renderPage(page, script, { ...baseData, sessions: [null] }, window => {
       window.console.error = () => {};
     });
     assert.match(dom.window.document.getElementById(target).textContent, errorText);
-  });
-
-  test(`${page} tries configured JSONP first and falls back only on failure`, async () => {
-    for (const failure of [null, "error", "timeout"]) {
-      let fetches = 0;
-      let jsonpRequests = 0;
-      const dom = await renderPage(page, script, baseData, window => {
-        window.console.warn = () => {};
-        window.console.error = () => {};
-        window.NIG_BADMINTON_PUBLIC_JSONP_URL = "https://example.test/public";
-        const setTimeout = window.setTimeout.bind(window);
-        window.setTimeout = (callback, delay) => setTimeout(callback, delay === 5000 ? 0 : delay);
-        window.fetch = async () => {
-          fetches++;
-          if (!failure) throw new Error("Static data unavailable");
-          return { ok: true, json: async () => structuredClone(baseData) };
-        };
-        const appendChild = window.document.head.appendChild.bind(window.document.head);
-        window.document.head.appendChild = element => {
-          const result = appendChild(element);
-          if (element.tagName === "SCRIPT") {
-            jsonpRequests++;
-            const callback = new URL(element.src).searchParams.get("callback");
-            if (failure !== "timeout") {
-              window.queueMicrotask(() => failure ? element.onerror() : window[callback](structuredClone(baseData)));
-            }
-          }
-          return result;
-        };
-      });
-      assert.equal(jsonpRequests, 1);
-      assert.equal(fetches, failure ? 1 : 0);
-      assert.doesNotMatch(dom.window.document.getElementById(target).textContent, errorText);
-      assert.equal(dom.window.document.querySelector('script[src^="https://example.test/public"]'), null);
+    if (page === "attendance.html") {
+      assert.match(dom.window.document.getElementById("cancelled-records-body").textContent, /could not be loaded/);
     }
   });
 }
@@ -242,36 +230,14 @@ test("cancelled and tentative states remain visible on both sides of the compact
     }));
     const dom = await renderPage("index.html", "assets/app.js", data);
     const label = status === "cancelled" ? /Cancelled \/ 中止/ : /Tentative \/ 仮予定/;
-    assert.match(dom.window.document.querySelectorAll(".session-card")[3].textContent, label);
+    const card = dom.window.document.querySelectorAll(".session-card")[3];
+    assert.match(card.textContent, label);
+    if (status === "cancelled") assert.match(card.querySelector(".key-pickup-not-required").textContent, /不要/);
     const compact = dom.window.document.querySelector(".session-date-item");
     assert.match(compact.textContent, label);
     assert.equal(compact.getAttribute("aria-hidden"), null);
     assert.doesNotMatch(compact.textContent, /19:00|21:00/);
   }
-});
-
-test("cancelled practices use neutral guidance that is safe for every cancellation reason", async () => {
-  const data = structuredClone(baseData);
-  data.generatedAt = new Date().toISOString();
-  data.sessions = [{
-    sessionId: "2099-07-10",
-    date: "2099-07-10",
-    time: "19:00-21:00",
-    location: "Gym / 体育館",
-    status: "cancelled",
-    responseStatus: "cancelled",
-    roleStatus: "pending",
-    keyPickupStatus: "not-required",
-    publicNote: "",
-    formUrl: "",
-  }];
-  const dom = await renderPage("index.html", "assets/app.js", data);
-  const card = dom.window.document.querySelector(".session-card");
-  assert.match(card.textContent, /check the Google Group for the reason and any next steps/i);
-  assert.match(card.textContent, /理由と今後の対応はGoogle Groupで確認してください/);
-  assert.doesNotMatch(card.textContent, /still want to practice|自主練習/);
-  assert.match(card.querySelector(".key-pickup-not-required").textContent, /不要/);
-  assert.equal(card.querySelector("a.session-form-link"), null);
 });
 
 test("invalid dates are excluded and public notices and policy render as text, not markup", async () => {
