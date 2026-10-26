@@ -13,8 +13,8 @@
     </script>
     <title>Attendance Trends / 参加者数の推移 | NIG Badminton Club</title>
     <meta name="description" content="Year-over-year attendance trends for NIG Badminton Club. / 遺伝研バドミントン部の参加者数を年ごとに比較するページ。">
-    <link rel="icon" href="favicon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="assets/styles.css?v=20261013-2">
+    <link rel="icon" href="favicon.svg?v=20261021-1" type="image/svg+xml">
+    <link rel="stylesheet" href="assets/styles.css?v=20261021-1">
   </head>
   <body>
     <header class="site-header compact-header">
@@ -66,24 +66,24 @@
         <p id="attendance-empty" class="attendance-empty" hidden>No completed attendance totals are available yet. / 参加者数の集計データはまだありません。</p>
         <figure id="attendance-figure" class="attendance-figure">
           <div class="attendance-chart-wrap">
-            <canvas id="attendance-chart" role="img" aria-label="Yearly participant counts, with cancelled practices in separate rows below the chart / 年ごとの参加者数と、グラフ下部の別枠に示した休み・中止日" aria-describedby="chart-caption"></canvas>
+            <canvas id="attendance-chart" role="img" aria-label="Yearly participant counts, with cancellations and weeks without gym reservations on one bar per year below the chart / 年ごとの参加者数と、グラフ下部の年ごとに1本のバーに示した中止日・予約なしの週" aria-describedby="chart-caption"></canvas>
             <div id="attendance-tooltip" class="attendance-tooltip" hidden></div>
           </div>
-          <figcaption id="chart-caption">Dots mark practices with completed totals; × marks cancelled practices in separate rows below. Hover or tap a mark for details. Reasons are also listed in the <a class="text-link" href="#cancelled-title">cancellation table</a>. / 点は集計済みの練習日、下部の別枠の×は休み・中止日です。印にカーソルを合わせるかタップすると詳細が表示されます。理由は<a class="text-link" href="#cancelled-title">休み・中止日の一覧</a>でも確認できます。</figcaption>
+          <figcaption id="chart-caption">Dots mark practices with completed totals. Below the chart, one bar per year shows × for cancellations and □ for confirmed weeks without a gym reservation at the week's Monday. Hover or tap a mark for details, or see the <a class="text-link" href="#cancelled-title">breaks and cancellations table</a>. / 点は集計済みの練習日です。グラフ下部は年ごとに1本のバーで、×は中止日、□は体育館の予約がないと確認できた週（月曜の位置）を示します。印にカーソルを合わせるかタップすると詳細が表示され、<a class="text-link" href="#cancelled-title">休み・中止日の一覧</a>でも確認できます。</figcaption>
         </figure>
       </section>
       <section class="attendance-records" aria-labelledby="cancelled-title">
         <div class="section-heading">
           <div>
-            <h2 id="cancelled-title">Cancelled practices / 休み・中止日と理由</h2>
-            <p class="muted">All recorded past cancellations and planned breaks are listed here. They are excluded from participant totals and the attendance TSV. / 記録された過去の休み・中止日を全件表示します。参加人数の集計と参加者数TSVには含めません。</p>
+            <h2 id="cancelled-title">Breaks and cancellations / 休み・中止日と理由</h2>
+            <p class="muted">Recorded past cancellations and confirmed current or past weeks without a gym reservation are listed here. They are excluded from participant totals and the attendance TSV. / 記録された過去の中止日と、体育館の予約がないと確認できた今週・過去の週を表示します。参加人数の集計と参加者数TSVには含めません。</p>
           </div>
         </div>
         <div class="table-wrap">
           <table class="attendance-table cancelled-table">
             <thead>
               <tr>
-                <th scope="col">Date / 練習予定日</th>
+                <th scope="col">Date or week / 練習予定日・週</th>
                 <th scope="col">Reason / 理由・連絡事項</th>
               </tr>
             </thead>
@@ -123,6 +123,6 @@
 
     <script src="data/config.js"></script>
     <script src="assets/public-data.js?v=20261015-2"></script>
-    <script src="assets/attendance.js?v=20261015-2"></script>
+    <script src="assets/attendance.js?v=20261021-2"></script>
   </body>
 </html>

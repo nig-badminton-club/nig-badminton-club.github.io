@@ -56,7 +56,7 @@ async function renderPage(htmlPath, scriptPath, data, configure = () => {}) {
   return dom;
 }
 
-const baseData = JSON.parse(read("data/public.json"));
+const baseData = { ...JSON.parse(read("data/public.json")), noPracticeWeeks: [] };
 
 test("shared loader isolates concurrent JSONP callbacks and validates without a silent fallback", async () => {
   const dom = new JSDOM(read("join.html"), { runScripts: "outside-only", url: "https://example.test/" });
@@ -456,6 +456,88 @@ test("cancellation marks show reasons on hover and tap without entering attendan
     canvas.dispatchEvent(new dom.window.MouseEvent("pointerleave"));
     await new Promise(resolve => dom.window.requestAnimationFrame(resolve));
     assert.equal(tooltip.hidden, true);
+  }
+});
+
+test("breaks share one bar per year while retaining reasons, date ranges and attendance exports", async () => {
+  const data = { ...baseData, sessions: [
+    { date: "2025-11-14", status: "cancelled", publicNote: "Gym closed / 休館" },
+    { date: "2026-10-09", status: "scheduled", attendingCount: 3, guestCount: 1 },
+    { date: "2026-10-16", status: "cancelled", publicNote: "Low attendance / 人数不足" },
+  ], noPracticeWeeks: [
+    { weekStart: "2025-11-03", weekEnd: "2025-11-09", reason: "no-reservation" },
+    { weekStart: "2026-09-28", weekEnd: "2026-10-04", reason: "no-reservation" },
+    { weekStart: "2026-10-12", weekEnd: "2026-10-18", reason: "no-reservation" },
+    { weekStart: "2026-10-19", weekEnd: "2026-10-25", reason: "no-reservation" },
+    { weekStart: "2026-10-26", weekEnd: "2026-11-01", reason: "no-reservation" },
+  ] };
+  for (const width of [900, 264]) {
+    const squares = [];
+    const crosses = [];
+    const bars = [];
+    const years = [];
+    let path = [];
+    const dom = await renderPage("attendance.html", "assets/attendance.js", data, window => {
+      const OriginalDate = window.Date;
+      window.Date = class extends OriginalDate { constructor(...args) { super(...(args.length ? args : ["2026-10-21T12:00:00+09:00"])); } };
+      window.CanvasRenderingContext2D = function () {};
+      const canvas = window.document.getElementById("attendance-chart");
+      Object.defineProperty(canvas.parentElement, "clientWidth", { value: width });
+      canvas.getContext = () => new Proxy({
+        strokeRect: (x, y) => squares.push({ x: x + 4, y: y + 4 }),
+        fillRect: (x, y) => bars.push({ x, y }),
+        fillText: (text, x, y) => { if (/^202[56]$/.test(text)) years.push({ text, x, y }); },
+        beginPath: () => { path = []; },
+        moveTo: (x, y) => path.push([x, y]),
+        lineTo: (x, y) => path.push([x, y]),
+        stroke: () => { if (path.length === 4) crosses.push({ x: path[0][0] + 4, y: path[0][1] + 4 }); },
+      },
+        { get: (target, key) => target[key] || (() => {}) });
+    });
+    const document = dom.window.document;
+    assert.equal(document.getElementById("recorded-session-count").textContent, "1");
+    assert.equal(document.querySelectorAll("#cancelled-records-body tr").length, 5);
+    assert.equal(document.querySelectorAll(".no-practice-week-end").length, 3);
+    assert.match(document.getElementById("cancelled-records-body").textContent, /2026\/10\/19.*2026\/10\/25.*体育館の予約なし/s);
+    assert.doesNotMatch(document.getElementById("cancelled-records-body").textContent, /2026\/10\/26|2026\/10\/12/);
+    const tsv = decodeURIComponent(document.getElementById("attendance-download").href.split(",")[1]);
+    assert.equal(tsv, "\uFEFFdate\tattending_count\tguest_count\ttotal_participants\r\n2026-10-09\t3\t1\t4\r\n");
+    assert.equal(squares.length, 3);
+    assert.equal(crosses.length, 2);
+    assert.equal(bars.length, 2);
+    assert.deepEqual(years.map(item => item.text), ["2025", "2026"]);
+    assert.equal(squares[0].y, crosses[0].y);
+    assert.equal(squares[1].y, crosses[1].y);
+    assert.equal(squares[2].y, crosses[1].y);
+    assert.notEqual(crosses[0].y, crosses[1].y);
+    document.getElementById("attendance-chart").dispatchEvent(new dom.window.MouseEvent("pointerdown", {
+      clientX: squares[2].x, clientY: squares[2].y,
+    }));
+    const tooltip = document.getElementById("attendance-tooltip");
+    assert.equal(tooltip.hidden, false);
+    assert.match(tooltip.textContent, /2026\/10\/19–2026\/10\/25.*練習なし.*体育館の予約なし/);
+    assert.match(tooltip.textContent, /2026\/10\/16.*人数不足/);
+    assert.doesNotMatch(tooltip.textContent, /2025\/11/);
+    assert.doesNotMatch(tooltip.textContent, /Total \/ 合計/);
+  }
+});
+
+test("a confirmed no-practice week can stand alone across a year boundary, and invalid history fails visibly", async () => {
+  const week = { weekStart: "2026-12-28", weekEnd: "2027-01-03", reason: "no-reservation" };
+  const configure = window => {
+    const OriginalDate = window.Date;
+    window.Date = class extends OriginalDate { constructor(...args) { super(...(args.length ? args : ["2027-01-01T00:00:00+09:00"])); } };
+    window.console.error = () => {};
+  };
+  const dom = await renderPage("attendance.html", "assets/attendance.js", { ...baseData, sessions: [], noPracticeWeeks: [week] }, configure);
+  assert.equal(dom.window.document.getElementById("attendance-figure").hidden, false);
+  assert.equal(dom.window.document.getElementById("recorded-session-count").textContent, "0");
+  assert.equal(dom.window.document.getElementById("attendance-download").getAttribute("aria-disabled"), "true");
+  assert.match(dom.window.document.getElementById("cancelled-records-body").textContent, /2026\/12\/28.*2027\/1\/3/s);
+  for (const invalid of [null, {}, [week, week], [{ ...week, weekEnd: "2027-01-04" }], [{ ...week, reason: "<img src=x>" }]]) {
+    const broken = await renderPage("attendance.html", "assets/attendance.js", { ...baseData, sessions: [], noPracticeWeeks: invalid }, configure);
+    assert.match(broken.window.document.getElementById("attendance-empty").textContent, /could not be loaded/);
+    assert.equal(broken.window.document.querySelector("#cancelled-records-body img"), null);
   }
 });
 

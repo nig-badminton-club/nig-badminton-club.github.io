@@ -102,6 +102,16 @@ non-numeric `guestCount` is rendered as zero; negative numeric counts are
 clamped to zero by the consumer. This is display behavior, not a substitute for
 validating source data.
 
+Optional `noPracticeWeeks` records use only `weekStart` (Monday), `weekEnd`
+(Sunday), and `reason: "no-reservation"`. The operations publisher records these
+from successful reservation syncs. The attendance page shows current and past
+confirmed weeks as squares and week ranges in the breaks table. Cancellations
+and reservation-free weeks share one chart bar per calendar year. Overlapping
+marks show their nearby dates and reasons together in the tooltip, keeping each
+mark at its actual date. It does not
+infer missing weeks, count them as zero participants, or add them to the TSV.
+An actual session in the same week takes precedence over a no-practice record.
+
 The download is generated in the browser as `nig-badminton-attendance.tsv`;
 the browser chooses its destination and handles repeat-download filenames.
 No TSV is written into the repository by `serve` or `check`. It is UTF-8 with

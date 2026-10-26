@@ -21,13 +21,13 @@
     "status": "ok",
     "groupEmail": "nig.badminton-club@nig.ac.jp",
     "internalDomain": "nig.ac.jp",
-    "updatedAt": "2026-10-21T06:22:37+09:00",
-    "lastSuccessAt": "2026-10-21T06:22:37+09:00",
+    "updatedAt": "2026-10-26T06:22:33+09:00",
+    "lastSuccessAt": "2026-10-26T06:22:33+09:00",
     "totalCount": 40,
     "nigCount": 36,
     "externalCount": 4
   },
-  "generatedAt": "2026-10-21T06:22:43+09:00",
+  "generatedAt": "2026-10-26T11:31:46+09:00",
   "sessions": [
     {
       "sessionId": "2026-07-17",
@@ -271,15 +271,15 @@
       "status": "scheduled",
       "reservationStatus": "provisional",
       "reservationTime": "18:00-21:30",
-      "responseStatus": "upcoming",
-      "attendingCount": null,
-      "absentCount": null,
-      "unansweredCount": null,
-      "guestCount": null,
+      "responseStatus": "open",
+      "attendingCount": 1,
+      "absentCount": 4,
+      "unansweredCount": 35,
+      "guestCount": 0,
       "roleStatus": "pending",
       "keyPickupStatus": "awaiting-assignment",
       "publicNote": "",
-      "formUrl": ""
+      "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLSdrHQAGBWRh3btODxMM0dypzZCHK0YS1mh6-UVch0JJudfUMA/viewform?usp=pp_url&entry.1276326054=2026-10-30+(19:00-21:00)&entry.1509490790=0"
     },
     {
       "sessionId": "2026-11-06",
@@ -568,6 +568,13 @@
       "keyPickupStatus": "awaiting-assignment",
       "publicNote": "",
       "formUrl": ""
+    }
+  ],
+  "noPracticeWeeks": [
+    {
+      "weekStart": "2026-10-19",
+      "weekEnd": "2026-10-25",
+      "reason": "no-reservation"
     }
   ],
   "policy": {

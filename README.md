@@ -20,7 +20,7 @@ CI and Pages delivery; see [development and delivery](DEVELOPMENT.md).
 ## Site Contents
 
 - `docs/index.html`: schedule, next practice, map, and participation policy
-- `docs/attendance.html`: yearly participation chart, cancellation dates/reasons, totals and TSV download
+- `docs/attendance.html`: yearly participation chart, cancellations and confirmed reservation-free weeks, totals and TSV download
 - `docs/about.html`: club overview, practice photo, member count summary, and yearly officers
 - `docs/workflow.html`: weekly attendance and role-assignment workflow
 - `docs/role-assignment.html`: setup/return role assignment method
