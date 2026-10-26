@@ -160,6 +160,16 @@ are checked by `npm run check`; the duplicate private-sheet URL assertion was
 removed from the HTML test. Accessibility checks remain despite their higher cost
 because malformed rendered page structure can prevent actual use.
 
+The 2026-10-26 review tests HTTP rejection and JSONP success/error/timeout fallback
+once at the shared loader boundary. Each consuming page still has a rendering
+test for load/validation errors. Concurrent callbacks, malformed successful
+responses and cleanup remain covered. Formatter allocation and date-property
+read counts on About are implementation choices and no longer have a test.
+The cancellation guidance copy test is also removed; mixed schedule fixtures
+retain cancellation states, unavailable forms and key-pickup behavior. Review
+wording directly. These reductions preserve input validation, injection/privacy
+checks, all accessibility scans and every Pages recovery scenario.
+
 The October 2026 follow-up retains accessibility scans on all four rendered
 pages and every recovery-shell scenario in the default suite. Fake GitHub CLI
 responses use Bash and prewritten JSON while the real recovery shell and jq
