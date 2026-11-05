@@ -27,7 +27,7 @@
     "nigCount": 36,
     "externalCount": 4
   },
-  "generatedAt": "2026-11-05T09:11:46+09:00",
+  "generatedAt": "2026-11-05T10:46:48+09:00",
   "sessions": [
     {
       "sessionId": "2026-07-17",
@@ -290,9 +290,9 @@
       "reservationStatus": "confirmed",
       "reservationTime": "18:00-21:30",
       "responseStatus": "open",
-      "attendingCount": 4,
+      "attendingCount": 5,
       "absentCount": 4,
-      "unansweredCount": 32,
+      "unansweredCount": 31,
       "guestCount": 0,
       "roleStatus": "pending",
       "keyPickupStatus": "awaiting-assignment",
