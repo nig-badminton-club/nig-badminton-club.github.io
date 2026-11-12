@@ -2,9 +2,13 @@ name: Deploy GitHub Pages
 
 on:
   workflow_call:
+    inputs:
+      artifact-name:
+        required: true
+        type: string
 
 permissions:
-  contents: read
+  actions: read
   pages: write
   id-token: write
 
@@ -20,18 +24,27 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: ${{ github.sha }}
-          persist-credentials: false
-      - name: Configure Pages
-        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
-        with:
-          path: docs
-          retention-days: 1
+      - name: Wait for Pages artifact visibility
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PAGES_ARTIFACT_NAME: ${{ inputs.artifact-name }}
+        run: |
+          for delay in 0 1 2 4 8; do
+            if (( delay > 0 )); then
+              sleep "$delay"
+            fi
+            if ready="$(gh api --method GET "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts" \
+              -f name="$PAGES_ARTIFACT_NAME" --jq '.total_count == 1 and .artifacts[0].expired == false')" &&
+              [[ "$ready" == true ]]; then
+              exit 0
+            fi
+          done
+          echo "::error::Expected one visible, unexpired $PAGES_ARTIFACT_NAME artifact for run $GITHUB_RUN_ID."
+          exit 1
+
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+        with:
+          artifact_name: ${{ inputs.artifact-name }}

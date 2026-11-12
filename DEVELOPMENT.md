@@ -17,10 +17,19 @@ bytecode output is disabled so the tests leave no cache files in the checkout.
 The 0.1.3 update also replaces the affected transitive URI parser with compatible
 `fast-uri` 3.1.6. It is a validation dependency, not browser code shipped in `docs`.
 
-`ci.yml` validates each commit once. Its `deploy` job can call the reusable
-`pages.yml` only after `validate-site` succeeds, and only for `main` outside a pull
-request. Pages checks out that same commit and uploads `docs` with one-day artifact
-retention. Superseded CI runs are cancelled. No branch settings are changed.
+`ci.yml` validates each commit once. After the checks pass on `main` outside a
+pull request, the validation job uploads that checkout's `docs` with one-day
+artifact retention. The reusable `pages.yml` publishes the artifact named by
+the successful validation job, so the deploy job needs no checkout or build.
+Artifact names include the validation attempt, allowing a deploy-only rerun to
+reuse the original artifact while a full rerun uploads a distinct one.
+Superseded CI runs are cancelled.
+
+An upload can succeed before its artifact is visible to the deployment service.
+The deploy job checks the current run for its named, unexpired artifact
+immediately and retries after 1, 2, 4, and 8 seconds when needed. If the lookup
+still fails, the workflow fails and the normal recovery path can dispatch CI
+again. Use a full CI run if the original artifact has expired.
 
 For an authorized manual delivery, dispatch **CI** on `main`:
 
