@@ -27,7 +27,7 @@
     "nigCount": 37,
     "externalCount": 4
   },
-  "generatedAt": "2026-11-26T17:02:15+09:00",
+  "generatedAt": "2026-11-26T17:08:04+09:00",
   "sessions": [
     {
       "sessionId": "2026-07-17",
@@ -349,7 +349,7 @@
       "unansweredCount": 28,
       "guestCount": 3,
       "roleStatus": "pending",
-      "keyPickupStatus": "awaiting-assignment",
+      "keyPickupStatus": "pending",
       "publicNote": "",
       "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLSdrHQAGBWRh3btODxMM0dypzZCHK0YS1mh6-UVch0JJudfUMA/viewform?usp=pp_url&entry.1276326054=2026-11-27+(19:00-21:00)&entry.1509490790=0"
     },
